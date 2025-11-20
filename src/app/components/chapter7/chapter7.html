@@ -1,0 +1,559 @@
+<div class="m-5 overflow-hidden grid gap-6">
+    <div class=" text-3xl font-sans font-semibold">
+        <h1>Chapter 7 : z-Transform, Filters</h1>
+    </div>
+
+    <div>
+        <mat-card class="example-card text-2xl" appearance="outlined">
+            <mat-card-header>
+                <mat-card-title style="color: blue;">1. Learning Objectives</mat-card-title>
+            </mat-card-header>
+            <br>
+            <mat-card-content class="text-lg">
+                <ul class="list-disc pl-6 space-y-2 mt-2 text-lg">
+                    <li>
+                        <strong>Understand</strong> the one-sided <em>z-transform</em>, the <strong>Region of
+                            Convergence (ROC)</strong>,
+                        and how a discrete delay maps to <code>z<sup>-1</sup></code>.
+                    </li>
+
+                    <li>
+                        <strong>Relate</strong> the Discrete-Time Fourier Transform (DTFT) to the <em>z-transform</em>
+                        via
+                        <code>z = r · e<sup>jΩ</sup></code> and evaluation on the <strong>unit circle</strong>
+                        (<code>r = 1</code>).
+                    </li>
+
+                    <li>
+                        <strong>Derive</strong> FIR/IIR difference equations and corresponding transfer functions
+                        (<code>H(z)</code>), and analyze <strong>stability</strong> via pole locations and ROC.
+                    </li>
+
+                    <li>
+                        <strong>Compute</strong> frequency responses <code>H(e<sup>jΩ</sup>)</code>, generate pole/zero
+                        plots,
+                        and obtain impulse responses using <em>Python</em> (e.g., NumPy / SciPy).
+                    </li>
+                </ul>
+
+            </mat-card-content>
+
+        </mat-card>
+
+
+    </div>
+
+
+    <div class="flex flex-col justify-around items-center gap-2">
+        <img src="assets/images/chap8/chp8fig1.gif" class="w-150 h-120 ">
+        <h1 class="text-wrap">
+            Figure 8.1: Surface plot illustrating poles, zeros, and ROC in the z-domain.
+
+        </h1>
+    </div>
+
+
+    <div>
+        <mat-card class="example-card text-2xl" appearance="outlined">
+            <mat-card-header>
+                <mat-card-title style="color: blue;">2. Theory Summary</mat-card-title>
+            </mat-card-header>
+
+            <mat-card-content class="text-lg">
+                <section class="p-6 bg-white rounded-2xl shadow-sm">
+                    <h2 class="text-2xl font-semibold mb-4 font-sans">2.1 The z-Transform</h2>
+
+                    <p class="text-lg">
+                        The <strong>z-Transform</strong> is a more general transform than the Fourier Transform and is a
+                        key tool in
+                        achieving <em>perfect reconstruction</em> in filter banks and wavelets. To explore this, we
+                        analyze the effects
+                        of sampling and examine system behavior in the <strong>z-domain</strong>.
+                    </p>
+
+                    <p class="mt-4 text-lg">
+                        Since most practical systems are <strong>causal</strong>, we use the <em>one-sided
+                            z-Transform</em>, defined as:
+                    </p>
+
+                    <p class="text-center mt-3 text-lg font-mono">
+                        X(z) = Σ<sub>n=0</sub><sup>∞</sup> x(n) · z<sup>−n</sup>
+                    </p>
+
+                    <p class="mt-4 text-lg">
+                        This representation turns the sequence <code>x(n)</code> into a <strong>polynomial in
+                            z</strong>. Notice that we
+                        obtain the usual <strong>frequency response</strong> (the DTFT for a causal signal) when we
+                        evaluate the
+                        z-transform along the unit circle in the z-plane:
+                    </p>
+
+                    <p class="text-center mt-3 text-lg font-mono">
+                        z = e<sup>jΩ</sup>
+                    </p>
+
+                    <p class="mt-4 text-lg">
+                        This links the <strong>z-Transform</strong> with the <strong>Discrete-Time Fourier Transform
+                            (DTFT)</strong>,
+                        except for the index range: the one-sided z-transform starts at <em>n = 0</em>, while the DTFT
+                        includes
+                        <em>n = −∞</em>.
+                    </p>
+
+                    <p class="mt-4 text-lg">
+                        In general, the complex variable <code>z</code> can be written in polar form as:
+                    </p>
+
+                    <p class="text-center mt-3 text-lg font-mono">
+                        z = r · e<sup>jΩ</sup>
+                    </p>
+
+                    <p class="mt-4 text-lg">
+                        Here, <em>Ω</em> is the normalized angular frequency, and <em>r</em> represents a
+                        <strong>damping factor</strong>.
+                        When <em>r &lt; 1</em>, the system exhibits exponentially decaying oscillations; when <em>r &gt;
+                            1</em>, it shows
+                        exponential growth.
+                    </p>
+
+                    <p class="mt-4 text-lg">
+                        Note that this damping factor does not appear in the DTFT. Thus, in the z-transform, the
+                        transform sum can still
+                        converge even for unstable signals or systems — by selecting an appropriate <em>r</em>. This
+                        defines the
+                        <strong>Region of Convergence (ROC)</strong>.
+                    </p>
+
+                    <p class="text-center mt-3 text-lg font-mono">
+                        z<sup>−1</sup> = (1 / r) · e<sup>−jΩ</sup>
+                    </p>
+
+                    <p class="mt-4 text-lg">
+                        To grasp the essence of the z-Transform, it’s crucial to first understand the DTFT. The key is
+                        not just solving
+                        the equations, but <strong>understanding what the math represents</strong> in terms of system
+                        behavior and signal
+                        evolution.
+                    </p>
+                </section>
+
+            </mat-card-content>
+        </mat-card>
+    </div>
+
+
+    <div class="flex flex-col justify-around items-center gap-2">
+        <img src="assets/images/chap8/fig8.2.gif" class="w-180 h-100 ">
+        <h1 class="text-wrap">
+            figure 8.2
+
+        </h1>
+    </div>
+
+
+
+
+    <!-- <div>
+
+        <app-pycodechap1 title="Example 1: Uniform Quantizer with Finite Resolution"
+            [code]="chapter2example1"></app-pycodechap1>
+    </div> -->
+
+
+
+
+  
+
+
+
+    <div>
+        <mat-card class="example-card text-2xl" appearance="outlined">
+
+            <mat-card-content class="text-lg">
+                <title>Z-Transform Properties</title>
+                <style>
+                    body {
+                        font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+                        max-width: 900px;
+                        margin: 0 auto;
+                        padding: 20px;
+                        line-height: 1.8;
+                        color: #333;
+                        background: #f9fafb;
+                    }
+
+                    .container {
+                        background: white;
+                        padding: 40px;
+                        border-radius: 12px;
+                        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+                    }
+
+                    h2 {
+                        color: #2563eb;
+                        font-size: 28px;
+                        margin-bottom: 20px;
+                        border-bottom: 3px solid #2563eb;
+                        padding-bottom: 10px;
+                    }
+
+                    h3 {
+                        color: #1e40af;
+                        font-size: 22px;
+                        margin-top: 32px;
+                        margin-bottom: 12px;
+                    }
+
+                    h4 {
+                        color: #1e40af;
+                        font-size: 18px;
+                        margin-top: 24px;
+                        margin-bottom: 10px;
+                    }
+
+                    p {
+                        margin: 12px 0;
+                        font-size: 16px;
+                    }
+
+                    .formula {
+                        background: #f3f4f6;
+                        padding: 16px;
+                        margin: 16px 0;
+                        border-radius: 8px;
+                        font-family: 'Courier New', monospace;
+                        text-align: center;
+                        border-left: 4px solid #2563eb;
+                        font-size: 15px;
+                    }
+
+                    .example {
+                        background: #eff6ff;
+                        padding: 20px;
+                        margin: 20px 0;
+                        border-radius: 8px;
+                        border-left: 4px solid #3b82f6;
+                    }
+
+                    .note {
+                        background: #fef3c7;
+                        padding: 16px;
+                        margin: 20px 0;
+                        border-radius: 8px;
+                        border-left: 4px solid #f59e0b;
+                    }
+
+                    ul {
+                        margin: 16px 0;
+                        padding-left: 24px;
+                    }
+
+                    li {
+                        margin: 8px 0;
+                    }
+
+                    .highlight {
+                        background: #fef3c7;
+                        padding: 2px 6px;
+                        border-radius: 4px;
+                        font-weight: 600;
+                    }
+
+                    strong {
+                        color: #1e40af;
+                    }
+
+                    .inline-math {
+                        font-family: 'Courier New', monospace;
+                        background: #f3f4f6;
+                        padding: 2px 6px;
+                        border-radius: 4px;
+                    }
+                </style>
+
+                <body>
+                    
+                        <h2>2.2 Properties of the z-Transform</h2>
+
+                        <h3>1. Shift Property</h3>
+
+                        <p>Take two causal sequences (causal means sample value 0 for negative indices): Sequence <span
+                                class="inline-math">x(n)</span>, and <span class="inline-math">x(n-1)</span>, which is
+                            the same sequence but delayed by one sample. Then their z-transforms are:</p>
+
+                        <div class="formula">
+                            x(n) → Sum from n=0 to infinity of x(n) · z^(-n) := X(z)
+                        </div>
+
+                        <div class="formula">
+                            x(n-1) → Sum from n=0 to infinity of x(n-1) · z^(-n) = Sum from n=1 to infinity of x(n-1) ·
+                            z^(-n)
+                        </div>
+
+                        <p>Use the index substitution, <span class="inline-math">n' ← n-1</span> or <span
+                                class="inline-math">n'+1 ← n</span> to get rid of the "n-1" in the transform:</p>
+
+                        <div class="formula">
+                            = Sum from n'=0 to infinity of x(n') · z^(-(n'+1))<br>
+                            = z^(-1) · Sum from n'=0 to infinity of x(n') · z^(-n')<br>
+                            = X(z) · z^(-1)
+                        </div>
+
+                        <p>This shows that a delay by 1 sample in the signal sequence (time domain) corresponds to the
+                            multiplication with <span class="highlight">z^(-1)</span> in the z-domain:</p>
+
+                        <div class="formula">
+                            x(n) → X(z)<br><br>
+                            x(n-1) → X(z) · z^(-1)
+                        </div>
+
+                        <div class="example">
+                            <h4>Example:</h4>
+                            <p>Take an example signal: <span class="inline-math">x0 = [1, 2, 3]</span> ⇒ <span
+                                    class="inline-math">X0(z) = 1 + 2·z^(-1) + 3·z^(-2)</span></p>
+                            <p>And this signal, delayed by 1 sampling period: <span class="inline-math">x1 = [0, 1, 2,
+                                    3]</span> ⇒ <span class="inline-math">X1(z) = 0 + 1·z^(-1) + 2·z^(-2) +
+                                    3·z^(-3)</span></p>
+                            <p>In the z-domain this delay shows up as multiplication with <span
+                                    class="inline-math">z^(-1)</span>:</p>
+                            <div class="formula">
+                                X1(z) = z^(-1) · X0(z)
+                            </div>
+                        </div>
+
+                        <h4>Z-Transform of the Shifted Unit Pulse</h4>
+
+                        <p>Related to the shift property is the z-transform of the shifted unit pulse. The unit pulse is
+                            defined as:</p>
+
+                        <div class="formula">
+                            delta(n) = 1, if n = 0<br>
+                            delta(n) = 0, else
+                        </div>
+
+                        <p>So it is just a zero sequence with a 1 at time 0. Its z-Transform is then:</p>
+
+                        <div class="formula">
+                            delta(n) → 1
+                        </div>
+
+                        <p>The z-transform of the shifted unit pulse delayed by <span class="inline-math">d</span>
+                            samples is:</p>
+
+                        <div class="formula">
+                            delta(n-d) → z^(-d)
+                        </div>
+
+                        <h4>Linearity Property</h4>
+
+                        <p>Using the linearity property of the z-transform yields:</p>
+
+                        <div class="formula">
+                            a · x(n) → a · X(z)
+                        </div>
+
+                        <div class="formula">
+                            x(n) + y(n) → X(z) + Y(z)
+                        </div>
+
+                        <h3>2. Convolution Property</h3>
+
+                        <div class="formula">
+                            x(n) * y(n) → X(z) · Y(z)
+                        </div>
+
+                        <p>The z-transform turns a convolution into a multiplication. Remember that the convolution is
+                            defined as:</p>
+
+                        <div class="formula">
+                            x(n) * y(n) = Sum from m=-infinity to +infinity of x(m) · y(n-m)
+                        </div>
+
+                        <p>This is because the convolution of 2 sequences behave in the same way as the multiplication
+                            of 2 polynomials (the z-transforms) of these sequences. This is one of the main advantages
+                            of the z-Transform, since it turns convolution into a simpler multiplication (which in
+                            principle is invertible).</p>
+
+                        <div class="example">
+                            <h4>Example: Exponential Decaying Sequence</h4>
+
+                            <p>The example signal is an exponential decaying sequence:</p>
+
+                            <div class="formula">
+                                x(n) = p^n
+                            </div>
+
+                            <p>for n=0,1,..., meaning the sequence 1, p, p^2, p^3, ...</p>
+
+                            <div class="formula">
+                                X(z) = Sum from n=0 to infinity of p^n · z^(-n)
+                            </div>
+
+                            <p>Remember from last time: we had a closed form solution for this type of geometric sums:
+                            </p>
+
+                            <div class="formula">
+                                S = Sum from k=0 to N-1 of c^k<br><br>
+                                Solution: S = (c^N - 1) / (c - 1)
+                            </div>
+
+                            <p>But now we have an infinite sum, which means N goes towards infinity. But we have the
+                                expression <span class="inline-math">c^N</span> in the solution. If <span
+                                    class="inline-math">|c| < 1</span>, then this goes to zero <span
+                                            class="inline-math">c^N → 0</span>. Now we have <span class="inline-math">c
+                                            = p · z^(-1)</span>. Hence, if <span class="inline-math">|p · z^(-1)| <
+                                                1</span> we get:</p>
+
+                            <div class="formula">
+                                X(z) = 1 / (1 - p · z^(-1)) = z / (z - p)
+                            </div>
+                        </div>
+
+                        <h4>Poles and Zeros</h4>
+
+                        <p>Observe that this fraction has a <strong>pole</strong> at position <span
+                                class="inline-math">z=p</span>, and a <strong>zero</strong> at position <span
+                                class="inline-math">z=0</span>. Hence if we know the pole position, we know <span
+                                class="inline-math">p</span>, and if we know <span class="inline-math">p</span> we know
+                            the time sequence (except for a constant factor). So the location of the pole gives us very
+                            important information about the signal.</p>
+
+                        <p>Keep in mind that this solution is only valid for all <span class="inline-math">p</span>
+                            which fulfill <span class="inline-math">|p · z^(-1)| < 1</span>. We see that this is true
+                                    for <span class="inline-math">|z| > |p|</span>. This is also called the
+                                    <strong>"Region of Convergence" (ROC)</strong>.</p>
+
+                        <h3>Stability and Region of Convergence</h3>
+
+                        <p>The ROC is connected to the resulting stability of the system or signal. The region of
+                            convergence is outside the pole locations. If the region of convergence includes the unit
+                            circle (which describes constant, bounded oscillations), we have a stable system. This
+                            means: <strong>if the poles are inside the unit circle, we have a stable system</strong>.
+                        </p>
+
+                        <p>The sum of <span class="inline-math">x(n)</span> converges (we get the sum if we set <span
+                                class="inline-math">z = 1</span>) if <span class="inline-math">|p| < 1</span>. In this
+                                    case we also say that the signal or system is <strong>stable</strong> (meaning for a
+                                    bounded input we obtain a bounded output, so-called "BIBO stability"). In this case
+                                    we see that the resulting pole of our z-transform is inside the unit circle.</p>
+
+                        <p>If <span class="inline-math">|p| > 1</span>, we have an exponential growth of the impulse
+                            response, which is basically an "exploding" signal or system (meaning the output grows
+                            towards infinity), hence it is <strong>unstable</strong>.</p>
+
+                        <div class="note">
+                            <strong>General Rule:</strong> A system or a signal is stable if the poles of its
+                            z-transform are inside the unit circle in the z-domain, or unstable if at least one pole is
+                            outside the unit circle (it will exponentially grow).
+                        </div>
+
+                        <h4>Using Properties for Analysis</h4>
+
+                        <p>These are basic properties, which can be used to derive z-transforms of more complicated
+                            expressions, and they can also be used to obtain an inverse z-transform, by inspection.</p>
+
+                        <p>For instance if we see a fraction with a pole in the z-Transform, we know that the underlying
+                            time sequence has an exponential decay or oscillation in it.</p>
+
+                        <p>Observe that we can obtain a real valued decayed oscillation if we have 2 poles, each the
+                            conjugate complex of the other, or one with <span class="inline-math">+Ω</span> and one with
+                            <span class="inline-math">-Ω</span>. In this way, we cancel the imaginary part.</p>
+
+                        <h4>Comparison with DTFT</h4>
+
+                        <p>One of the main differences of the z-transform compared to the Discrete Time Fourier
+                            Transform (DTFT): With the z-transform we can see if a signal or system is stable by looking
+                            at the position of the poles in the z-domain. This is not possible for the DTFT, since there
+                            we don't know the positions of the poles.</p>
+
+                        <h3>Downsampling and Aliasing</h3>
+
+                        <p>Now take a look at our downsampled signal from last time:</p>
+
+                        <div class="formula">
+                            x_d(n) = x(n) · Delta_N(n) = x(n) · (1/N) · Sum from k=0 to N-1 of e^(j·2π/N·k·n)
+                        </div>
+
+                        <p>Now we can z-transform it:</p>
+
+                        <div class="formula">
+                            Sum from n=0 to infinity of x_d(n) · z^(-n)<br>
+                            = Sum from n=0 to infinity of x(n) · (1/N) · Sum from k=0 to N-1 of e^(j·2π/N·k·n) · z^(-n)
+                        </div>
+
+                        <p>Hence the effect of multiplying our signal with the delta impulse train in the z-domain is:
+                        </p>
+
+                        <div class="formula">
+                            X_d(z) = (1/N) · Sum from k=0 to N-1 of X(e^(-j·2π/N·k) · z)
+                        </div>
+
+                        <p>Observe that here the <strong>aliasing components</strong> appear by multiplying <span
+                                class="inline-math">z</span> with <span class="inline-math">e^(-j·2π/N·k)</span>, which
+                            in effect is a shift of the frequency.</p>
+
+                        <p>Remember from last time, the effect of the removal or re-insertion of the zeros (changing the
+                            sampling rate) from or into the signal <span class="inline-math">x_d(n)</span> at the higher
+                            sampling rate and <span class="inline-math">y(m)</span> at the lower sampling rate. In the
+                            z-domain is...</p>
+                    
+                </body>
+            </mat-card-content>
+
+        </mat-card>
+
+
+    </div>
+
+
+
+
+
+    <!-- Test section  -->
+    <div class="h-6"></div>
+
+    <div class="flex flex-col items-center p-3 gap-6">
+        <h2 class="text-2xl font-sans font-semibold mb-4">🧠 Test Your Knowledge</h2>
+
+        <div *ngFor="let q of questions" class="w-full md:w-2/3">
+            <mat-card class="mat-elevation-z6 p-6 font-sans">
+                <mat-card-title>{{ q.text }}</mat-card-title>
+                <br>
+
+                <mat-card-content>
+                    <mat-radio-group [(ngModel)]="q.selectedAnswer" [disabled]="q.isSubmitted">
+                        <div *ngFor="let option of q.options" class="mb-2">
+                            <mat-radio-button [value]="option">{{ option }}</mat-radio-button>
+                        </div>
+                    </mat-radio-group>
+
+                    <div class="mt-4 flex gap-3">
+                        <button matFab extended (click)="submitAnswer(q)"
+                            [disabled]="!q.selectedAnswer || q.isSubmitted">
+                            Submit
+                        </button>
+
+                        <button matFab extended style="background-color:black ; color: aliceblue;" *ngIf="q.isSubmitted"
+                            (click)="tryAgain(q)">
+                            Try Again
+                        </button>
+                    </div>
+
+                    <div class="mt-4">
+                        <p *ngIf="q.isSubmitted && q.selectedAnswer === q.correctAnswer"
+                            class="text-green-600 font-semibold font-sans">
+                            ✅ Correct!
+                        </p>
+                        <p *ngIf="q.isSubmitted && q.selectedAnswer !== q.correctAnswer"
+                            class="text-red-600 font-semibold font-sans">
+                            ❌ Incorrect. Correct answer: <strong>{{ q.correctAnswer }}</strong>.
+                        </p>
+                    </div>
+                </mat-card-content>
+            </mat-card>
+        </div>
+    </div>
+
+
+
+</div>

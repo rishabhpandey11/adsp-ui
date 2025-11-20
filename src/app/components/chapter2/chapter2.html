@@ -1,0 +1,634 @@
+<div class="m-5  overflow-hidden">
+    <div class=" text-3xl font-sans font-semibold">
+        <h1>Chapter 2 : Quantization Signal to Noise Ratio (SNR)</h1>
+    </div>
+    <div class="h-6"></div>
+    <div>
+        <mat-card class="example-card text-2xl" appearance="outlined">
+            <mat-card-header>
+                <mat-card-title style="color: blue;">1. Learning Objectives</mat-card-title>
+            </mat-card-header>
+            <br>
+            <mat-card-content class="text-lg">
+                <p class="text-lg font-semibold mb-2">
+                    After completing this module, learners will be able to:
+                </p>
+
+                <ul class="list-disc ml-6 text-lg">
+                    <li>
+                        Explain the purpose of <strong>quantization</strong> in digital signal processing.
+                    </li>
+
+                    <li>
+                        Describe the difference between <strong>mid-tread</strong> and <strong>mid-rise</strong>
+                        quantizers.
+                    </li>
+
+                    <li>
+                        Compute the quantization step size using the formula:
+                        <span class="font-mono">Δ = (Vmax − Vmin) / L</span>
+                    </li>
+
+                    <li>
+                        Understand and visualize the <strong>quantization error</strong> and how it depends on bit
+                        depth.
+                    </li>
+
+                    <li>
+                        Relate quantization to the A/D conversion chain used in acoustic systems.
+                    </li>
+                </ul>
+
+
+            </mat-card-content>
+
+        </mat-card>
+
+
+    </div>
+
+
+
+    <div class="h-6"></div>
+
+    <div>
+        <mat-card class="example-card text-2xl" appearance="outlined">
+
+            <mat-card-content class="text-lg">
+                <h3 class="text-2xl font-semibold font-sans mb-3" style="color: blue;">
+                    2.1 Introduction
+                </h3>
+
+
+                <p class="mt-4">
+                    Assume we have an A/D converter with a quantizer with a certain number of bits
+                    (say N bits). What is the resulting Signal to Noise Ratio (SNR) of this quantizer?
+                    The SNR is defined as the ratio of the expectation of the signal power to the expectation
+                    of the noise power. In our case, the expectation of the noise power is the expectation of the
+                    quantization error power. We already have the expectation of the quantization error power as
+                    (Delta^2) / 12 [6].
+                </p>
+
+
+                <p class="mt-4">
+                    So what we still need for the SNR is the average or expectation of the signal power.
+                    How do we obtain this? Basically, we can take the same approach as we did for the expectation
+                    of the power of the quantization error (which is basically the second moment of the distribution
+                    of the quantization error) [7]. So what we need to know from our signal is its probability
+                    distribution. For the quantization error, it was a uniform distribution between −Delta/2 and
+                    +Delta/2.
+                </p>
+
+                <p class="mt-4">
+                    A very simple case would be a uniformly distributed signal with amplitude A/2
+                    which has values between −A/2 up to +A/2.
+                </p>
+
+                <p class="text-center mt-3 text-lg font-mono">
+                    E[x^2] = Integral from (-A/2) to (+A/2) of x^2 * p(x) dx (2.1)
+                </p>
+                <p class="mt-4">
+                    So here we have the same type of signal and the resulting expectation of the power (its second
+                    moment assumed we have a zero mean signal) is obtained by using our previous formula and replace
+                    $\Delta$ by $A$. The resulting power is:
+                </p>
+
+                <p class="text-center mt-3 text-lg font-mono">
+                    A² / 12 (2.2)
+                </p>
+
+
+
+
+                <p class="mt-4">
+                    Which signals have this property? One example is uniformly distributed random values (basically like
+                    our quantization error). Python numpy produces this kind of signal if we use the command:
+                    numpy.random.rand() - 0.5 (the 0.5 is to make the distribution centered around 0) [8].
+                </p>
+
+
+            </mat-card-content>
+
+        </mat-card>
+    </div>
+
+    <div class="h-6"></div>
+    <div>
+        <mat-card class="example-card text-2xl" appearance="outlined">
+            <mat-card-header>
+                <mat-card-title style="color: blue;">2. Theory Summary</mat-card-title>
+            </mat-card-header>
+            <br>
+            <mat-card-content class="text-lg">
+                <h3 class="text-xl font-semibold font-sans mb-3">2.1 What is Quantization?</h3>
+
+                <p>
+                    Quantization is the process of <strong>rounding a continuous-amplitude signal</strong>
+                    to a finite set of discrete levels so that it can be represented digitally.
+                </p>
+                <p class="text-lg mt-3">
+                    When an analog signal x(t) is sampled → x[n], its amplitude is still continuous.
+                </p>
+
+                <p class="text-lg mt-3">
+                    Quantization replaces each sample with the nearest discrete level q<sub>k</sub>
+                    from a finite set of L = 2<sup>N<sub>L</sub></sup> values.
+                </p>
+
+
+                <p class="text-center mt-3 text-lg font-mono">
+                    x<sub>q</sub>[n] = Q(x[n]) = q<sub>k</sub>, where q<sub>k</sub> &#8712; &#123; q1, q2, ..., qL
+                    &#125;
+                </p>
+
+
+
+            </mat-card-content>
+        </mat-card>
+    </div>
+
+    <div class="h-6"></div>
+    <div class="flex flex-col justify-around items-center gap-2">
+        <img src="assets/images/chap2/quantization.png" class="w-200 h-80 ">
+        <h1 class="text-wrap">
+            Block diagram of a Pulse Code Modulation (PCM) encoder illustrating the steps of analog-to-digital
+            conversion: the continuous analog signal is first sampled to form a Pulse Amplitude Modulated (PAM) signal,
+            then quantized into discrete amplitude levels, and finally encoded into a binary digital data stream.
+
+        </h1>
+    </div>
+    <div class="h-8"></div>
+    <section>
+        <h3 class="text-xl font-semibold font-sans mb-3">
+            "Example 1: Uniform Quantizer with Finite Resolution”
+        </h3>
+
+
+        <pre class="bg-gray-100 text-sm p-3 rounded-lg overflow-x-auto font-mono mt-2">
+
+# Assume A/D converter input range is -1 V to +1 V
+# and we only have 4-bit accuracy.
+
+stepsize = (1.0 - (-1.0)) / (2**4)   # Δ = full_range / number_of_levels
+print("Quantization step size Δ =", stepsize)
+
+# Let's say the input sample is x = 0.2 V:
+x = 0.2
+
+# Encoder side:
+index = round(x / stepsize)
+print("Quantization index =", index)
+
+# Transmitter would send this index as 4 bits
+
+# Decoder side:
+reconstr = stepsize * index
+print("Reconstructed value =", reconstr, "V")
+
+# Quantization error:
+error = reconstr - x
+print("Quantization error =", error, "V")
+
+
+</pre>
+    </section>
+
+
+    <div class="h-6"></div>
+
+    <div>
+        <mat-card class="example-card text-2xl" appearance="outlined">
+
+            <mat-card-content class="text-lg">
+                <h3 class="text-xl font-semibold font-sans mb-3 " style="color: blue;">2.2 Step Size and Resolution</h3>
+
+                <p>
+                    If the input range is <em>V<sub>min</sub></em> to <em>V<sub>max</sub></em>, then:
+                </p>
+
+                <p class="text-center mt-2 text-lg font-mono">
+                    Δ = (V<sub>max</sub> − V<sub>min</sub>) / L
+                </p>
+
+                <p class="mt-3">
+                    Each quantization level represents an interval of width <em>Δ</em>.
+                </p>
+
+                <p class="mt-2">
+                    Smaller <em>Δ</em> ⇒ finer resolution ⇒ lower quantization error.
+                </p>
+
+            </mat-card-content>
+
+        </mat-card>
+
+
+    </div>
+    <div class="h-6"></div>
+
+
+    <div>
+        <mat-card class="example-card text-2xl" appearance="outlined">
+
+            <mat-card-content class="text-lg">
+                <h3 class="text-xl font-semibold font-sans mb-3" style="color: blue;">2.3 Mid-tread vs Mid-rise</h3>
+
+                <p>
+                    Depending on whether the quantizer has the input voltage 0 at the center of a
+                    quantization interval or on the boundary of that interval, we call the quantizer a
+                    <strong>mid-tread</strong> or a <strong>mid-rise</strong> quantizer.
+                </p>
+
+                <p class="mt-2">
+                    This concept is illustrated in <strong>Figure 2</strong>.
+                </p>
+            </mat-card-content>
+
+        </mat-card>
+
+
+    </div>
+
+    <div class="h-6"></div>
+
+
+
+
+
+
+
+    <div class="flex flex-col justify-around items-center gap-2">
+        <img src="assets/images/chap2/fig2.png" class="w-200 h-80 ">
+        <h1 class="text-wrap">
+            Figure 2: Mid-rise and Mid-tread quantization.
+        </h1>
+    </div>
+
+    <div class="h-6"></div>
+    <section>
+        <h3 class="text-xl font-semibold font-sans mb-3">
+            "Example 2: Mid-Tread vs Mid-Rise Quantization”
+        </h3>
+
+
+        <pre class="bg-gray-100 text-sm p-3 rounded-lg overflow-x-auto font-mono mt-2">
+
+import numpy as np
+
+# Quantization step size (Δ)
+q = 0.1
+
+# Some test samples
+x = np.array([0.012, -1.234, 2.456, -3.789])
+
+# --- Mid-Tread Quantizer ---
+# Encoder: round to nearest multiple of q
+index_mt = np.round(x / q)
+
+# Decoder: reconstruct by multiplying back
+recon_mt = index_mt * q
+
+print("Mid-Tread indices:       ", index_mt)
+print("Mid-Tread reconstruction:", recon_mt)
+
+# --- Mid-Rise Quantizer ---
+# Encoder: floor to lower boundary of the interval
+index_mr = np.floor(x / q)
+
+# Decoder: shift by q/2 (because mid-rise levels sit between the steps)
+recon_mr = index_mr * q + q/2
+
+print("Mid-Rise indices:        ", index_mr)
+print("Mid-Rise reconstruction: ", recon_mr)
+
+
+
+</pre>
+    </section>
+    <div class="h-6"></div>
+    <div>
+        <mat-card class="example-card text-2xl" appearance="outlined">
+            <mat-card-content class="text-lg">
+                <h3 class="text-xl font-semibold font-sans mb-3 " style="color: blue;">
+                    2.4 Quantization Error and Signal-to-Noise Ratio
+                </h3>
+
+                <p>
+                    Quantization introduces an <strong>error</strong> due to the difference between the
+                    input sample and its quantized representation.
+                </p>
+
+                <p class="text-center mt-2 text-lg font-mono">
+                    e[n] = x[n] − x<sub>q</sub>[n]
+                </p>
+
+                <p class="mt-3">
+                    For a <strong>uniform quantizer</strong> and under the <strong>high-resolution assumption</strong>:
+                </p>
+
+                <p class="text-center mt-2 text-lg font-mono">
+                    σ<sub>e</sub><sup>2</sup> = Δ<sup>2</sup> / 12, &nbsp;&nbsp;
+                    SNR<sub>dB</sub> ≈ 6.02N + 1.76
+                </p>
+
+                <p class="mt-3">
+                    This means every additional bit roughly adds <strong>6 dB</strong> of SNR —
+                    we’ll confirm this in <strong>Module 2</strong>.
+                </p>
+
+            </mat-card-content>
+
+        </mat-card>
+
+
+    </div>
+    <div class="h-6"></div>
+
+    <div class="flex flex-col justify-around items-center gap-2">
+        <img src="assets/images/chap2/fig3.png" class="w-200 h-100 ">
+        <h1 class="text-wrap">
+            Figure 3. illustrates an example for a quantization error, indicating the difference between the original
+            signal and the quantized signal.
+        </h1>
+    </div>
+    <div class="h-6"></div>
+
+    <div>
+        <mat-card class="example-card text-2xl" appearance="outlined">
+            <mat-card-content class="text-lg">
+                <h3 class="text-xl font-semibold font-sans mb-3 " style="color: blue;">
+                    2.5 Example Context – ITU G.711 Speech Coding
+                </h3>
+
+                <p>
+                    In telephony, speech is sampled at <strong>8 kHz</strong> and quantized with
+                    <strong>8 bits per sample</strong>.
+                </p>
+
+                <p class="mt-2">
+                    Later, we’ll see how <strong>μ-law companding</strong> improves
+                    <em>small-amplitude resolution</em> before this quantization step.
+                </p>
+            </mat-card-content>
+
+        </mat-card>
+
+
+    </div>
+    <div class="h-6"></div>
+    <div>
+        <mat-card class="example-card text-2xl" appearance="outlined">
+
+            <mat-card-content class="text-lg">
+                <h3 class="text-2xl font-semibold font-sans mb-3" style="color: blue;">
+                    2.2 Examples of Uniform PDFs
+                </h3>
+                <h3 class="text-xl font-semibold font-sans mb-3">
+                    2.2.1 Triangular Wave
+                </h3>
+                <p class="text-lg mt-3">
+                    An example of a uniform probability density function (pdf) is a triangular wave (see Figure 2.1).
+                    How do we obtain its pdf?
+                </p>
+
+                <p class="text-lg mt-3">
+                    One can imagine the vertical axis (the function value) divided into small intervals, and each
+                    interval is passed in the same amount of time. Because every amplitude value occurs for the same
+                    duration, the resulting pdf is <strong>uniform</strong>.
+                </p>
+            </mat-card-content>
+
+        </mat-card>
+
+
+    </div>
+
+    <div class="h-6"></div>
+
+
+
+    <div>
+        <mat-card class="example-card text-2xl" appearance="outlined">
+
+            <mat-card-content class="text-lg">
+
+
+
+                <h3 class="text-xl font-semibold mt-4">2.2.2 Sawtooth Wave</h3>
+
+                <p class="text-lg mt-3">
+                    A further example is a sawtooth wave (see Figure 2.2). Again, we can make the same argument:
+                    each small interval of the function value is covered in the same amount of time. Therefore,
+                    the resulting probability density function (pdf) is uniform.
+                </p>
+
+                <p class="text-lg mt-3">
+                    We have now seen several examples that satisfy the assumption of a uniform distribution
+                    (realistic examples), and we know that their expected power is A² / 12.
+                </p>
+
+            </mat-card-content>
+
+        </mat-card>
+    </div>
+
+
+    <div class="h-6"></div>
+
+    <div class="flex flex-col justify-around items-center gap-2">
+        <img src="assets/images/chap2/fig2.2.png" class="w-200 h-100 ">
+        <h1 class="text-wrap">
+            Figure 2.2: Sawtooth wave with uniform pdf
+        </h1>
+    </div>
+
+    <div class="h-6"></div>
+
+
+
+    <div>
+        <mat-card class="example-card text-2xl" appearance="outlined">
+
+            <mat-card-content class="text-lg">
+
+
+                <h2 class="text-2xl font-semibold mt-6">2.4 Non-full Range Signals</h2>
+
+                <p class="text-lg mt-3">
+                    What happens if the signal is not full range? What is the SNR if we have a signal with
+                    reduced range? Assume our signal has an amplitude of A / c with a factor c > 1.
+                </p>
+
+                <p class="text-lg mt-3">
+                    We can plug this into our equation:
+                </p>
+
+                <p class="text-lg font-mono mt-3 text-center">
+                    SNR = (A / c)² / Δ² = (A / c)² / (A / 2ⁿ)² = 2^(2N) / c²
+                    (Equation 2.7)
+                </p>
+
+                <p class="text-lg font-mono mt-3 text-center">
+                    SNR_dB = 10 * log10(2^(2N) / c²)
+                    = 10 * 2N * log10(2) − 20 * log10(c)
+                    ≈ 6.02N − 20 log10(c)
+                    (Equation 2.8)
+                </p>
+
+                <p class="text-lg mt-3">
+                    The term 20 · log10(c) is the number of decibels by which we are below full range.
+                    This means the SNR is reduced by exactly that amount.
+                </p>
+
+
+                <h3 class="text-xl font-semibold mt-6">2.4.1 Example</h3>
+
+                <p class="text-lg mt-3">
+                    For a 16-bit quantizer, the SNR for a full-range uniform signal is:
+                </p>
+
+                <p class="text-lg font-mono mt-2 text-center">
+                    SNR = 6.02 * 16 dB = 96.32 dB (Equation 2.9)
+                </p>
+
+                <p class="text-lg mt-3">
+                    Now assume the same signal is 20 dB below full range (i.e., only one-tenth of the
+                    full range). The resulting SNR is:
+                </p>
+
+                <p class="text-lg font-mono mt-2 text-center">
+                    96.32 dB − 20 dB = 76.32 dB
+                </p>
+
+                <p class="text-lg mt-3">
+                    This is much lower. It shows why it is important not to leave too much headroom:
+                    a sound engineer should keep the signal as high as possible without reaching full
+                    range to avoid clipping.
+                </p>
+
+
+            </mat-card-content>
+
+        </mat-card>
+    </div>
+
+
+
+    <div class="h-6"></div>
+
+    <div>
+        <mat-card class="example-card text-2xl" appearance="outlined">
+
+            <mat-card-content class="text-lg">
+
+                <h2 class="text-2xl font-semibold mt-6">2.5 Non-uniformly Distributed Signals</h2>
+
+                <p class="text-lg mt-3">
+                    The other assumption we made concerned the type of signal we quantize. What if we do not
+                    have a uniformly distributed signal? As we saw, speech and audio signals are best modeled
+                    by a Laplacian distribution or a Gaussian mixture model, and similar models apply for
+                    audio signals in general.
+                </p>
+
+                <p class="text-lg mt-3">
+                    Even a simple sine wave does not fulfill the assumption of a uniform distribution.
+                    What is the pdf of a simple sine wave? (see Figure 2.3).
+                </p>
+
+                <p class="text-lg mt-3">
+                    Observe: If a sinusoid represents a full-range signal, its values lie between
+                    −A/2 and +A/2, just like in the previous examples.
+                </p>
+
+
+
+            </mat-card-content>
+
+        </mat-card>
+    </div>
+
+    <div class="h-6"></div>
+
+    <div class="flex flex-col justify-around items-center gap-2">
+        <img src="assets/images/chap2/fig2.3.png" class="w-200 h-100 ">
+        <h1 class="text-wrap">
+            Figure 2.3: Sine wave with a non-uniform PDF
+        </h1>
+    </div>
+
+    <div class="h-6"></div>
+
+    <div>
+        <mat-card class="example-card text-2xl" appearance="outlined">
+
+            <mat-card-content class="text-lg">
+
+                <h2 class="text-2xl font-semibold mt-6">2.6 Conclusion</h2>
+
+                <p class="text-lg mt-3">
+                    In summary, the SNR for a quantizer can be easily calculated using the derived formulas,
+                    and the resulting SNR in dB increases by approximately 6 dB for every additional bit of
+                    the quantizer, given the assumptions of uniform distribution and full-range signals.
+                </p>
+
+            </mat-card-content>
+
+        </mat-card>
+    </div>
+
+
+
+
+
+
+
+
+
+    <!-- Test section  -->
+    <div class="h-6"></div>
+
+    <div class="flex flex-col items-center p-3 gap-6">
+        <h2 class="text-2xl font-sans font-semibold mb-4">🧠 Test Your Knowledge</h2>
+
+        <div *ngFor="let q of questions" class="w-full md:w-2/3">
+            <mat-card class="mat-elevation-z6 p-6 font-sans">
+                <mat-card-title>{{ q.text }}</mat-card-title>
+                <br>
+
+                <mat-card-content>
+                    <mat-radio-group [(ngModel)]="q.selectedAnswer" [disabled]="q.isSubmitted">
+                        <div *ngFor="let option of q.options" class="mb-2">
+                            <mat-radio-button [value]="option">{{ option }}</mat-radio-button>
+                        </div>
+                    </mat-radio-group>
+
+                    <div class="mt-4 flex gap-3">
+                        <button matFab extended (click)="submitAnswer(q)"
+                            [disabled]="!q.selectedAnswer || q.isSubmitted">
+                            Submit
+                        </button>
+
+                        <button matFab extended style="background-color:black ; color: aliceblue;" *ngIf="q.isSubmitted"
+                            (click)="tryAgain(q)">
+                            Try Again
+                        </button>
+                    </div>
+
+                    <div class="mt-4">
+                        <p *ngIf="q.isSubmitted && q.selectedAnswer === q.correctAnswer"
+                            class="text-green-600 font-semibold font-sans">
+                            ✅ Correct!
+                        </p>
+                        <p *ngIf="q.isSubmitted && q.selectedAnswer !== q.correctAnswer"
+                            class="text-red-600 font-semibold font-sans">
+                            ❌ Incorrect. Correct answer: <strong>{{ q.correctAnswer }}</strong>.
+                        </p>
+                    </div>
+                </mat-card-content>
+            </mat-card>
+        </div>
+    </div>
+
+
+
+</div>

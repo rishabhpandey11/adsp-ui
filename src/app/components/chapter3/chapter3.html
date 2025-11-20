@@ -1,0 +1,774 @@
+<div class="m-5 overflow-hidden grid gap-6">
+    <div class="text-3xl font-sans font-semibold">
+        <h1>Chapter 3 : SNR and Non-uniform Quantization</h1>
+    </div>
+
+
+
+    <!-- Section 1: Learning Objectives -->
+    <div>
+        <mat-card class="example-card text-2xl" appearance="outlined">
+            <mat-card-header>
+                <mat-card-title class="text-blue-600"> Learning Objectives</mat-card-title>
+            </mat-card-header>
+            <br />
+            <mat-card-content class="text-lg">
+                <p>After completing this module, learners will be able to:</p>
+                <ul class="list-disc pl-6 space-y-2 mt-2">
+                    <li>
+                        <strong>Define</strong> the Signal-to-Noise Ratio (SNR) and
+                        <strong>derive</strong> it for a <em>uniform quantizer</em>.
+                    </li>
+                    <li>
+                        <strong>Explain</strong> how <em>non-full-range</em> signals reduce SNR
+                        and <strong>quantify</strong> the resulting penalty.
+                    </li>
+                    <li>
+                        <strong>Verify</strong> the theoretical relationship with a short
+                        <em>Monte-Carlo Python experiment</em>.
+                    </li>
+                </ul>
+            </mat-card-content>
+        </mat-card>
+    </div>
+
+
+
+    <!-- Section 2.1: Theory Summary -->
+    <div>
+        <mat-card class="example-card text-2xl" appearance="outlined">
+            <mat-card-header>
+                <mat-card-title class="text-blue-600">1. SNR with Sinusoidal Signals </mat-card-title>
+            </mat-card-header>
+            <br />
+            <mat-card-content class="text-lg">
+                <p class="text-lg ">
+                    What is our SNR if we have a sinusoidal signal? What is its PDF?
+                    Basically, it is its normalized histogram such that its integral becomes 1 to obtain
+                    a probability distribution.
+                </p>
+
+                <p class="text-lg mt-3">
+                    If we look at the signal and try to see how probable it is for the signal to be in a
+                    certain small interval on the y-axis, we see that the signal stays longest around +1
+                    and −1 because there the signal slowly turns around. Hence, we would expect a PDF
+                    which has peaks at +1 and −1.
+                </p>
+
+                <p class="text-lg mt-3">
+                    If you calculate the PDF of a sine wave x = sin(t), with t being continuous and with
+                    a range larger than 2π, then the result is (see Figure 3.1):
+                </p>
+
+
+
+                <p class="text-lg mt-3">
+                    This results from the derivative of the inverse sine function (arcsin). This derivation can be
+                    found in various sources, such as Wikipedia [9] and standard digital signal processing textbooks
+                    [10], [11]. For our probability density function, we need to know how fast a signal x passes
+                    through a given bin in x. This is what we obtain if we compute the inverse function
+                    x = f-inverse(y) and then its derivative df-inverse(y)/dy.
+                </p>
+
+                <p class="text-lg mt-3">
+                    Here we can see that p(x) indeed becomes infinite at x = plus or minus 1. We could now use the same
+                    approach as before to obtain the expectation of the power by multiplying it with x squared and
+                    integrating it. But this seems to be somewhat tedious. However, since we now have a deterministic
+                    signal, we can also try an alternative solution since the sine function is not a probabilistic
+                    function but a deterministic function. We can simply directly compute the power of our sine signal
+                    over time t, and then take the average over at least one period of the sine function.
+                </p>
+
+                <p class="text-center mt-4 text-lg font-mono">
+                    E[x²] = (1 / (2π)) * ∫ from 0 to 2π of sin²(t) dt =
+                    (1 / (2π)) * ∫ from 0 to 2π of (1 − cos(2t)) / 2 dt
+                </p>
+
+                <p class="text-lg mt-4">
+                    The cosine integrated over complete periods becomes 0, hence we get
+                </p>
+
+                <p class="text-center mt-4 text-lg font-mono">
+                    E[x²] = (1 / (2π)) * ∫ from 0 to 2π of (1/2) dt =
+                    (1 / (2π)) * (π / 2) = 1/2
+                </p>
+                <p class="text-lg mt-4">
+                    What do we get for a sinusoid with a different amplitude say $A \cdot \sin(t)$? The expected power
+                    is
+                </p>
+
+                <p class="text-center mt-4 text-lg font-mono">
+                    E[x²] = A² / 8
+                </p>
+
+                <p class="text-lg mt-4">
+                    So this leads to an SNR of
+                </p>
+
+                <p class="text-center mt-4 text-lg font-mono">
+                    SNR = (A²) / (8Δ² / 12) = 3A² / (2Δ²)
+                </p>
+
+                <p class="text-lg mt-4">
+                    Now assume again we have an A/D converter with N bits and the sinusoid is at full range for this
+                    converter. Then $A = 2^N \cdot \Delta$. We can plug in this result into the above equation and get
+                </p>
+                <p class="text-center mt-4 text-lg font-mono">
+                    SNR = (3 · 2^(2N) · Δ²) / (2Δ²) = 1.5 · 2^(2N)
+                </p>
+                <p class="text-lg mt-4">
+                    In dB this will now be
+                </p>
+
+                <p class="text-center mt-4 text-lg font-mono">
+                    SNR_dB = 10 · log10(SNR) =
+                    10 · log10(1.5) + N · 20 · log10(2) =
+                    1.76 dB + N · 6.02 dB
+                </p>
+
+
+                <p class="text-lg mt-4">
+                    Here we can see now that using a sinusoidal signal instead of a uniformly distributed signal gives
+                    us a
+                    boost of 1.76 dB in SNR. This is because it is more likely to have larger values! We see that our
+                    rule
+                    of 6dB more SNR for each bit still holds!
+                </p>
+
+            </mat-card-content>
+        </mat-card>
+    </div>
+
+
+    <div>
+        <mat-card class="example-card text-2xl" appearance="outlined">
+            <mat-card-header>
+                <mat-card-title class="text-blue-600">2.1 Theory Summary </mat-card-title>
+            </mat-card-header>
+            <mat-card-content class="text-lg">
+
+
+                <p class="text-lg mt-4">
+                    Assume we have an A/D converter with a quantizer that has a certain number of bits (N bits). What is
+                    the resulting Signal to Noise Ratio (SNR) of this quantizer? The SNR is defined as the ratio of the
+                    expectation of the signal power to the expectation of the noise power. In our case, the expectation
+                    of the noise power is the expectation of the quantization error power. We already know that the
+                    expectation of the quantization error power is Delta² / 12 [6].
+                </p>
+
+                <p class="text-lg mt-4">
+                    So what we still need for the SNR is the average, or expectation, of the signal power. How do we
+                    obtain this? Basically, we can take the same approach as we did for the expectation of the power of
+                    the quantization error (which is the second moment of the distribution of the quantization error)
+                    [7]. Therefore, what we need to know from our signal is its probability distribution.
+                </p>
+
+                <p class="text-lg mt-4">
+                    For the quantization error, it was a uniform distribution between minus Delta/2 and plus Delta/2. A
+                    very simple case would be a uniformly distributed signal with amplitude A/2, which takes values
+                    between minus A/2 and plus A/2.
+                </p>
+
+                <p class="text-lg mt-4">
+                    So we can again use our formula for the average power, but this time for our signal x:
+                </p>
+                <p class="text-center mt-4 text-lg font-mono">
+                    E[x²] = ∫ from −A/2 to +A/2 of x² · p(x) dx (2.1)
+                </p>
+
+                <p class="text-lg mt-4">
+                    So here we have the same type of signal and the resulting expectation of the power (its second
+                    moment
+                    assumed we have a zero mean signal) is obtained by using our previous formula and replace $\Delta$
+                    by
+                    $A$. The resulting power is:
+                </p>
+
+                <p class="text-center mt-4 text-lg font-mono">
+                    A² / 12 (2.2)
+                </p>
+
+
+                <p class="text-lg mt-4">
+                    Which signals have this property? One example is uniformly distributed random values (basically like
+                    our
+                    quantization error). Python numpy produces this kind of signal if we use the command:
+                    numpy.random.rand() - 0.5 (the 0.5 is to make the distribution centered around 0) [8].
+                </p>
+            </mat-card-content>
+
+        </mat-card>
+    </div>
+
+
+
+
+    <!-- Section 2.2: Examples of Uniform PDFs -->
+    <div>
+        <mat-card class="example-card text-2xl" appearance="outlined">
+            <mat-card-header>
+                <mat-card-title>2.2 Examples of Uniform PDFs</mat-card-title>
+            </mat-card-header>
+            <br />
+            <mat-card-content class="text-lg">
+                <p>Add these figures:</p>
+                <ul class="list-disc pl-6 space-y-2 mt-2">
+                    <li>Triangular wave and its value histogram showing an approximately uniform PDF.</li>
+                    <li>Sawtooth wave and its value histogram showing an approximately uniform PDF.</li>
+                </ul>
+
+                <br />
+
+                <p>
+                    One can imagine the vertical axis (the function value) covered by small intervals,
+                    and each interval is passed in the same time-span.
+                    This means the resulting PDF is also uniform!
+                </p>
+
+                <section>
+                    <pre class="bg-gray-100 text-sm p-3 rounded-lg overflow-x-auto font-mono mt-2">
+
+# Triangular and sawtooth → uniform PDF evidence
+import numpy as np, matplotlib.pyplot as plt
+from scipy.signal import sawtooth
+
+n = 40000
+t = np.linspace(0, 1, n, endpoint=False)
+tri = sawtooth(2*np.pi*5*t, width=0.5)   # width=0.5 → triangle
+saw = sawtooth(2*np.pi*5*t)              # sawtooth
+fig, axs = plt.subplots(2,2, figsize=(9,6))
+axs[0,0].plot(t[:1000], tri[:1000]); axs[0,0].set_title("Triangular (time)")
+axs[0,1].hist(tri, bins=80, density=True, color='gray'); axs[0,1].set_title("Triangular histogram ≈ uniform")
+axs[1,0].plot(t[:1000], saw[:1000]); axs[1,0].set_title("Sawtooth (time)")
+axs[1,1].hist(saw, bins=80, density=True, color='gray'); axs[1,1].set_title("Sawtooth histogram ≈ uniform")
+plt.tight_layout(); plt.show(); 
+
+
+</pre>
+                </section>
+            </mat-card-content>
+        </mat-card>
+    </div>
+
+
+
+
+
+
+
+    <!-- <div>
+
+        <app-pycodechap1 title="Examples of Uniform PDFs" [code]="chapter3example1"></app-pycodechap1>
+    </div> -->
+
+
+
+    <div class="flex flex-col justify-around items-center gap-2">
+        <img src="assets/images/chap3/fig3.1.png" class="w-200 h-100" />
+        <h1 class="text-wrap">
+            An example for a uniform PDF is a triangular wave (see Figure 2.1).
+        </h1>
+    </div>
+
+
+
+    <div class="flex flex-col justify-around items-center gap-2">
+        <img src="assets/images/chap3/fig3.2.png" class="w-200 h-100" />
+        <h1 class="text-wrap">
+            A further example is a sawtooth wave (see Figure 2.2).
+        </h1>
+    </div>
+
+
+
+    <!-- Section 2.3: Calculating the SNR -->
+    <div>
+        <mat-card class="example-card text-2xl" appearance="outlined">
+            <mat-card-header>
+                <mat-card-title>2.3 Calculating the SNR</mat-card-title>
+            </mat-card-header>
+            <br />
+            <mat-card-content class="text-lg">
+                <p>
+                    The <strong>Signal-to-Noise Ratio (SNR)</strong> is simply the ratio of the
+                    signal power to the quantization noise power:
+                </p>
+
+                <p class="text-center mt-3 text-lg font-mono">
+                    SNR = (A² / 12) / (Δ² / 12) = A² / Δ² &nbsp;&nbsp; (2.3)
+                </p>
+
+                <p class="mt-4">
+                    If the signal uses the <strong>full range</strong> of the A/D converter (−A/2 to +A/2),
+                    the step size Δ for <em>N</em> bits is:
+                </p>
+
+                <p class="text-center mt-3 text-lg font-mono">Δ = A / 2ⁿ &nbsp;&nbsp; (2.4)</p>
+
+                <p class="mt-4">Substituting this gives:</p>
+
+                <p class="text-center mt-3 text-lg font-mono">SNR = 2²ⁿ &nbsp;&nbsp; (2.5)</p>
+
+                <p class="mt-4">
+                    Converting to decibels:
+                </p>
+
+                <p class="text-center mt-3 text-lg font-mono">
+                    SNR<sub>dB</sub> = 10 · log₁₀(2²ⁿ) = 10 · 2N · log₁₀(2) ≈ 6.02N dB &nbsp;&nbsp; (2.6)
+                </p>
+
+                <p class="mt-4">
+                    Thus, each bit increases the SNR by approximately <strong>6 dB</strong> [7].
+                    This holds only for uniformly distributed, full-range signals.
+                </p>
+            </mat-card-content>
+        </mat-card>
+    </div>
+
+
+
+    <!-- Section 2.4: Non-full Range Signals -->
+    <div>
+        <mat-card class="example-card text-2xl" appearance="outlined">
+            <mat-card-content class="text-lg">
+                <p class="mb-4 text-blue-600 font-semibold">2.4 Non-full Range Signals</p>
+
+                <p>
+                    Add these figures:
+                </p>
+                <ul class="list-disc pl-6 space-y-2 mt-2">
+                    <li>
+                        SNR penalty vs backoff c for several bit-depths N.
+                    </li>
+                    <li>
+                        Example waveforms showing full-scale vs. backed-off amplitude.
+                    </li>
+                </ul>
+                <br>
+                <section>
+                    <pre class="bg-gray-100 text-sm p-3 rounded-lg overflow-x-auto font-mono mt-2">
+
+# Backoff penalty: SNR approx 6.02*N - 20*log10(c)
+
+import numpy as np
+import matplotlib
+matplotlib.use("Agg")  # Use non-GUI backend
+import matplotlib.pyplot as plt
+
+Ns = np.arange(4, 17)
+cs = [1, 2, 3.1623, 10]  # 0, 6, 10, 20 dB backoff
+
+
+for c in cs:
+    plt.plot(
+        Ns,
+        6.02 * Ns - 20 * np.log10(c),
+        "o-",
+        label="c=%s  (-%.1f dB)" % (c, 20*np.log10(c))
+    )
+    
+
+plt.xlabel("Bits N")
+plt.ylabel("SNR (dB)")
+plt.title("SNR penalty vs backoff c")
+plt.grid(True)
+plt.legend()
+
+
+    </pre>
+                </section>
+
+
+
+
+                <p>
+                    What happens if the signal is not full range? What is the SNR if we have a signal with reduced
+                    range?
+                    Assume our signal has an amplitude of <em>A / c</em> with a factor <em>c &gt; 1</em>.
+                    We can then simply plug this into our equation:
+                </p>
+
+                <p class="text-center mt-3 text-lg font-mono">
+                    SNR = ((A / c)²) / (Δ²) = (A / c)² / (A / 2ⁿ)² = 2²ⁿ / c² &nbsp;&nbsp; (2.7)
+                </p>
+
+                <p class="mt-4">
+                    In decibels:
+                </p>
+
+                <p class="text-center mt-3 text-lg font-mono">
+                    SNR<sub>dB</sub> = 10 · log₁₀(2²ⁿ / c²)
+                    = 10 · 2N · log₁₀(2) − 20 · log₁₀(c)
+                    ≈ 6.02N − 20 · log₁₀(c) &nbsp;&nbsp; (2.8)
+                </p>
+
+                <p class="mt-4">
+                    The last term, <em>20 · log₁₀(c)</em>, represents the number of decibels the signal is below full
+                    range.
+                    Therefore, the <strong>SNR decreases by exactly this amount</strong>.
+                </p>
+
+                <p class="mt-4 font-semibold text-blue-700">Example:</p>
+
+                <p>
+                    We have a 16-bit quantizer. The SNR for uniformly distributed full-range signals would be:
+                </p>
+
+                <p class="text-center mt-3 text-lg font-mono">
+                    SNR = 6.02 × 16 = 96.32 dB &nbsp;&nbsp; (2.9)
+                </p>
+
+                <p class="mt-4">
+                    Now assume we have the same signal but 20 dB below full range (meaning only one-tenth of the full
+                    range).
+                    Then the resulting SNR would be:
+                </p>
+
+                <p class="text-center mt-3 text-lg font-mono">
+                    96.32 − 20 = 76.32 dB
+                </p>
+
+                <p class="mt-4">
+                    This shows why it is important not to make the safety margin to full range too big.
+                    In practice, a sound engineer should keep the signal as large as possible without ever reaching full
+                    range,
+                    to avoid clipping and maintain the best possible SNR <span class="text-gray-500">[8]</span>.
+                </p>
+
+            </mat-card-content>
+        </mat-card>
+    </div>
+
+
+
+
+    <div>
+        <mat-card class="example-card text-2xl" appearance="outlined">
+            <mat-card-content class="text-lg">
+                <h3 class="text-2xl font-semibold text-blue-600 font-sans ">2.5 Non-uniformly Distributed Signals</h3>
+
+                <h4 class="text-xl font-semibold mt-4 mb-2 ">
+                    Interactive demo: Bits N and backoff c
+                </h4>
+
+                <ul class="list-disc ml-6 space-y-2">
+                    <li>
+                        <strong>What c represents:</strong>
+                        <em>c ≥ 1</em> is the backoff factor from full-scale.
+                        <em>c = 1</em> means full-scale use of the converter range.
+                        <em>c = 10</em> means the signal amplitude is 10× smaller than full-scale,
+                        i.e., −20 · log₁₀(c) dB below full-scale.
+                    </li>
+
+                    <li>
+                        The error histogram shows the distribution of quantization error
+                        <em>e = x − Q(x)</em>.
+                        For uniform full-scale inputs and high-resolution conditions, the error tends toward a
+                        uniform distribution within [−Δ/2, +Δ/2].
+                        When inputs are structured (like a sine) or heavily backed off,
+                        the error distribution can become non-uniform and more structured.
+                    </li>
+                </ul>
+
+                <pre class="bg-gray-100 text-sm p-3 rounded-lg overflow-x-auto font-mono mt-2">
+
+# Interactive demo (SNR vs quantization)
+
+import numpy as np
+import matplotlib.pyplot as plt
+from ipywidgets import interact, IntSlider, FloatLogSlider
+
+A = 1.0  # amplitude
+
+def demo(N=8, c=1.0, f=5):
+    t = np.linspace(0, 1, 4000, endpoint=False)
+    x = (A/(2*c)) * np.sin(2*np.pi*f*t)  # sine input at backoff c
+    delta = A / (2**N)
+    xq = delta * np.floor(x/delta + 0.5)
+    e = x - xq
+    snr_db = 10*np.log10(np.mean(x**2)/np.mean(e**2))
+    theory_db = 6.02*N - 20*np.log10(c)
+
+    fig, axs = plt.subplots(1,3, figsize=(13,3))
+
+    # Time domain
+    axs[0].plot(t[:400], x[:400], label='x(t): input')
+    axs[0].step(t[:400], xq[:400], where='mid', label='Q(x): quantized')
+    axs[0].set_title('Time-domain quantization (N=%d, c=%.2f)' % (N, c))
+    axs[0].set_xlabel('Time'); axs[0].set_ylabel('Amplitude'); axs[0].legend()
+
+    # Error histogram
+    axs[1].hist(e, bins=60, density=True, color='gray', edgecolor='none')
+    axs[1].axvline(+delta/2, color='r', ls='--', lw=1)
+    axs[1].axvline(-delta/2, color='r', ls='--', lw=1)
+    axs[1].set_title('Quantization error e = x - Q(x)')
+    axs[1].set_xlabel('Error'); axs[1].set_ylabel('Probability density')
+    axs[1].text(0.05, 0.95, 'Delta = %.4f\nBounds +/- Delta/2' % delta,
+                transform=axs[1].transAxes, va='top')
+
+    # Readout and theory
+    axs[2].axis('off')
+    axs[2].set_title('SNR readout and theory')
+    axs[2].text(0.0, 0.9, 'N (bits) = %d' % N, fontsize=12)
+    axs[2].text(0.0, 0.75, 'Backoff factor c = %.2f\nAmplitude = A/c' % c, fontsize=12)
+    axs[2].text(0.0, 0.55, 'Measured SNR = %.2f dB' % snr_db, fontsize=12)
+    axs[2].text(0.0, 0.4, 'Theory approx 6.02*N - 20*log10(c) = %.2f dB' % theory_db, fontsize=12)
+    axs[2].text(0.0, 0.2, 
+    'Interpretation:\n- Increasing N lowers Delta and increases SNR.
+    Increasing c (more backoff) reduces SNR by 20*log10(c) dB.', fontsize=11)
+
+    plt.tight_layout()
+    plt.show()
+
+interact(demo,
+         N=IntSlider(min=2, max=16, step=1, value=8, description='Bits N'),
+         c=FloatLogSlider(base=10, min=0, max=1, step=0.01, value=1.0, description='Backoff c'),
+         )
+
+</pre>
+
+                <p class="mt-4">
+                    The other assumption we made concerns the type of signal we quantize.
+                    What if we do <strong>not</strong> have a uniformly distributed signal?
+                    As we have seen, <strong>speech and audio signals</strong> are best modeled by
+                    a <em>Laplacian distribution</em> or a <em>Gaussian mixture model</em>,
+                    and the same applies to most natural audio signals.
+                </p>
+
+                <p class="mt-4">
+                    Even a simple <strong>sine wave</strong> does not fulfill this assumption of a uniform distribution.
+                    What is the probability density function (PDF) of a simple sine wave?
+                    (see Figure 2.3)
+                </p>
+
+            </mat-card-content>
+        </mat-card>
+    </div>
+
+    <div class="flex flex-col justify-around items-center gap-2">
+        <img src="assets/images/chap3/fig3.3.png" class="w-150 h-80" />
+        <h1 class="text-wrap">
+            figure 2.3
+        </h1>
+    </div>
+
+    <div>
+        <mat-card class="example-card text-2xl" appearance="outlined">
+
+            <mat-card-content class="text-lg">
+
+
+
+                <h3 class="text-2xl font-semibold text-blue-600">2.6 Conclusion</h3>
+                <p class="mt-4">
+                    In summary, the SNR for a quantizer can be easily calculated using the derived formulas, and the
+                    resulting SNR in dB increases by approximately 6 dB for every additional bit of the quantizer, given
+                    the assumptions of uniform distribution and full range signals.
+                </p>
+
+            </mat-card-content>
+
+        </mat-card>
+    </div>
+
+
+
+    <div>
+        <mat-card class="example-card text-2xl" appearance="outlined">
+
+            <mat-card-content class="text-lg">
+
+
+
+                <h3 class="text-2xl font-semibold  text-blue-600 ">3. Companding</h3>
+                <p class="mt-4">
+                    This is a scheme to make the SNR less dependent on the signal size. This is a synonym for
+                    compression and expanding. Uniform quantization can be seen as a quantization value which is
+                    constant on the absolute scale. Non-uniform quantization using companding can be seen as having step
+                    sizes which stay constant relative to the amplitude; their step size grows with the amplitude. We
+                    obtain this non-uniform quantization by first applying a non-linear function to the signal (to boost
+                    small values) and then apply a uniform quantizer. On the decoding side, we first apply the reverse
+                    quantizer and then the inverse non-linear function (the expansion we reduce small values again to
+                    restore their original size).
+                </p>
+                <p class="mt-4">
+                    The range of (index) values is compressed; smaller values become larger, large values don’t grow as
+                    fast. The following functions are standardized as "$\mu$-Law" and "A-Law" (see Figure 3.2):
+                </p>
+
+
+                <p class="text-center mt-3 text-lg font-mono">
+                    y = sign(x) * ln(1 + 255 * |x| / A) / ln(1 + 255) (3.1)
+                </p>
+
+
+
+                <p class="mt-4">
+                    In the example of 8-bit mu-law PCM, the quantization index is then (for a Mid-Tread quantizer
+                    following this compression function):
+                </p>
+
+                <p class="text-center mt-3 text-lg font-mono">
+                    index = round(y / Δ)
+                </p>
+
+
+                <p class="mt-4">
+                    Here $y$ has the range of -1 to +1. Hence the quantization step size for 8 bits is
+                </p>
+
+                <p class="text-center mt-3 text-lg font-mono">
+                    Δ = (1 − (−1)) / 2^8 = 2 / 256 = 1 / 128
+
+                </p>
+
+
+                <p class="mt-4">
+                    The index is then encoded as an 8-bit codeword.
+
+                    In the decoder, we compute the de-quantized $y$ from a Mid-Tread de-quantizer including its sign
+                    from the index
+                </p>
+
+                <p class="text-center mt-3 text-lg font-mono">
+
+                    y_rek = index * Δ
+                </p>
+
+                <p class="mt-4">
+                    and we compute the inverse compression function, the “expanding” function (hence the name
+                    “companding”, see Figure 3.3):
+                </p>
+
+                <p class="mt-4">
+                    We obtain the inverse through the following steps
+                </p>
+
+                <p class="text-center mt-3 text-lg font-mono ">
+                    y · ln(256) = ln(1 + 255 · |x| / A)
+                    <br>
+                    e^(ln(256) · y) = 1 + 255 · |x| / A
+                    <br>
+                    256^y - 1 = 255 · |x| / A<br>
+
+                    y = ln(1 + 255 · |x| / A) / ln(1 + 255)<br>
+                    x = sign(y) · (A / 255) · (256^y - 1)
+                </p>
+                <p class="mt-4">
+                    (in the decoder, we replace y by y_rek and x by x_rek). This $x$ is now
+                    our de-quantized value or signal. Observe that with this companding the effective quantisation step
+                    size remains approximately constant relative to the signal amplitude. Large signal components have
+                    large effective step sizes and hence larger quantisation errors; small signals have smaller
+                    effective quantisation step sizes and hence smaller quantisation errors. In this way, we get a more
+                    or less constant SNR over a wide range of signal amplitudes [12].
+                </p>
+
+                <p class="mt-4">
+
+
+                    Important point to remember: this approach is identical to having non-uniform quantization step
+                    sizes; smaller step sizes at smaller signal values and larger step sizes at larger signal values.
+                    The compression and expanding of the signal makes the uniform step sizes “look” relatively smaller
+                    to the signal it has more quantization steps to cover.
+
+                </p>
+                <p class="mt-4">
+                    And this has the same effect as a smaller signal with smaller quantization steps.
+
+                </p>
+            </mat-card-content>
+
+        </mat-card>
+    </div>
+
+
+    <div>
+        <mat-card class="example-card text-2xl" appearance="outlined">
+
+            <mat-card-content class="text-lg">
+
+
+
+                <h3 class="text-2xl font-semibold  text-blue-700">4. Python Example of Mu-Law Quantizer</h3>
+                <p class="mt-4">
+                    First, listen to the uniform mid-tread quantizer using our Python script and make sure the part for
+                    the mid-tread quantizer is un-commented:
+                    python pyrecplay_quantizationblock.py
+                <p class="mt-4">
+
+
+                    Observe that the voice disappears if rounded to zero if the speaker is at some distance from the
+                    microphone. Now use mu-law quantization with:
+                    python pyrecplay_mulawquantizationblock.py
+                </p>
+                <p class="mt-4">
+                    Observe: At the distance at which the speech disappeared in the uniform case, the speech is now
+                    present. Here the smaller quantisation steps help with the smaller amplitudes of the speech signal.
+                    At closer distances where the signal amplitudes are bigger, there is not much difference.
+
+
+
+                </p>
+                <p class="mt-4">
+                    The programs use 16-bit audio samples from the sound card. One bit is for the sign, and 15 bits
+                    remain for the magnitude; therefore the factor 2^15 = 32768 is used for normalization to the range 0
+                    to 1. The mu-law program simulates 4-bit quantization (16 quantization intervals) [11].
+
+
+                </p>
+
+            </mat-card-content>
+
+        </mat-card>
+    </div>
+
+  <!-- Test section  -->
+    <div class="h-6"></div>
+
+    <div class="flex flex-col items-center p-3 gap-6">
+        <h2 class="text-2xl font-sans font-semibold mb-4">🧠 Test Your Knowledge</h2>
+
+        <div *ngFor="let q of questions" class="w-full md:w-2/3">
+            <mat-card class="mat-elevation-z6 p-6 font-sans">
+                <mat-card-title>{{ q.text }}</mat-card-title>
+                <br>
+
+                <mat-card-content>
+                    <mat-radio-group [(ngModel)]="q.selectedAnswer" [disabled]="q.isSubmitted">
+                        <div *ngFor="let option of q.options" class="mb-2">
+                            <mat-radio-button [value]="option">{{ option }}</mat-radio-button>
+                        </div>
+                    </mat-radio-group>
+
+                    <div class="mt-4 flex gap-3">
+                        <button matFab extended (click)="submitAnswer(q)"
+                            [disabled]="!q.selectedAnswer || q.isSubmitted">
+                            Submit
+                        </button>
+
+                        <button matFab extended style="background-color:black ; color: aliceblue;" *ngIf="q.isSubmitted"
+                            (click)="tryAgain(q)">
+                            Try Again
+                        </button>
+                    </div>
+
+                    <div class="mt-4">
+                        <p *ngIf="q.isSubmitted && q.selectedAnswer === q.correctAnswer"
+                            class="text-green-600 font-semibold font-sans">
+                            ✅ Correct!
+                        </p>
+                        <p *ngIf="q.isSubmitted && q.selectedAnswer !== q.correctAnswer"
+                            class="text-red-600 font-semibold font-sans">
+                            ❌ Incorrect. Correct answer: <strong>{{ q.correctAnswer }}</strong>.
+                        </p>
+                    </div>
+                </mat-card-content>
+            </mat-card>
+        </div>
+    </div>
+
+
+
+
+
+</div>

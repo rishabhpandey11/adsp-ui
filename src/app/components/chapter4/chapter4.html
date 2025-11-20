@@ -1,0 +1,281 @@
+<div class="m-5 overflow-hidden grid gap-6">
+    <div class=" text-3xl font-sans font-semibold">
+        <h1>Chapter 4 : Non-uniform Quantization</h1>
+    </div>
+   
+    <div>
+        <mat-card class="example-card text-2xl" appearance="outlined">
+            <mat-card-header>
+                <mat-card-title style="color: blue;">1. Learning Objectives</mat-card-title>
+            </mat-card-header>
+            <br>
+            <mat-card-content class="text-lg">
+                <p>After completing this module, learners will be able to:</p>
+                <ul class="list-disc pl-6 space-y-2 mt-2">
+                    <li><strong>Explain</strong> the purpose of <em>quantization</em> in digital signal processing.</li>
+                    <li><strong>Describe</strong> the difference between <em>mid-tread</em> and <em>mid-rise</em>
+                        quantizers.</li>
+                    <li>
+                        <strong>Compute</strong> the quantization step size using:<br />
+                        <span class="block text-center mt-1 text-lg font-mono">
+                            Δ = (V<sub>max</sub> − V<sub>min</sub>) / L
+                        </span>
+                    </li>
+                    <li><strong>Understand and visualize</strong> the <em>quantization error</em> and how it depends on
+                        <em>bit depth</em>.
+                    </li>
+                    <li><strong>Relate</strong> quantization to the <em>A/D conversion chain</em> used in acoustic
+                        systems.</li>
+                </ul>
+
+            </mat-card-content>
+
+        </mat-card>
+
+
+    </div>
+
+
+
+   
+    <div>
+        <mat-card class="example-card text-2xl" appearance="outlined">
+            <mat-card-header>
+                <mat-card-title style="color: blue;">2. Theory Summary</mat-card-title>
+            </mat-card-header>
+            <br>
+            <mat-card-content class="text-lg">
+                <h3 class="text-xl font-semibold font-sans mb-3">2.1 What is Quantization?</h3>
+
+                <p>
+                    Quantization is the process of <strong>rounding a continuous-amplitude signal</strong>
+                    to a finite set of discrete levels so that it can be represented digitally.
+                </p>
+
+                <p class="mt-2">
+                    When an analog signal <em>x(t)</em> is sampled → <em>x[n]</em>,
+                    its amplitude remains continuous.
+                </p>
+
+                <p class="mt-2">
+                    Quantization replaces each sample with the nearest discrete level
+                    <em>q<sub>k</sub></em> from a finite set of
+                    <em>L = 2<sup>N<sub>L</sub></sup></em> possible values.
+                </p>
+            </mat-card-content>
+        </mat-card>
+    </div>
+
+   
+    <div class="flex flex-col justify-around items-center gap-2">
+        <img src="assets/images/chap2/quantization.png" class="w-200 h-80 ">
+        <h1 class="text-wrap">
+            Block diagram of a Pulse Code Modulation (PCM) encoder illustrating the steps of analog-to-digital
+            conversion: the continuous analog signal is first sampled to form a Pulse Amplitude Modulated (PAM) signal,
+            then quantized into discrete amplitude levels, and finally encoded into a binary digital data stream.
+
+        </h1>
+    </div>
+
+
+   
+
+    <!-- <div>
+
+        <app-pycodechap1 title="Example 1: Uniform Quantizer with Finite Resolution"
+            [code]="chapter2example1"></app-pycodechap1>
+    </div> -->
+
+
+   
+
+    <div>
+        <mat-card class="example-card text-2xl" appearance="outlined">
+
+            <mat-card-content class="text-lg">
+                <h3 class="text-xl font-semibold font-sans mb-3 " style="color: blue;">2.2 Step Size and Resolution</h3>
+
+                <p>
+                    If the input range is <em>V<sub>min</sub></em> to <em>V<sub>max</sub></em>, then:
+                </p>
+
+                <p class="text-center mt-2 text-lg font-mono">
+                    Δ = (V<sub>max</sub> − V<sub>min</sub>) / L
+                </p>
+
+                <p class="mt-3">
+                    Each quantization level represents an interval of width <em>Δ</em>.
+                </p>
+
+                <p class="mt-2">
+                    Smaller <em>Δ</em> ⇒ finer resolution ⇒ lower quantization error.
+                </p>
+
+            </mat-card-content>
+
+        </mat-card>
+
+
+    </div>
+   
+
+
+    <div>
+        <mat-card class="example-card text-2xl" appearance="outlined">
+
+            <mat-card-content class="text-lg">
+                <h3 class="text-xl font-semibold font-sans mb-3" style="color: blue;">2.3 Mid-tread vs Mid-rise</h3>
+
+                <p>
+                    Depending on whether the quantizer has the input voltage 0 at the center of a
+                    quantization interval or on the boundary of that interval, we call the quantizer a
+                    <strong>mid-tread</strong> or a <strong>mid-rise</strong> quantizer.
+                </p>
+
+                <p class="mt-2">
+                    This concept is illustrated in <strong>Figure 2</strong>.
+                </p>
+            </mat-card-content>
+
+        </mat-card>
+
+
+    </div>
+
+   
+
+    <!-- <div>
+
+        <app-pycodechap1 title="Example 2: Mid-Tread vs Mid-Rise Quantization"
+            [code]="chapter2example2"></app-pycodechap1>
+    </div> -->
+
+   
+
+
+    <div class="flex flex-col justify-around items-center gap-2">
+        <img src="assets/images/chap2/fig2.png" class="w-200 h-80 ">
+        <h1 class="text-wrap">
+            Figure 2: Mid-rise and Mid-tread quantization.
+        </h1>
+    </div>
+
+
+    <div>
+        <mat-card class="example-card text-2xl" appearance="outlined">
+            <mat-card-content class="text-lg">
+                <h3 class="text-xl font-semibold font-sans mb-3 " style="color: blue;">
+                    2.4 Quantization Error and Signal-to-Noise Ratio
+                </h3>
+
+                <p>
+                    Quantization introduces an <strong>error</strong> due to the difference between the
+                    input sample and its quantized representation.
+                </p>
+
+                <p class="text-center mt-2 text-lg font-mono">
+                    e[n] = x[n] − x<sub>q</sub>[n]
+                </p>
+
+                <p class="mt-3">
+                    For a <strong>uniform quantizer</strong> and under the <strong>high-resolution assumption</strong>:
+                </p>
+
+                <p class="text-center mt-2 text-lg font-mono">
+                    σ<sub>e</sub><sup>2</sup> = Δ<sup>2</sup> / 12, &nbsp;&nbsp;
+                    SNR<sub>dB</sub> ≈ 6.02N + 1.76
+                </p>
+
+                <p class="mt-3">
+                    This means every additional bit roughly adds <strong>6 dB</strong> of SNR —
+                    we’ll confirm this in <strong>Module 2</strong>.
+                </p>
+
+            </mat-card-content>
+
+        </mat-card>
+
+
+    </div>
+   
+
+    <div class="flex flex-col justify-around items-center gap-2">
+        <img src="assets/images/chap2/fig3.png" class="w-200 h-100 ">
+        <h1 class="text-wrap">
+            Figure 3. illustrates an example for a quantization error, indicating the difference between the original
+            signal and the quantized signal.
+        </h1>
+    </div>
+    <div class="h-6"></div>
+
+    <div>
+        <mat-card class="example-card text-2xl" appearance="outlined">
+            <mat-card-content class="text-lg">
+                <h3 class="text-xl font-semibold font-sans mb-3 " style="color: blue;">
+                    2.5 Example Context – ITU G.711 Speech Coding
+                </h3>
+
+                <p>
+                    In telephony, speech is sampled at <strong>8 kHz</strong> and quantized with
+                    <strong>8 bits per sample</strong>.
+                </p>
+
+                <p class="mt-2">
+                    Later, we’ll see how <strong>μ-law companding</strong> improves
+                    <em>small-amplitude resolution</em> before this quantization step.
+                </p>
+            </mat-card-content>
+
+        </mat-card>
+
+
+    </div>
+
+    <!-- Test section  -->
+    <!-- <div class="h-6"></div>
+
+    <div class="flex flex-col items-center p-3 gap-6">
+        <h2 class="text-2xl font-sans font-semibold mb-4">🧠 Test Your Knowledge</h2>
+
+        <div *ngFor="let q of questions" class="w-full md:w-2/3">
+            <mat-card class="mat-elevation-z6 p-6 font-sans">
+                <mat-card-title>{{ q.text }}</mat-card-title>
+                <br>
+
+                <mat-card-content>
+                    <mat-radio-group [(ngModel)]="q.selectedAnswer" [disabled]="q.isSubmitted">
+                        <div *ngFor="let option of q.options" class="mb-2">
+                            <mat-radio-button [value]="option">{{ option }}</mat-radio-button>
+                        </div>
+                    </mat-radio-group>
+
+                    <div class="mt-4 flex gap-3">
+                        <button matFab extended (click)="submitAnswer(q)"
+                            [disabled]="!q.selectedAnswer || q.isSubmitted">
+                            Submit
+                        </button>
+
+                        <button matFab extended style="background-color:black ; color: aliceblue;" *ngIf="q.isSubmitted"
+                            (click)="tryAgain(q)">
+                            Try Again
+                        </button>
+                    </div>
+
+                    <div class="mt-4">
+                        <p *ngIf="q.isSubmitted && q.selectedAnswer === q.correctAnswer"
+                            class="text-green-600 font-semibold font-sans">
+                            ✅ Correct!
+                        </p>
+                        <p *ngIf="q.isSubmitted && q.selectedAnswer !== q.correctAnswer"
+                            class="text-red-600 font-semibold font-sans">
+                            ❌ Incorrect. Correct answer: <strong>{{ q.correctAnswer }}</strong>.
+                        </p>
+                    </div>
+                </mat-card-content>
+            </mat-card>
+        </div>
+    </div> -->
+
+
+
+</div>
