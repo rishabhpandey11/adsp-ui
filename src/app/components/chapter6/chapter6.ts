@@ -17,44 +17,77 @@ import { FormsModule } from '@angular/forms';
 })
 export class Chapter6 {
 
-questions = [
-    {
-      text: '1️⃣ Which of the following is the best description of a “signal”?',
-      options: [
-        'A. Any physical quantity that changes over time and can carry information',
-        'B. Only audio captured by a microphone',
-        'C. Any static constant value',
-        'D. Only electromagnetic waves'
-      ],
-      correctAnswer: 'A. Any physical quantity that changes over time and can carry information',
-      selectedAnswer: null,
-      isSubmitted: false
-    },
-    {
-      text: '2️⃣ What does “digital” refer to in digital signal processing?',
-      options: [
-        'A. Making the signal louder',
-        'B. Converting the signal to a set of discrete samples and discrete amplitude levels',
-        'C. Only visualizing the signal on a computer',
-        'D. Saving it as an MP3'
-      ],
-      correctAnswer: 'B. Converting the signal to a set of discrete samples and discrete amplitude levels',
-      selectedAnswer: null,
-      isSubmitted: false
-    },
-    {
-      text: '3️⃣ Why do we treat acoustic signals in a special way compared to generic DSP?',
-      options: [
-        'A. Because acoustic signals are the only real signals',
-        'B. Because sound is easy and noise-free',
-        'C. Because human hearing and room acoustics matter, so perception and spatial information are important',
-        'D. Because audio never needs compression'
-      ],
-      correctAnswer: 'C. Because human hearing and room acoustics matter, so perception and spatial information are important',
-      selectedAnswer: null,
-      isSubmitted: false
-    }
-  ];
+ questions = [
+  {
+    text: '1️⃣ Downsampling by M without prefiltering causes…',
+    options: [
+      'Spectral compression',
+      'Aliasing (spectral overlap)',
+      'Imaging (spectral replication at multiples of 2π/L)',
+      'Time shift only'
+    ],
+    correctAnswer: 'Aliasing (spectral overlap)',
+    selectedAnswer: null,
+    isSubmitted: false,
+    tip: 'Decimation folds spectra unless content is confined to [0, π/M].'
+  },
+
+  {
+    text: '2️⃣ For decimate-by-M, a safe low-pass cutoff (normalized) is approximately:',
+    options: [
+      'π',
+      'π/2',
+      'π/M (often ×0.9 margin)',
+      'π M'
+    ],
+    correctAnswer: 'π/M (often ×0.9 margin)',
+    selectedAnswer: null,
+    isSubmitted: false,
+    tip: 'Keep only baseband that won’t fold after the M-to-1 mapping.'
+  },
+
+  {
+    text: '3️⃣ Upsampling by L (zero-insertion) primarily introduces…',
+    options: [
+      'Spectral images repeated every 2π/L',
+      'Aliasing',
+      'Time dilation without spectral change',
+      'Phase unwrapping'
+    ],
+    correctAnswer: 'Spectral images repeated every 2π/L',
+    selectedAnswer: null,
+    isSubmitted: false,
+    tip: 'Spectrum replicates; images must be low-passed to remove them.'
+  },
+
+  {
+    text: '4️⃣ In a rational resampler L/M, the conceptual order is:',
+    options: [
+      'Filter → upsample → downsample',
+      'Upsample → downsample (no filter)',
+      'Upsample by L → low-pass → downsample by M',
+      'Downsample → low-pass → upsample'
+    ],
+    correctAnswer: 'Upsample by L → low-pass → downsample by M',
+    selectedAnswer: null,
+    isSubmitted: false,
+    tip: 'Anti-imaging then anti-aliasing in a single LPF (polyphase).'
+  },
+
+  {
+    text: '5️⃣ The best single function for high-quality L/M resampling in SciPy is:',
+    options: [
+      'decimate',
+      'resample (FFT)',
+      'resample_poly',
+      'interp1d'
+    ],
+    correctAnswer: 'resample_poly',
+    selectedAnswer: null,
+    isSubmitted: false,
+    tip: 'Polyphase FIR with proper filtering; efficient and artifact-resistant.'
+  }
+];
 
   submitAnswer(question: any) {
     question.isSubmitted = true;

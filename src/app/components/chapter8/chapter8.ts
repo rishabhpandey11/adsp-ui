@@ -12,73 +12,91 @@ import { FormsModule } from '@angular/forms';
 })
 export class Chapter8 {
 
-  questions = [
-    {
-      text: '1️⃣ The system H(z) = 1 / (1 - 0.8 z⁻¹) is:',
-      options: [
-        'Unstable because the pole is at z=1.25',
-        'Stable because the pole z=0.8 is inside the unit circle ✅',
-        'All-pass',
-        'FIR'
-      ],
-      correctAnswer: 'Stable because the pole z=0.8 is inside the unit circle ✅',
-      selectedAnswer: null,
-      isSubmitted: false,
-      tip: '💡 Stability if all poles lie inside the unit circle (ROC includes the unit circle).'
-    },
-    {
-      text: '2️⃣ For the FIR y(n)=∑ₘ₌₀ᴹ b(m) x(n−m), the transfer function is:',
-      options: [
-        'H(z)=∑ₘ₌₀ᴹ b(m) z⁻ᵐ ✅',
-        'H(z)=1 / ∑ b(m) z⁻ᵐ',
-        'H(z)=∏ b(m) z⁻ᵐ',
-        'H(z)=∑ a(m) z⁻ᵐ'
-      ],
-      correctAnswer: 'H(z)=∑ₘ₌₀ᴹ b(m) z⁻ᵐ ✅',
-      selectedAnswer: null,
-      isSubmitted: false,
-      tip: '💡 z-transform of the FIR filter taps equals H(z).'
-    },
-    {
-      text: '3️⃣ The DTFT of H(z) is obtained by:',
-      options: [
-        'Evaluate H(z) on the unit circle z=e^{jΩ} ✅',
-        'Set z=0',
-        'Differentiate H(z)',
-        'Replace z⁻¹ by n'
-      ],
-      correctAnswer: 'Evaluate H(z) on the unit circle z=e^{jΩ} ✅',
-      selectedAnswer: null,
-      isSubmitted: false,
-      tip: '💡 H(e^{jΩ}) = H(z) evaluated at z=e^{jΩ}.'
-    },
-    {
-      text: '4️⃣ Which statement is true?',
-      options: [
-        'A delay of d samples multiplies X(z) by z⁻ᵈ ✅',
-        'A delay adds d to the numerator coefficients.',
-        'A delay shifts poles outward by d.',
-        'A delay makes the system non-causal.'
-      ],
-      correctAnswer: 'A delay of d samples multiplies X(z) by z⁻ᵈ ✅',
-      selectedAnswer: null,
-      isSubmitted: false,
-      tip: '💡 Shift property of the z-transform.'
-    },
-    {
-      text: '5️⃣ IIR transfer function for y(n)=x(n)+p·y(n−1) is:',
-      options: [
-        'H(z)=1 / (1 - p z⁻¹) ✅',
-        'H(z)=1 - p z',
-        'H(z)=1 + p z⁻¹',
-        'H(z)=1 / (1 + p z)'
-      ],
-      correctAnswer: 'H(z)=1 / (1 - p z⁻¹) ✅',
-      selectedAnswer: null,
-      isSubmitted: false,
-      tip: '💡 Derived directly from the z-transform of the difference equation.'
-    }
-  ];
+ questions = [
+  {
+    text: '1️⃣ The Noble Identity for downsampling is expressed as:',
+    options: [
+      'A) ↓N ∘ H(z) = H(z) ∘ ↓N',
+      'B) ↓N ∘ H(z) = H(z^N) ∘ ↓N',
+      'C) ↑N ∘ H(z) = H(z^N) ∘ ↑N',
+      'D) H(z) = H(z^N)'
+    ],
+    correctAnswer: 'B) ↓N ∘ H(z) = H(z^N) ∘ ↓N',
+    selectedAnswer: null,
+    isSubmitted: false,
+    tip: 'Noble identity for downsampling'
+  },
+
+  {
+    text: '2️⃣ In Noble Identity notation, the symbol ↓N means:',
+    options: [
+      'A) Discard every N samples and keep the rest',
+      'B) Keeping only every N-th sample',
+      'C) Inserting N−1 zeros between samples',
+      'D) Reducing signal amplitude by a factor of N'
+    ],
+    correctAnswer: 'B) Keeping only every N-th sample',
+    selectedAnswer: null,
+    isSubmitted: false,
+    tip: 'Definition of downsampling'
+  },
+
+  {
+    text: '3️⃣ The polyphase component Hi(z) corresponds to the z-transform of:',
+    options: [
+      'A) h(nN + i)',
+      'B) h(n - iN)',
+      'C) h(n + N)',
+      'D) h(n / i + N)'
+    ],
+    correctAnswer: 'A) h(nN + i)',
+    selectedAnswer: null,
+    isSubmitted: false,
+    tip: 'Definition of polyphase components'
+  },
+
+  {
+    text: '4️⃣ In a 2-branch polyphase decomposition, the filter can be expressed as:',
+    options: [
+      'A) H(z) = H0(z) + H1(z)',
+      'B) H(z) = H0(z^2) + z^{-1} H1(z^2)',
+      'C) H(z) = z H0(z) + z H1(z)',
+      'D) H(z) = z^2 H0(z) + H1(z)'
+    ],
+    correctAnswer: 'B) H(z) = H0(z^2) + z^{-1} H1(z^2)',
+    selectedAnswer: null,
+    isSubmitted: false,
+    tip: 'Standard 2-branch polyphase form'
+  },
+
+  {
+    text: '5️⃣ Polyphase processing is useful because filters can run at:',
+    options: [
+      'A) Higher sampling rate',
+      'B) Lower sampling rate',
+      'C) Variable random rate',
+      'D) Complex domain only'
+    ],
+    correctAnswer: 'B) Lower sampling rate',
+    selectedAnswer: null,
+    isSubmitted: false,
+    tip: 'Efficiency benefit of polyphase filtering'
+  },
+
+  {
+    text: '6️⃣ The identity for upsampling is:',
+    options: [
+      'A) ↑N ∘ H(z) = H(z^N) ∘ ↑N',
+      'B) ↑N ∘ H(z) = H(z) ∘ ↑N',
+      'C) ↑N ∘ H(z) = H(z^{-N}) ∘ ↑N',
+      'D) H(z) = H(z^{-N})'
+    ],
+    correctAnswer: 'A) ↑N ∘ H(z) = H(z^N) ∘ ↑N',
+    selectedAnswer: null,
+    isSubmitted: false,
+    tip: 'Noble identity for upsampling'
+  }
+];
 
 
   submitAnswer(question: any) {

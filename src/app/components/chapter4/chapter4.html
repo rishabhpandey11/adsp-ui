@@ -1,8 +1,8 @@
 <div class="m-5 overflow-hidden grid gap-6">
     <div class=" text-3xl font-sans font-semibold">
-        <h1>Chapter 4 : Non-uniform Quantization</h1>
+        <h1>Chapter 4 : Lloyd-Max Quantizer </h1>
     </div>
-   
+
     <div>
         <mat-card class="example-card text-2xl" appearance="outlined">
             <mat-card-header>
@@ -35,106 +35,67 @@
 
     </div>
 
+<div class="flex flex-col justify-around items-center gap-2">
+                    <img src="assets/images/chap4/chap4.an.gif" class="w-180 h-110 "> 
+                </div>
 
 
-   
     <div>
         <mat-card class="example-card text-2xl" appearance="outlined">
             <mat-card-header>
-                <mat-card-title style="color: blue;">2. Theory Summary</mat-card-title>
+                <mat-card-title style="color: blue;">1. Introduction</mat-card-title>
             </mat-card-header>
-            <br>
+
             <mat-card-content class="text-lg">
-                <h3 class="text-xl font-semibold font-sans mb-3">2.1 What is Quantization?</h3>
 
-                <p>
-                    Quantization is the process of <strong>rounding a continuous-amplitude signal</strong>
-                    to a finite set of discrete levels so that it can be represented digitally.
-                </p>
+
+
 
                 <p class="mt-2">
-                    When an analog signal <em>x(t)</em> is sampled → <em>x[n]</em>,
-                    its amplitude remains continuous.
+                    In this chapter, we will explore the Lloyd-Max quantizer, which is a type of non-uniform quantizer
+                    adapted to the signal’s probability density function (PDF). It minimizes the expectation of the
+                    quantization error given the PDF of the signal to quantize [13].
                 </p>
 
-                <p class="mt-2">
-                    Quantization replaces each sample with the nearest discrete level
-                    <em>q<sub>k</sub></em> from a finite set of
-                    <em>L = 2<sup>N<sub>L</sub></sup></em> possible values.
-                </p>
+
             </mat-card-content>
         </mat-card>
     </div>
 
-   
-    <div class="flex flex-col justify-around items-center gap-2">
-        <img src="assets/images/chap2/quantization.png" class="w-200 h-80 ">
-        <h1 class="text-wrap">
-            Block diagram of a Pulse Code Modulation (PCM) encoder illustrating the steps of analog-to-digital
-            conversion: the continuous analog signal is first sampled to form a Pulse Amplitude Modulated (PAM) signal,
-            then quantized into discrete amplitude levels, and finally encoded into a binary digital data stream.
-
-        </h1>
-    </div>
-
-
-   
-
-    <!-- <div>
-
-        <app-pycodechap1 title="Example 1: Uniform Quantizer with Finite Resolution"
-            [code]="chapter2example1"></app-pycodechap1>
-    </div> -->
-
-
-   
-
-    <div>
-        <mat-card class="example-card text-2xl" appearance="outlined">
-
-            <mat-card-content class="text-lg">
-                <h3 class="text-xl font-semibold font-sans mb-3 " style="color: blue;">2.2 Step Size and Resolution</h3>
-
-                <p>
-                    If the input range is <em>V<sub>min</sub></em> to <em>V<sub>max</sub></em>, then:
-                </p>
-
-                <p class="text-center mt-2 text-lg font-mono">
-                    Δ = (V<sub>max</sub> − V<sub>min</sub>) / L
-                </p>
-
-                <p class="mt-3">
-                    Each quantization level represents an interval of width <em>Δ</em>.
-                </p>
-
-                <p class="mt-2">
-                    Smaller <em>Δ</em> ⇒ finer resolution ⇒ lower quantization error.
-                </p>
-
-            </mat-card-content>
-
-        </mat-card>
-
-
-    </div>
-   
 
 
     <div>
         <mat-card class="example-card text-2xl" appearance="outlined">
 
             <mat-card-content class="text-lg">
-                <h3 class="text-xl font-semibold font-sans mb-3" style="color: blue;">2.3 Mid-tread vs Mid-rise</h3>
+                <h3 class="text-xl font-semibold font-sans mb-3 " style="color: blue;">4.2 Histogram of a Typical Mixed
+                    Speech and Music File</h3>
 
-                <p>
-                    Depending on whether the quantizer has the input voltage 0 at the center of a
-                    quantization interval or on the boundary of that interval, we call the quantizer a
-                    <strong>mid-tread</strong> or a <strong>mid-rise</strong> quantizer.
-                </p>
+
 
                 <p class="mt-2">
-                    This concept is illustrated in <strong>Figure 2</strong>.
+
+
+                    Consider the histogram of a typical mixed speech and music file in Python: </p>
+
+                <pre class="bg-gray-100 text-sm p-3 rounded-lg overflow-x-auto font-mono mt-2">
+
+ipython --pylab
+import scipy.io.wavfile as wav
+rate, snd = wav.read(’mixedshort.wav’)
+hist(snd/(2.0**15), 50)
+
+</pre>
+
+                <p class="mt-2">
+                    This script counts how often the signal samples in our signal “snd” fall into one of 50 bins between
+                    -max and +max amplitude, normalized between -1 and 1. This distribution is far from uniform and is
+                    very “peaky” with most samples being in bin 0, indicating that most samples have a very small
+                    amplitude. This histogram can be converted to a probability distribution $p(x)$ by dividing it by
+                    the total number of samples so that its sum becomes 1 [14].
                 </p>
+
+
             </mat-card-content>
 
         </mat-card>
@@ -142,7 +103,55 @@
 
     </div>
 
-   
+
+
+    <div>
+        <mat-card class="example-card text-2xl" appearance="outlined">
+
+            <mat-card-content class="text-lg">
+                <h3 class="text-xl font-semibold font-sans mb-3" style="color: blue;">4.3 Lloyd-Max Quantizer Concept
+                </h3>
+
+
+
+                <p class="mt-2">
+
+
+                    The idea behind the Lloyd-Max quantizer is to choose smaller quantization steps where signal samples
+                    appear most often to reduce the quantization error and larger steps where there are fewer samples.
+                    This concept differs from $\mu$-law companding, where small values get the smallest quantization
+                    step sizes. In Lloyd-Max quantization, the most likely values get the smallest quantization step
+                    sizes [13], [15].
+                </p>
+
+
+
+                <p class="mt-2">
+                    The quantization function Q(x) minimizes the expectation of the quantization error power D:
+                </p>
+
+                <p class="text-center mt-3 text-lg font-mono">
+                    D = E[(x - Q(x))^2]
+                </p>
+
+                <p class="mt-2">
+                    The goal is to minimize this expectation. Starting with the probability density function (PDF) of
+                    the signal, the result should be the quantization intervals and the reconstruction values. We need
+                    to define the intervals and their reconstruction values, as shown in Figure 4.1.
+                </p>
+                <div class="flex flex-col justify-around items-center gap-2">
+                    <img src="assets/images/chap4/fig4.1.png" class="w-180 h-110 ">
+                </div>
+
+
+            </mat-card-content>
+
+        </mat-card>
+
+
+    </div>
+
+
 
     <!-- <div>
 
@@ -150,41 +159,66 @@
             [code]="chapter2example2"></app-pycodechap1>
     </div> -->
 
-   
-
-
-    <div class="flex flex-col justify-around items-center gap-2">
-        <img src="assets/images/chap2/fig2.png" class="w-200 h-80 ">
-        <h1 class="text-wrap">
-            Figure 2: Mid-rise and Mid-tread quantization.
-        </h1>
-    </div>
 
 
     <div>
         <mat-card class="example-card text-2xl" appearance="outlined">
             <mat-card-content class="text-lg">
                 <h3 class="text-xl font-semibold font-sans mb-3 " style="color: blue;">
-                    2.4 Quantization Error and Signal-to-Noise Ratio
+                    4.4 Mathematical Formulation
                 </h3>
 
-                <p>
-                    Quantization introduces an <strong>error</strong> due to the difference between the
-                    input sample and its quantized representation.
+
+
+                <p class="mt-3">
+                    The decision boundaries b_k and reconstruction values y_k can be obtained by minimizing the
+                    distortion:
                 </p>
 
-                <p class="text-center mt-2 text-lg font-mono">
-                    e[n] = x[n] − x<sub>q</sub>[n]
+                <p class="text-center mt-3 text-lg font-mono">
+                    D = sum from k = 1 to M of ∫ from b_(k-1) to b_k (x - y_k)^2 * p(x) dx
                 </p>
 
                 <p class="mt-3">
-                    For a <strong>uniform quantizer</strong> and under the <strong>high-resolution assumption</strong>:
+                    Taking the first derivative of the distortion D with respect to the decision boundaries b_k and
+                    setting it to zero gives:
                 </p>
 
-                <p class="text-center mt-2 text-lg font-mono">
-                    σ<sub>e</sub><sup>2</sup> = Δ<sup>2</sup> / 12, &nbsp;&nbsp;
-                    SNR<sub>dB</sub> ≈ 6.02N + 1.76
+                <p class="text-center mt-3 text-lg font-mono">
+                    dD / db_k = 0
                 </p>
+
+                <p class="mt-3">
+                    This yields:
+                </p>
+
+                <p class="text-center mt-3 text-lg font-mono">
+                    b_k = ( y_(k+1) + y_k ) / 2
+                </p>
+
+                <p class="mt-3">
+                    This approach is also called the “nearest neighbour” rule, because any signal value is always
+                    quantized to the nearest reconstruction value.
+                </p>
+
+                <p class="mt-3">
+                    Similarly, for the reconstruction values y_k:
+                </p>
+
+                <p class="text-center mt-3 text-lg font-mono">
+                    y_k = ( ∫ from b_(k-1) to b_k x * p(x) dx ) / ( ∫ from b_(k-1) to b_k p(x) dx )
+                </p>
+
+                <p class="mt-3">
+                    This can be interpreted as the conditional expectation of the signal value over the quantization
+                    interval (given the signal is inside this interval), or simply the centroid used as the
+                    reconstruction value.
+                </p>
+
+                <p class="mt-3">
+                    This iterative algorithm continues until the updates become sufficiently small.
+                </p>
+
 
                 <p class="mt-3">
                     This means every additional bit roughly adds <strong>6 dB</strong> of SNR —
@@ -197,33 +231,52 @@
 
 
     </div>
-   
 
-    <div class="flex flex-col justify-around items-center gap-2">
-        <img src="assets/images/chap2/fig3.png" class="w-200 h-100 ">
-        <h1 class="text-wrap">
-            Figure 3. illustrates an example for a quantization error, indicating the difference between the original
-            signal and the quantized signal.
-        </h1>
-    </div>
-    <div class="h-6"></div>
+
 
     <div>
         <mat-card class="example-card text-2xl" appearance="outlined">
             <mat-card-content class="text-lg">
                 <h3 class="text-xl font-semibold font-sans mb-3 " style="color: blue;">
-                    2.5 Example Context – ITU G.711 Speech Coding
+                    4.5 Numerical Integration in Python
                 </h3>
 
-                <p>
-                    In telephony, speech is sampled at <strong>8 kHz</strong> and quantized with
-                    <strong>8 bits per sample</strong>.
+
+
+                <p class="mt-3">
+                    To compute the centroid or conditional expectation for the reconstruction value, numerical
+                    integration may be needed. The integral of the form
                 </p>
 
-                <p class="mt-2">
-                    Later, we’ll see how <strong>μ-law companding</strong> improves
-                    <em>small-amplitude resolution</em> before this quantization step.
+                <p class="text-center mt-3 text-lg font-mono">
+                    I_k = ∫ from b_(k-1) to b_k of f(x) dx
                 </p>
+
+                <p class="mt-3">
+                    can be approximated in Python using a sum:
+                </p>
+
+
+                <pre class="bg-gray-100 text-sm p-3 rounded-lg overflow-x-auto font-mono mt-2">
+
+dx = (b[k] - b[k-1]) / 100
+I_k = sum(f(arange(b[k-1], b[k], dx)) * dx)
+
+</pre>
+                <p class="mt-3">
+                    For example:
+                </p>
+
+                <p class="text-center mt-3 text-lg font-mono">
+                    sum(sin(arange(0, 3.14, 0.1)) * 0.1)
+                </p>
+
+                <p class="mt-3">
+                    A more precise Python function for smooth integrands is scipy.integrate.quad.
+                </p>
+
+
+
             </mat-card-content>
 
         </mat-card>
@@ -231,8 +284,97 @@
 
     </div>
 
+
+    <div>
+        <mat-card class="example-card text-2xl" appearance="outlined">
+
+            <mat-card-content class="text-lg">
+                <h3 class="text-2xl font-semibold font-sans " style="color: blue;">
+                    4.6 Example 1: Uniform Distribution
+                </h3>
+
+
+                <p class="mt-4">
+                    Assume we have a signal x uniformly distributed between 0 and 1, and we want two reconstruction
+                    values y_k. The steps are:
+                </p>
+
+                <ol class="list-disc">
+                    <li>Random initialization: y1 = 0.3, y2 = 0.8</li>
+                    <li>Nearest neighbor: b1 = (0.3 + 0.8) / 2 = 0.55</li>
+                    <li>Conditional expectation:</li>
+                </ol>
+
+                <p class="text-center mt-3 text-lg font-mono">
+                    y1 = ( ∫ from 0 to 0.55 of x dx ) / 0.55 = 0.275
+                </p>
+
+                <p class="text-center mt-3 text-lg font-mono">
+                    y2 = ( ∫ from 0.55 to 1 of x dx ) / 0.45 = 0.775
+                </p>
+
+                <p class="mt-4">
+                    This process continues iteratively until convergence. This should converge to y1 = 0.25, y2 = 0.75,
+                    and b1 = 0.5.
+                </p>
+
+
+            </mat-card-content>
+
+        </mat-card>
+    </div>
+
+    <div>
+        <mat-card class="example-card text-2xl" appearance="outlined">
+
+            <mat-card-content class="text-lg">
+                <h3 class="text-2xl font-semibold font-sans " style="color: blue;">
+                   4.7 Example 2: Laplacian Distribution
+                </h3>
+
+
+                <p class="mt-4">
+                    For a non-uniform Laplacian probability density function p(x) = exp(-0.5 * |x|):
+                </p>
+
+                <ol class="list-disc">
+                    <li>Random initialization: y1 = 0.3, y2 = 0.8</li>
+                    <li>Nearest neighbor: b1 = (0.3 + 0.8) / 2 = 0.55</li>
+                    <li>Conditional expectation: numerical integration is required. Below is an example using the Python
+                        function "quad":</li>
+                </ol>
+
+   
+<pre class="bg-gray-100 text-sm p-3 rounded-lg overflow-x-auto font-mono mt-2">
+
+from scipy.integrate import quad
+from numpy import exp
+Num, _ = quad(lambda x: x * exp(-0.5 * abs(x)), 0, 0.55)
+Den, _ = quad(lambda x: exp(-0.5 * abs(x)), 0, 0.55)
+y_1 = Num / Den
+print(y_1)
+#0.2624
+Num, _ = quad(lambda x: x * exp(-0.5 * abs(x)), 0.55, 1)
+Den, _ = quad(lambda x: exp(-0.5 * abs(x)), 0.55, 1)
+y_2 = Num / Den
+print(y_2)
+#0.7665
+
+</pre>
+                <p class="mt-4">
+                    This process continues iteratively until convergence. An example using a recorded speech signal can
+                    be found at the end of the Colab notebook "ADSP_04_LloydMax.ipynb" in the Github repository. It is
+                    implemented using the so-called K-Means algorithm for the one-dimensional case.
+                </p>
+
+              
+            </mat-card-content>
+
+        </mat-card>
+    </div>
+
     <!-- Test section  -->
-    <!-- <div class="h-6"></div>
+    <div class="h-6"></div>
 
     <div class="flex flex-col items-center p-3 gap-6">
         <h2 class="text-2xl font-sans font-semibold mb-4">🧠 Test Your Knowledge</h2>
@@ -274,7 +416,7 @@
                 </mat-card-content>
             </mat-card>
         </div>
-    </div> -->
+    </div>
 
 
 
