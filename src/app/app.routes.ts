@@ -14,6 +14,7 @@ import { Chapter7 } from './components/chapter7/chapter7';
 import { Chapter5 } from './components/chapter5/chapter5';
 import { Chapter6 } from './components/chapter6/chapter6';
 import { Chapter9 } from './components/chapter9/chapter9';
+import { Bibliography } from './components/bibliography/bibliography';
 
 
 export const routes: Routes = [
@@ -35,6 +36,7 @@ export const routes: Routes = [
             { path: 'chapter10', component: Chapter10 },
             { path: 'chapter11', component: Chapter11 },
             { path: 'chapter12', component: Chapter12 },
+             { path: 'bibliography', component: Bibliography },
 
         ],
     }

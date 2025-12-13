@@ -105,6 +105,11 @@ export class Menubar {
       label: 'Wiener & Matched Filters',// Label for the 'Analytics' menu item
       route: 'chapter12' // Route to navigate to when 'Analytics' is clicked
     },
+       {
+      icon: 'book_2',      // Icon for the 'Analytics' menu item
+      label: 'Bibliography',// Label for the 'Analytics' menu item
+      route: 'bibliography' // Route to navigate to when 'Analytics' is clicked
+    },
  
   ]; 
 
