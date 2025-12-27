@@ -4,11 +4,12 @@ import { CommonModule } from '@angular/common';
 import { MatRadioModule } from '@angular/material/radio';
 import { MatButtonModule } from '@angular/material/button';
 import { FormsModule } from '@angular/forms';
+import { MathJaxDirective } from '../mathjax.directive';
 
 
 @Component({
   selector: 'app-chapter7',
-  imports: [MatCardModule, FormsModule, CommonModule, MatCardModule, MatRadioModule, MatButtonModule,],
+  imports: [MatCardModule, FormsModule, CommonModule, MatCardModule, MatRadioModule, MatButtonModule,MathJaxDirective],
   templateUrl: './chapter7.html',
   styleUrl: './chapter7.css',
 })

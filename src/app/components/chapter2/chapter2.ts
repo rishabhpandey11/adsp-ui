@@ -4,13 +4,13 @@ import { CommonModule } from '@angular/common';
 import { MatRadioModule } from '@angular/material/radio';
 import { MatButtonModule } from '@angular/material/button';
 import { FormsModule } from '@angular/forms';
-import { Pycodechap1 } from "../python-code/pycodechap1/pycodechap1";
 import {MatSidenavModule} from '@angular/material/sidenav';
+import { MathJaxDirective } from '../mathjax.directive';
 
 
 @Component({
   selector: 'app-chapter2',
-  imports: [MatCardModule, FormsModule, CommonModule, MatCardModule,MatSidenavModule, MatRadioModule, MatButtonModule, Pycodechap1],
+  imports: [MatCardModule, FormsModule, CommonModule, MatCardModule,MatSidenavModule, MatRadioModule, MatButtonModule, MathJaxDirective],
   templateUrl: './chapter2.html',
   styleUrl: './chapter2.css',
 })

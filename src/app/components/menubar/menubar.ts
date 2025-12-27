@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
 import { NgModule } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { Router, RouterModule } from '@angular/router';
+import { Router, RouterModule, NavigationEnd } from '@angular/router';
 import { CommonModule } from '@angular/common';
 // Angular Material modules
 import { MatToolbarModule } from '@angular/material/toolbar';
@@ -11,10 +11,279 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatSidenavModule } from '@angular/material/sidenav';
 import { MatListModule } from '@angular/material/list';
 import { MatBadgeModule } from '@angular/material/badge';
-import {MatTooltipModule} from '@angular/material/tooltip';
+import { MatTooltipModule } from '@angular/material/tooltip';
 
 import { BreakpointObserver, Breakpoints } from '@angular/cdk/layout';
 import { MatSnackBar } from '@angular/material/snack-bar';
+import { MatTreeModule } from '@angular/material/tree';
+
+interface MenuNode {
+  icon: string;
+  label: string;
+  route: string;
+  children?: MenuNode[];
+}
+
+
+
+// Menu items available for sidenav, why? easily editable code for buttons on sidebar
+const menuItems: MenuNode[] = [
+  {
+    icon: 'keyboard_double_arrow_right', // Icon for the 'Home' menu item. where to get? Material Icon just google it and there are plenty of icons
+    label: '1. Introduction ',     // Label for the 'Home' menu item
+    route: 'chapter1',     // Route to navigate to when 'Home' is clicked
+    children: [
+      {
+        icon: 'science',
+        label: 'Lab ',
+        route: 'chapter1/lab1'
+      }
+
+    ]
+  },
+  {
+    icon: 'keyboard_double_arrow_right',      // Icon for the 'Analytics' menu item
+    label: '2. Quantization Signal to Noise Ratio (SNR)',
+    route: 'chapter2', // Route to navigate to when 'Analytics' is clicked
+    children: [
+      {
+        icon: 'topic',
+        label: '2.1 Calculating the SNR ',
+        route: 'chapter2/subtopic1'
+      },
+      {
+        icon: 'topic',
+        label: '2.2  Non-full Range Signals ',
+        route: 'chapter2/subtopic2'
+      },
+      {
+        icon: 'topic',
+        label: '2.3 Non-uniformly Distributed Signals ',
+        route: 'chapter2/subtopic1.3'
+      },
+      {
+        icon: 'science',
+        label: 'Lab ',
+        route: 'chapter2/lab2'
+      },
+    ]
+  },
+  {
+    icon: 'keyboard_double_arrow_right',      // Icon for the 'Analytics' menu item
+    label: '3. SNR and Non-uniform Quantization',
+    route: 'chapter3',
+    children: [
+      {
+        icon: 'topic',
+        label: '3.1 SNR with Sinusoidal Signals ',
+        route: 'chapter3/subtopic31'
+      },
+      {
+        icon: 'topic',
+        label: '3.2 Companding',
+        route: 'chapter3/subtopic32'
+      },
+      {
+        icon: 'science',
+        label: 'Lab',
+        route: 'chapter3/lab3'
+      },
+    ]
+  },
+
+  {
+    icon: 'keyboard_double_arrow_right',      // Icon for the 'Analytics' menu item
+    label: '4. Lloyd-Max Quantizer ',
+    route: 'chapter4'
+    ,
+    children: [
+      {
+        icon: '',
+        label: 'Examples of Uniform PDFs ',
+        route: 'chapter2/definition'
+      },
+      {
+        icon: '',
+        label: ' Calculating the SNR ',
+        route: 'chapter2/error'
+      },
+    ]
+  },
+
+  {
+    icon: 'keyboard_double_arrow_right',      // Icon for the 'Analytics' menu item
+    label: ' 5. Vector Quantization, LBG',
+    route: 'chapter5'
+    ,
+    children: [
+      {
+        icon: '',
+        label: 'Examples of Uniform PDFs ',
+        route: 'chapter2/definition'
+      },
+      {
+        icon: '',
+        label: ' Calculating the SNR ',
+        route: 'chapter2/error'
+      },
+    ]
+  },
+  {
+    icon: 'keyboard_double_arrow_right',      // Icon for the 'Analytics' menu item
+    label: '6. Sampling: Downsampling, Upsampling',
+    route: 'chapter6'
+    ,
+    children: [
+      {
+        icon: '',
+        label: 'Examples of Uniform PDFs ',
+        route: 'chapter2/definition'
+      },
+      {
+        icon: '',
+        label: ' Calculating the SNR ',
+        route: 'chapter2/error'
+      },
+    ]
+  },
+  {
+    icon: 'keyboard_double_arrow_right',      // Icon for the 'Analytics' menu item
+    label: '7. z-Transform, Filters',
+    route: 'chapter7'
+    ,
+    children: [
+      {
+        icon: 'topic',
+        label: '7.1 The z-Transform ',
+        route: 'chapter7/subtopic71'
+      },
+      {
+        icon: 'topic',
+        label: '7.2 Filters',
+        route: 'chapter7/subtopic72'
+      },
+      {
+        icon: 'science',
+        label: ' Lab ',
+        route: 'chapter7/lab7'
+      },
+    ]
+  },
+  {
+    icon: 'keyboard_double_arrow_right',      // Icon for the 'Analytics' menu item
+    label: '8. Filters, Noble Identities',
+    route: 'chapter8'
+    ,
+    children: [
+      {
+        icon: 'topic',
+        label: '8.1 Filter Design  ',
+        route: 'chapter8/subtopic81'
+      },
+      {
+        icon: 'topic',
+        label: ' 8.2 Filtering and Sampling, Multirate Noble Identities ',
+        route: 'chapter8/subtopic82'
+      },
+      {
+        icon: 'topic',
+        label: ' 8.3 Polyphase Representation  ',
+        route: 'chapter8/subtopic83'
+      },
+      {
+        icon: 'science',
+        label: ' Lab ',
+        route: 'chapter8/lab8'
+      },
+    ]
+  },
+  {
+    icon: 'keyboard_double_arrow_right',      // Icon for the 'Analytics' menu item
+    label: '9. Allpass Filters, Warping',
+    route: 'chapter9'
+    ,
+    children: [
+
+      {
+        icon: 'science',
+        label: ' Lab',
+        route: 'chapter9/lab9'
+      },
+    ]
+  },
+  {
+    icon: 'keyboard_double_arrow_right',      // Icon for the 'Analytics' menu item
+    label: '10. Minimum Phase Filters',
+    route: 'chapter10'
+    ,
+    children: [
+      {
+        icon: 'topic',
+        label: '10.1 Introduction ',
+        route: 'chapter10/subtopic101'
+      },
+        {
+        icon: 'topic',
+        label: '10.2 Summary of Minimum Phase Filters ',
+        route: 'chapter10/subtopic102'
+      },
+        {
+        icon: 'topic',
+        label: '10.3 Homework Problems ',
+        route: 'chapter10/subtopic103'
+      },
+      {
+        icon: 'science',
+        label: ' Lab',
+        route: 'chapter10/lab10'
+      },
+    ]
+  },
+  {
+    icon: 'keyboard_double_arrow_right',      // Icon for the 'Analytics' menu item
+    label: '11. Hilbert Transform',
+    route: 'chapter11'
+    ,
+    children: [
+      {
+        icon: '',
+        label: 'Examples of Uniform PDFs ',
+        route: 'chapter2/definition'
+      },
+       {
+        icon: 'science',
+        label: ' Lab',
+        route: 'chapter11/lab11'
+      },
+    ]
+  },
+  {
+    icon: 'keyboard_double_arrow_right',      // Icon for the 'Analytics' menu item
+    label: '12. Wiener & Matched Filters',
+    route: 'chapter12'
+    ,
+    children: [
+      {
+        icon: '',
+        label: 'Examples of Uniform PDFs ',
+        route: 'chapter2/definition'
+      },
+       {
+        icon: 'science',
+        label: ' Lab',
+        route: 'chapter12/lab12'
+      },
+    ]
+  },
+  {
+    icon: 'book_2',      // Icon for the 'Analytics' menu item
+    label: '13. Bibliography',
+    route: 'bibliography',
+   
+
+  },
+
+];
 
 
 @Component({
@@ -24,7 +293,7 @@ import { MatSnackBar } from '@angular/material/snack-bar';
     MatTooltipModule,
     ReactiveFormsModule,
     RouterModule,
-    CommonModule,
+    CommonModule, MatTreeModule,
     // Angular Material modules
     MatToolbarModule,
     MatIconModule,
@@ -39,101 +308,45 @@ import { MatSnackBar } from '@angular/material/snack-bar';
   styleUrl: './menubar.css'
 })
 export class Menubar {
- isMobile = false;
-
-   // Menu items available for sidenav, why? easily editable code for buttons on sidebar
-  menuItems = [
-    {
-      icon: 'book_2', // Icon for the 'Home' menu item. where to get? Material Icon just google it and there are plenty of icons
-      label: 'Introduction ',     // Label for the 'Home' menu item
-      route: 'chapter1'      // Route to navigate to when 'Home' is clicked
-    },
-     {
-      icon: 'description',      // Icon for the 'Analytics' menu item
-      label: 'Quantization Signal to Noise Ratio (SNR)',// Label for the 'Analytics' menu item
-      route: 'chapter2' // Route to navigate to when 'Analytics' is clicked
-    },
-     {
-      icon: 'book_2',      // Icon for the 'Analytics' menu item
-      label: 'SNR and Non-uniform Quantization',// Label for the 'Analytics' menu item
-      route: 'chapter3' // Route to navigate to when 'Analytics' is clicked
-    },
-    
-     {
-      icon: 'description',      // Icon for the 'Analytics' menu item
-      label: 'Lloyd-Max Quantizer ',// Label for the 'Analytics' menu item
-      route: 'chapter4' // Route to navigate to when 'Analytics' is clicked
-    },
-
-       {
-      icon: 'book_2',      // Icon for the 'Analytics' menu item
-      label: ' Vector Quantization, LBG',// Label for the 'Analytics' menu item
-      route: 'chapter5' // Route to navigate to when 'Analytics' is clicked
-    },
-{
-      icon: 'description',      // Icon for the 'Analytics' menu item
-      label: 'Sampling: Downsampling, Upsampling',// Label for the 'Analytics' menu item
-      route: 'chapter6' // Route to navigate to when 'Analytics' is clicked
-    },
-    {
-      icon: 'book_2',      // Icon for the 'Analytics' menu item
-      label: ' z-Transform, Filters',// Label for the 'Analytics' menu item
-      route: 'chapter7' // Route to navigate to when 'Analytics' is clicked
-    },
-    {
-      icon: 'description',      // Icon for the 'Analytics' menu item
-      label: 'Filters, Noble Identities',// Label for the 'Analytics' menu item
-      route: 'chapter8' // Route to navigate to when 'Analytics' is clicked
-    },
-    {
-      icon: 'book_2',      // Icon for the 'Analytics' menu item
-      label: 'Allpass Filters, Warping',// Label for the 'Analytics' menu item
-      route: 'chapter9' // Route to navigate to when 'Analytics' is clicked
-    },
-    {
-      icon: 'description',      // Icon for the 'Analytics' menu item
-      label: 'Minimum Phase Filters',// Label for the 'Analytics' menu item
-      route: 'chapter10' // Route to navigate to when 'Analytics' is clicked
-    },
-    {
-      icon: 'book_2',      // Icon for the 'Analytics' menu item
-      label: 'Hilbert Transform',// Label for the 'Analytics' menu item
-      route: 'chapter11' // Route to navigate to when 'Analytics' is clicked
-    },
-    {
-      icon: 'description',      // Icon for the 'Analytics' menu item
-      label: 'Wiener & Matched Filters',// Label for the 'Analytics' menu item
-      route: 'chapter12' // Route to navigate to when 'Analytics' is clicked
-    },
-       {
-      icon: 'book_2',      // Icon for the 'Analytics' menu item
-      label: 'Bibliography',// Label for the 'Analytics' menu item
-      route: 'bibliography' // Route to navigate to when 'Analytics' is clicked
-    },
- 
-  ]; 
 
 
+  isMobile = false;
   badgevisible = false;
+
+  dataSource = menuItems;
+
+  childrenAccessor = (node: MenuNode) => node.children ?? [];
+  hasChild = (_: number, node: MenuNode) =>
+    !!node.children && node.children.length > 0;
+
+  /* ✅ CONSTRUCTOR — INSIDE CLASS */
+  constructor(
+    private router: Router,
+    private breakpointObserver: BreakpointObserver,
+    private snackBar: MatSnackBar
+  ) {
+    // Listen to route changes and scroll to top
+    this.router.events.subscribe(event => {
+      if (event instanceof NavigationEnd) {
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      }
+    });
+  }
+
+
+
+  /* ✅ LIFECYCLE HOOK */
+  ngOnInit() {
+    this.breakpointObserver
+      .observe([Breakpoints.Handset])
+      .subscribe(result => {
+        this.isMobile = result.matches;
+      });
+  }
 
   badgevisibility() {
     this.badgevisible = !this.badgevisible;
   }
- constructor(
-    private breakpointObserver: BreakpointObserver,
 
 
-    // injected to manage login, logout, and token operations
-    private router: Router,                 // injected to navigate between routes (e.g., redirect to login or dashboard)
-    private snackBar: MatSnackBar           // injected to display user friendly confirmation messages (e.g., success or error notifications) during logged in or logged out
-  ) { }
-  
-
-    ngOnInit() {
-    this.breakpointObserver.observe([Breakpoints.Handset]).subscribe(result => {
-      this.isMobile = result.matches;
-    });
-  }
-
- 
 }

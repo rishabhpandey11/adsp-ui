@@ -1,11 +1,11 @@
-<div class="m-5  overflow-hidden">
+<div class="m-5  overflow-hidden space-y-4">
     <div class=" text-3xl font-sans font-semibold">
         <h1>Chapter 2 : Quantization Signal to Noise Ratio (SNR)</h1>
     </div>
-    
-    <div class="h-6"></div>
+
+
     <div>
-        <mat-card class="example-card text-2xl" appearance="outlined">
+        <mat-card class="example-card text-2xl" appearance="outlined" style="background-color: #FFF5E4;">
             <mat-card-header>
                 <mat-card-title style="color: blue;">1. Learning Objectives</mat-card-title>
             </mat-card-header>
@@ -50,7 +50,7 @@
 
 
 
-    <div class="h-6"></div>
+
 
     <div>
         <mat-card class="example-card text-2xl" appearance="outlined">
@@ -84,19 +84,17 @@
                     A very simple case would be a uniformly distributed signal with amplitude A/2
                     which has values between −A/2 up to +A/2.
                 </p>
+                <p appMathJax="$$E[x^2] = \int_{-\frac{A}{2}}^{\frac{A}{2}} x^{2} \cdot p(x) dx \tag{2.1}$$"></p>
 
-                <p class="text-center mt-3 text-lg font-mono">
-                    E[x^2] = Integral from (-A/2) to (+A/2) of x^2 * p(x) dx (2.1)
-                </p>
+
                 <p class="mt-4">
                     So here we have the same type of signal and the resulting expectation of the power (its second
                     moment assumed we have a zero mean signal) is obtained by using our previous formula and replace
                     $\Delta$ by $A$. The resulting power is:
                 </p>
+                <p appMathJax="$$ \frac{A^2}{12} \tag{2.2} $$"></p>
 
-                <p class="text-center mt-3 text-lg font-mono">
-                    A² / 12 (2.2)
-                </p>
+
 
 
 
@@ -113,42 +111,9 @@
         </mat-card>
     </div>
 
-    <div class="h-6"></div>
-    <div>
-        <mat-card class="example-card text-2xl" appearance="outlined">
-            <mat-card-header>
-                <mat-card-title style="color: blue;">2. Theory Summary</mat-card-title>
-            </mat-card-header>
-            <br>
-            <mat-card-content class="text-lg">
-                <h3 class="text-xl font-semibold font-sans mb-3">2.1 What is Quantization?</h3>
-
-                <p>
-                    Quantization is the process of <strong>rounding a continuous-amplitude signal</strong>
-                    to a finite set of discrete levels so that it can be represented digitally.
-                </p>
-                <p class="text-lg mt-3">
-                    When an analog signal x(t) is sampled → x[n], its amplitude is still continuous.
-                </p>
-
-                <p class="text-lg mt-3">
-                    Quantization replaces each sample with the nearest discrete level q<sub>k</sub>
-                    from a finite set of L = 2<sup>N<sub>L</sub></sup> values.
-                </p>
-
-
-                <p class="text-center mt-3 text-lg font-mono">
-                    x<sub>q</sub>[n] = Q(x[n]) = q<sub>k</sub>, where q<sub>k</sub> &#8712; &#123; q1, q2, ..., qL
-                    &#125;
-                </p>
 
 
 
-            </mat-card-content>
-        </mat-card>
-    </div>
-
-    <div class="h-6"></div>
     <div class="flex flex-col justify-around items-center gap-2">
         <img src="assets/images/chap2/quantization.png" class="w-200 h-80 ">
         <h1 class="text-wrap">
@@ -158,225 +123,21 @@
 
         </h1>
     </div>
-    <div class="h-8"></div>
-    <section>
-        <h3 class="text-xl font-semibold font-sans mb-3">
-            "Example 1: Uniform Quantizer with Finite Resolution”
-        </h3>
-
-
-        <pre class="bg-gray-100 text-sm p-3 rounded-lg overflow-x-auto font-mono mt-2">
-
-# Assume A/D converter input range is -1 V to +1 V
-# and we only have 4-bit accuracy.
-
-stepsize = (1.0 - (-1.0)) / (2**4)   # Δ = full_range / number_of_levels
-print("Quantization step size Δ =", stepsize)
-
-# Let's say the input sample is x = 0.2 V:
-x = 0.2
-
-# Encoder side:
-index = round(x / stepsize)
-print("Quantization index =", index)
-
-# Transmitter would send this index as 4 bits
-
-# Decoder side:
-reconstr = stepsize * index
-print("Reconstructed value =", reconstr, "V")
-
-# Quantization error:
-error = reconstr - x
-print("Quantization error =", error, "V")
-
-
-</pre>
-    </section>
-
-
-    <div class="h-6"></div>
-
-    <div>
-        <mat-card class="example-card text-2xl" appearance="outlined">
-
-            <mat-card-content class="text-lg">
-                <h3 class="text-xl font-semibold font-sans mb-3 " style="color: blue;">2.2 Step Size and Resolution</h3>
-
-                <p>
-                    If the input range is <em>V<sub>min</sub></em> to <em>V<sub>max</sub></em>, then:
-                </p>
-
-                <p class="text-center mt-2 text-lg font-mono">
-                    Δ = (V<sub>max</sub> − V<sub>min</sub>) / L
-                </p>
-
-                <p class="mt-3">
-                    Each quantization level represents an interval of width <em>Δ</em>.
-                </p>
-
-                <p class="mt-2">
-                    Smaller <em>Δ</em> ⇒ finer resolution ⇒ lower quantization error.
-                </p>
-
-            </mat-card-content>
-
-        </mat-card>
-
-
-    </div>
-    <div class="h-6"></div>
-
-
-    <div>
-        <mat-card class="example-card text-2xl" appearance="outlined">
-
-            <mat-card-content class="text-lg">
-                <h3 class="text-xl font-semibold font-sans mb-3" style="color: blue;">2.3 Mid-tread vs Mid-rise</h3>
-
-                <p>
-                    Depending on whether the quantizer has the input voltage 0 at the center of a
-                    quantization interval or on the boundary of that interval, we call the quantizer a
-                    <strong>mid-tread</strong> or a <strong>mid-rise</strong> quantizer.
-                </p>
-
-                <p class="mt-2">
-                    This concept is illustrated in <strong>Figure 2</strong>.
-                </p>
-            </mat-card-content>
-
-        </mat-card>
-
-
-    </div>
-
-    <div class="h-6"></div>
-
-
-
-
-
 
 
     <div class="flex flex-col justify-around items-center gap-2">
-        <img src="assets/images/chap2/fig2.png" class="w-200 h-80 ">
+        <img src="assets/images/chap2/fig2.1.1.gif" class="w-200 h-80 ">
         <h1 class="text-wrap">
-            Figure 2: Mid-rise and Mid-tread quantization.
+            Figure 2.2: full-scale sinusoid is quantized with increasing bit-depth B. As B grows, the staircase
+            distortion becomes finer and the quantized signal converges to the original waveform, while the
+            signal-to-quantization-noise ratio (SNR) increases by roughly 6 dB per additional bit.
         </h1>
     </div>
 
-    <div class="h-6"></div>
-    <section>
-        <h3 class="text-xl font-semibold font-sans mb-3">
-            "Example 2: Mid-Tread vs Mid-Rise Quantization”
-        </h3>
-
-
-        <pre class="bg-gray-100 text-sm p-3 rounded-lg overflow-x-auto font-mono mt-2">
-
-import numpy as np
-
-# Quantization step size (Δ)
-q = 0.1
-
-# Some test samples
-x = np.array([0.012, -1.234, 2.456, -3.789])
-
-# --- Mid-Tread Quantizer ---
-# Encoder: round to nearest multiple of q
-index_mt = np.round(x / q)
-
-# Decoder: reconstruct by multiplying back
-recon_mt = index_mt * q
-
-print("Mid-Tread indices:       ", index_mt)
-print("Mid-Tread reconstruction:", recon_mt)
-
-# --- Mid-Rise Quantizer ---
-# Encoder: floor to lower boundary of the interval
-index_mr = np.floor(x / q)
-
-# Decoder: shift by q/2 (because mid-rise levels sit between the steps)
-recon_mr = index_mr * q + q/2
-
-print("Mid-Rise indices:        ", index_mr)
-print("Mid-Rise reconstruction: ", recon_mr)
 
 
 
-</pre>
-    </section>
-    <div class="h-6"></div>
-    <div>
-        <mat-card class="example-card text-2xl" appearance="outlined">
-            <mat-card-content class="text-lg">
-                <h3 class="text-xl font-semibold font-sans mb-3 " style="color: blue;">
-                    2.4 Quantization Error and Signal-to-Noise Ratio
-                </h3>
 
-                <p>
-                    Quantization introduces an <strong>error</strong> due to the difference between the
-                    input sample and its quantized representation.
-                </p>
-
-                <p class="text-center mt-2 text-lg font-mono">
-                    e[n] = x[n] − x<sub>q</sub>[n]
-                </p>
-
-                <p class="mt-3">
-                    For a <strong>uniform quantizer</strong> and under the <strong>high-resolution assumption</strong>:
-                </p>
-
-                <p class="text-center mt-2 text-lg font-mono">
-                    σ<sub>e</sub><sup>2</sup> = Δ<sup>2</sup> / 12, &nbsp;&nbsp;
-                    SNR<sub>dB</sub> ≈ 6.02N + 1.76
-                </p>
-
-                <p class="mt-3">
-                    This means every additional bit roughly adds <strong>6 dB</strong> of SNR —
-                    we’ll confirm this in <strong>Module 2</strong>.
-                </p>
-
-            </mat-card-content>
-
-        </mat-card>
-
-
-    </div>
-    <div class="h-6"></div>
-
-    <div class="flex flex-col justify-around items-center gap-2">
-        <img src="assets/images/chap2/fig3.png" class="w-200 h-100 ">
-        <h1 class="text-wrap">
-            Figure 3. illustrates an example for a quantization error, indicating the difference between the original
-            signal and the quantized signal.
-        </h1>
-    </div>
-    <div class="h-6"></div>
-
-    <div>
-        <mat-card class="example-card text-2xl" appearance="outlined">
-            <mat-card-content class="text-lg">
-                <h3 class="text-xl font-semibold font-sans mb-3 " style="color: blue;">
-                    2.5 Example Context – ITU G.711 Speech Coding
-                </h3>
-
-                <p>
-                    In telephony, speech is sampled at <strong>8 kHz</strong> and quantized with
-                    <strong>8 bits per sample</strong>.
-                </p>
-
-                <p class="mt-2">
-                    Later, we’ll see how <strong>μ-law companding</strong> improves
-                    <em>small-amplitude resolution</em> before this quantization step.
-                </p>
-            </mat-card-content>
-
-        </mat-card>
-
-
-    </div>
-    <div class="h-6"></div>
     <div>
         <mat-card class="example-card text-2xl" appearance="outlined">
 
@@ -403,8 +164,13 @@ print("Mid-Rise reconstruction: ", recon_mr)
 
 
     </div>
+    <div class="flex flex-col justify-around items-center gap-2">
+        <img src="assets/images/chap2/fig2.1.2.png" class="w-200 h-100 ">
+        <h1 class="text-wrap">
+            Figure 2.2: Triangular wave with uniform pdf
+        </h1>
+    </div>
 
-    <div class="h-6"></div>
 
 
 
@@ -434,7 +200,7 @@ print("Mid-Rise reconstruction: ", recon_mr)
     </div>
 
 
-    <div class="h-6"></div>
+
 
     <div class="flex flex-col justify-around items-center gap-2">
         <img src="assets/images/chap2/fig2.2.png" class="w-200 h-100 ">
@@ -443,7 +209,76 @@ print("Mid-Rise reconstruction: ", recon_mr)
         </h1>
     </div>
 
-    <div class="h-6"></div>
+    <div>
+        <mat-card class="example-card text-2xl" appearance="outlined">
+
+            <mat-card-content class="text-lg">
+                <h3 class="text-2xl font-semibold font-sans " style="color: rgb(22, 22, 22);">
+                    2.3 Calculating the SNR
+                </h3>
+
+
+                <p class="mt-4">
+                    So what does this then mean for the SNR? The SNR is just the ratio:
+                </p>
+
+                <p class="text-lg font-mono mt-3 text-center" appMathJax="$$ SNR = \frac{A^2/12}{\Delta^2/12} = \frac{A^2}{\Delta^2} \tag{2.3}
+
+ $$">
+                </p>
+
+                <p>
+                    If we assume our signal is full range, meaning the maximum values of our A/D converter are
+                    &minus;A&#8260;2 and +A&#8260;2 (the signal goes to the maximum), we can compute the step size
+                    &Delta; if we know the number of bits of the converter and if we assume uniform quantization
+                    step sizes.
+                </p>
+
+                <p>
+                    Assume we have <strong>N</strong> bits in our converter. This means we have
+                    <strong>2<sup>N</sup></strong> quantization intervals.
+                </p>
+
+                <p>
+                    We obtain the step size <strong>&Delta;</strong> by dividing the full range by this number:
+                </p>
+
+
+
+                <p class="text-lg font-mono mt-3 text-center" appMathJax="$$ \Delta = \frac{A}{2^N} \tag{2.4}
+
+ $$">
+                </p>
+
+                <p>
+                    Plug this in the SNR equation and we obtain:
+                </p>
+
+                <p class="text-lg font-mono mt-3 text-center" appMathJax="$$ SNR = \frac{A^2}{\Delta^2} = \frac{A^2}{(\frac{A}{2^N})^2} = 2^{2N} \tag{2.5}
+ $$">
+                </p>
+                <p>
+                    This is now quite a simple result! But usually, the SNR is given in dB (decibels), so let’s convert
+                    it into dB:
+                </p>
+
+
+                <p class="text-lg font-mono mt-3 text-center" appMathJax="$$ SNR_{dB} = 10 \cdot \log_{10}(2^{2N}) = 10 \cdot 2N \cdot \log_{10}(2) \approx 6.02N \text{ dB} \tag{2.6}
+ $$">
+                </p>
+
+                <p>
+                    This is now our famous rule of thumb that each bit more gives you about 6 dB more SNR. But observe
+                    that
+                    the above formula only holds for uniformly distributed full-range signals!
+                    (The signal is between &minus;A&#8260;2 and +A&#8260;2 using all possible values of our converter.)
+                </p>
+
+            </mat-card-content>
+
+        </mat-card>
+    </div>
+
 
 
 
@@ -463,18 +298,17 @@ print("Mid-Rise reconstruction: ", recon_mr)
                 <p class="text-lg mt-3">
                     We can plug this into our equation:
                 </p>
+                <p class="text-lg font-mono mt-3 text-center" appMathJax="$$ 
 
-                <p class="text-lg font-mono mt-3 text-center">
-                    SNR = (A / c)² / Δ² = (A / c)² / (A / 2ⁿ)² = 2^(2N) / c²
-                    (Equation 2.7)
+SNR = \frac{(A/c)^2}{\Delta^2} = \frac{(A/c)^2}{(A/2^N)^2} = 2^{2N} / c^2 \tag{2.7} $$"></p>
+
+                <p class="text-lg font-mono mt-3 text-center"
+                    appMathJax="$$ 
+
+SNR_{dB} = 10 \cdot \log_{10}(2^{2N}/c^2) = 10 \cdot 2N \cdot \log_{10}(2) - 20 \cdot \log_{10}(c) \approx 6.02N \text{ dB} - 20 \cdot \log_{10}(c) \tag{2.8} $$">
                 </p>
 
-                <p class="text-lg font-mono mt-3 text-center">
-                    SNR_dB = 10 * log10(2^(2N) / c²)
-                    = 10 * 2N * log10(2) − 20 * log10(c)
-                    ≈ 6.02N − 20 log10(c)
-                    (Equation 2.8)
-                </p>
+
 
                 <p class="text-lg mt-3">
                     The term 20 · log10(c) is the number of decibels by which we are below full range.
@@ -487,10 +321,12 @@ print("Mid-Rise reconstruction: ", recon_mr)
                 <p class="text-lg mt-3">
                     For a 16-bit quantizer, the SNR for a full-range uniform signal is:
                 </p>
+                <p class="text-lg font-mono mt-3 text-center" appMathJax="$$  SNR = 6.02 \cdot 16 \text{ dB} = 96.32 \text{ dB} \tag{2.9} 
 
-                <p class="text-lg font-mono mt-2 text-center">
-                    SNR = 6.02 * 16 dB = 96.32 dB (Equation 2.9)
+ $$">
                 </p>
+
+
 
                 <p class="text-lg mt-3">
                     Now assume the same signal is 20 dB below full range (i.e., only one-tenth of the
@@ -515,7 +351,7 @@ print("Mid-Rise reconstruction: ", recon_mr)
 
 
 
-    <div class="h-6"></div>
+
 
     <div>
         <mat-card class="example-card text-2xl" appearance="outlined">
@@ -548,7 +384,7 @@ print("Mid-Rise reconstruction: ", recon_mr)
         </mat-card>
     </div>
 
-    <div class="h-6"></div>
+
 
     <div class="flex flex-col justify-around items-center gap-2">
         <img src="assets/images/chap2/fig2.3.png" class="w-200 h-100 ">
@@ -557,7 +393,7 @@ print("Mid-Rise reconstruction: ", recon_mr)
         </h1>
     </div>
 
-    <div class="h-6"></div>
+
 
     <div>
         <mat-card class="example-card text-2xl" appearance="outlined">
@@ -586,7 +422,7 @@ print("Mid-Rise reconstruction: ", recon_mr)
 
 
     <!-- Test section  -->
-    <div class="h-6"></div>
+
 
     <div class="flex flex-col items-center p-3 gap-6">
         <h2 class="text-2xl font-sans font-semibold mb-4">🧠 Test Your Knowledge</h2>

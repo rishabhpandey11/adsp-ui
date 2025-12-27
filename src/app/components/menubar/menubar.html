@@ -1,34 +1,55 @@
-<mat-toolbar  class="mat-elevation-z8" style="background-color: #010101; color: white;">
-    <button (click)="drawer.toggle()" mat-icon-button>
-        <mat-icon style="color: white;">menu</mat-icon>
-    </button>
-    <span>Acoustic Signal Processing</span>
-    <span class="example-spacer"></span>
-    
-     <button mat-icon-button class="hover:scale-105" style="color: white;" matTooltip="Start Page" >
-        <!-- Logout button with a tooltip, calls logoutUser() when clicked -->
-        <mat-icon [routerLink]="'/'" >home</mat-icon> <!-- Logout icon -->
-      </button>
+<mat-toolbar class="mat-elevation-z8" style="background-color: #090909; color: white;">
+  <button (click)="drawer.toggle()" mat-icon-button>
+    <mat-icon style="color: white;">menu</mat-icon>
+  </button>
+  <span>Acoustic Signal Processing</span>
+  <span class="example-spacer"></span>
 
-   
-
- 
+  <button mat-icon-button class="hover:scale-105" style="color: white;" matTooltip="Start Page">
+    <mat-icon [routerLink]="'/'">home</mat-icon>
+  </button>
 </mat-toolbar>
-<mat-drawer-container >
-    <mat-drawer #drawer opened="true" mode="side"   [attr.role]="isMobile ? 'dialog' : 'navigation'" [style.width.px]="isMobile ? 50 : 250" position="start">
-    <mat-nav-list>
-      <!-- Navigation list for the menu items -->
-      <a mat-list-item *ngFor="let item of menuItems; index as i" [routerLink]="item.route" fxLayout="row" fxLayoutAlign="start center">
-        <!-- Iterates over menuItems array, creating a list item for each, linking to the specified route, the array is located in dashboard.component.ts and one can easily add new routes -->
-        <mat-icon matListItemIcon>{{ item.icon }}</mat-icon> <!-- Icon for each menu item -->
-        <span *ngIf="!isMobile" fxHide.lt-md>{{ item.label }}</span> <!-- Label for each menu item -->
-      </a>
-    </mat-nav-list>
-    </mat-drawer>
-    <mat-drawer-content class="bg-gray-200">
-        <div class="p-1 m-1 "   >
 
-            <router-outlet></router-outlet>
-            </div>
-    </mat-drawer-content>
+<mat-drawer-container>
+  <mat-drawer #drawer opened="true"   [mode]="isMobile ? 'over' : 'side'"
+    [attr.role]="isMobile ? 'dialog' : 'navigation'"
+    [style.width.px]="isMobile ? 180 : 250" position="start">
+
+    <mat-tree #tree [dataSource]="dataSource" [childrenAccessor]="childrenAccessor">
+
+      <!-- LEAF NODE (No children, only navigation) -->
+      <mat-tree-node *matTreeNodeDef="let node" matTreeNodePadding>
+        <button mat-icon-button disabled>
+          <mat-icon>{{ node.icon }}</mat-icon>
+        </button>
+
+        <a mat-list-item [routerLink]="node.route"  class="text-sm">
+          <span   >{{ node.label }}</span>
+        </a>
+      </mat-tree-node>
+
+      <!-- PARENT NODE (Expandable + navigable) -->
+      <mat-tree-node *matTreeNodeDef="let node; when: hasChild" matTreeNodePadding>
+        <!-- ICON BUTTON → expands/collapses -->
+        <button mat-icon-button matTreeNodeToggle (click)="$event.stopPropagation()">
+          <mat-icon>
+            {{ tree.isExpanded(node) ? 'expand_more' : node.icon }}
+          </mat-icon>
+        </button>
+
+        <!-- LABEL → navigates to route -->
+        <a mat-list-item [routerLink]="node.route" (click)="$event.stopPropagation()"  class="text-base">
+          <span>{{ node.label }}</span>
+        </a>
+      </mat-tree-node>
+
+    </mat-tree>
+
+  </mat-drawer>
+
+  <mat-drawer-content class="bg-gray-200">
+    <div class="p-1 m-1">
+      <router-outlet></router-outlet>
+    </div>
+  </mat-drawer-content>
 </mat-drawer-container>

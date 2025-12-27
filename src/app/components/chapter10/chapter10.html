@@ -1,13 +1,11 @@
 <div class="m-5 overflow-hidden space-y-6">
 
-    <div class=" text-3xl font-sans font-semibold flex justify-between items-center">
+    <div class=" text-3xl font-sans font-semibold ">
 
         <h1>Chapter 10 : Minimum Phase Filters</h1>
 
 
-        <div>
-            <button matButton="elevated">Exercises</button>
-        </div>
+
 
     </div>
 
@@ -20,13 +18,20 @@
                 </h3>
 
 
-                <p class="mt-4">
+                <ul class="space-y-2">
+                    <li>Understand the difference between <strong>linear phase</strong> and <strong>minimum
+                            phase</strong> filters.</li>
+                    <li>Learn how minimum phase filters minimize <strong>group delay</strong> for a given magnitude
+                        response.</li>
+                    <li>Explore the relationship between <strong>pole-zero locations</strong> and filter stability.</li>
+                    <li>Design minimum phase filters by <strong>reflecting zeros</strong> from outside to inside the
+                        unit circle.</li>
+                    <li>Implement and analyze minimum phase filters using <strong>Python</strong> (NumPy and SciPy).
+                    </li>
+                    <li>Apply minimum phase filters for <strong>equalization</strong> and <strong>low-delay</strong>
+                        applications.</li>
+                </ul>
 
-
-                    Students will understand the concept and properties of minimum-phase filters, learn how they differ
-                    from linear-phase filters, and know how to convert and implement them using Python. They will also
-                    grasp their applications in speech and audio processing due to their low group delay.
-                </p>
             </mat-card-content>
 
         </mat-card>
@@ -37,20 +42,26 @@
 
             <mat-card-content class="text-lg">
                 <h3 class="text-xl font-semibold font-sans mb-3" style="color: blue;">
-                    2. Theory
+                    10.1. Introduction
                 </h3>
 
-
+                <div class="flex flex-col justify-around items-center gap-2">
+                    <img src="assets/images/chap10/fig10.11.gif" class="w-130 h-110 ">
+                    <h1 class="text-wrap">
+                        Top and bottom are filters with same gain response (on the left : the Nyquist plot, on the
+                        right : phase responses), but the filter on the top with a=0.8
+                         </h1>
+                </div>
                 <p class="mt-4">
 
 
                     Remember linear phase filters. Its phase function is linear:
 
                 </p>
-
-                <p class="text-center m-4 text-lg font-mono">
-                    ϕ(Ω) = −Ω · d
-                </p>
+<p class="text-lg font-mono mt-3 text-center"
+                    appMathJax="$$ 
+\phi(\Omega) = -\Omega \cdot d
+ $$"></p>
 
                 <p>
                     with a group delay of constant d. The impulse responses of linear phase filters have the
@@ -92,72 +103,48 @@ plot(hsinc)
                     response h(n), and such that it is symmetric around the delay factor d. We can factor
                     it out from the DTFT of this symmetric impulse response,
                 </p>
-
-                <p class="text-center mt-3 text-lg font-mono">
-                    H(e
-                    jΩ
-                    ) = X
-                    2d
-                    n=0
-                    h(n) · e
-                    - jΩn
-                </p>
+<p class="text-lg font-mono mt-3 text-center"
+                    appMathJax="$$ 
+H(e^{j\Omega}) = \sum_{n=0}^{2d} h(n) \cdot e^{-j\Omega n}
+ $$"></p>
+              
 
 
                 <p class="mt-4">
                     We factor out the center exponential,
                 </p>
-                <p class="text-center mt-3 text-lg font-mono">
-                    H(e
-                    jΩ
-                    ) = e
-                    −jΩd
-                    ·
-                    X
-                    2d
-                    n=0
-                    h(n) · e
-                    −jΩ(n−d)
-                </p>
+                <p class="text-lg font-mono mt-3 text-center"
+                    appMathJax="$$ 
+H(e^{j\Omega}) = \sum_{n=0}^{2d} h(n) \cdot e^{-j\Omega n}
+ $$"></p>
+              
+                
                 <p class="mt-4">
                     since h(d - n) = h(d + n) we get:
                 </p>
-                <p class="text-center mt-3 text-lg font-mono">
-                    H(e
-                    jΩ
-                    ) = e
-                    −jΩd
-                    ·
-                    X
-                    d
-                    n=0
-                    h(n) · (e
-                    −jΩ(d−n) + e
-                    jΩ(d−n)
-                    )
-                </p>
-
-                <p class="text-center mt-3 text-lg font-mono">
-                    H(e
-                    jΩ
-                    ) = e
-                    −jΩd
-                    ·
-                    X
-                    d
-                    n=0
-                    h(n) · 2 · cos(Ω(d − n))
-                </p>
+                <p class="text-lg font-mono mt-3 text-center"
+                    appMathJax="$$ 
+H(e^{j\Omega}) = e^{-j\Omega d} \cdot \sum_{n=0}^{2d} h(n) \cdot e^{-j\Omega(n-d)}
+ $$"></p>
+              
+                  
+<p class="text-lg font-mono mt-3 text-center"
+                    appMathJax="$$ 
+\begin{align*}
+H(e^{j\Omega}) &= e^{-j\Omega d} \cdot \sum_{n=0}^{d} h(n) \cdot (e^{-j\Omega(d-n)} + e^{j\Omega(d-n)}) \\
+&= e^{-j\Omega d} \cdot \sum_{n=0}^{d} h(n) \cdot 2 \cdot \cos(\Omega(d - n))
+\end{align*}
+ $$"></p>
+               
                 <p class="mt-4">
                     Because the sum is now real valued, the phase is determined only by the exponential
                     factor:
                 </p>
-                <p class="text-center mt-3 text-lg font-mono">
-                    angle(H(e
-                    jΩ
-                    )) = −dΩ
-                </p>
-
+                <p class="text-lg font-mono mt-3 text-center"
+                    appMathJax="$$ 
+\text{angle}(H(e^{j\Omega})) = -d\Omega
+ $$"></p>
+               
 
                 <p class="mt-4">
                     Hence here we showed that any symmetric filter has a linear phase, and that the center
@@ -217,10 +204,8 @@ array([1.7299423 , 1. , 1. , 0.57805396, 1. ,
                 </p>
 
                 <div class="flex flex-col justify-around items-center gap-2">
-                    <img src="assets/images/chap10/fig10.3.png" class="w-180 h-80 shadow-xl">
-                    <h1 class="text-wrap">
-
-                    </h1>
+                    <img src="assets/images/chap10/fig10.3.png" class="w-180 h-110 shadow-xl">
+                    
                 </div>
 
                 <p class="mt-4">
@@ -232,9 +217,11 @@ array([1.7299423 , 1. , 1. , 0.57805396, 1. ,
                     in the z-domain. We can write all linear filters as a concatenation of a minimum phase
                     filter with an allpass filter,
                 </p>
-                <p class="text-center mt-3 text-lg font-mono">
-                    H(z) = Hmin(z) · Hap(z)
-                </p>
+                <p class="text-lg font-mono mt-3 text-center"
+                    appMathJax="$$ 
+H(z) = H_{min}(z) \cdot H_{ap}(z)
+ $$"></p>
+              
                 <p class="mt-4">
                     This can be seen from a (hypothetical) minimum phase system Hmin(z), which has all
                     its zeros inside the unit circle. Now we concatenate/multiply it with an allpass filter, such that
@@ -250,29 +237,30 @@ array([1.7299423 , 1. , 1. , 0.57805396, 1. ,
                     from a recording. As we saw above, this transfer function can be written as the product
                 </p>
 
-
-                <p class="text-center mt-3 text-lg font-mono">
-
-                    H(z) = Hmin(z) · Hap(z)
-                </p>
+<p class="text-lg font-mono mt-3 text-center"
+                    appMathJax="$$ 
+H(z) = H_{min}(z) \cdot H_{ap}(z)
+ $$"></p>
+              
                 <p>
                     Only Hmin(z) has a stable inverse. Hence we design our compensation filter as
 
 
                 </p>
-
-                <p class="text-center mt-3 text-lg font-mono">
-                    Hc(z) = 1
-                    Hmin(z)
-                </p>
+<p class="text-lg font-mono mt-3 text-center"
+                    appMathJax="$$ 
+H_c(z) = \frac{1}{H_{min}(z)}
+ $$"></p>
+              
                 <p>
                     If we apply this compensation filter after our given transfer function, for instance from
                     a recording, we obtain the overall system function as
                 </p>
-                <p class="text-center mt-3 text-lg font-mono">
-
-                    G(z) = H(z) · Hc(z) = Hap(z)
-                </p>
+                <p class="text-lg font-mono mt-3 text-center"
+                    appMathJax="$$ 
+G(z) = H(z) \cdot H_c(z) = H_{ap}(z)
+ $$"></p>
+              
 
                 <p class="mt-4">
                     This means the overall transfer function now is an allpass, with a constant magnitude
@@ -433,7 +421,7 @@ plt.grid()
 
 </pre>
                 <div class="flex flex-col justify-around items-center gap-2">
-                    <img src="assets/images/chap10/fig10.5.png" class="w-180 h-80 ">
+                    <img src="assets/images/chap10/fig10.5.png" class="w-180 h-110 ">
                     <h1 class="text-wrap">
 
                     </h1>
@@ -460,7 +448,7 @@ freqz(hmin)
                     the same, but the phase looks different, because it starts at 0 instead of pi as before.
                 </p>
                 <div class="flex flex-col justify-around items-center gap-2">
-                    <img src="assets/images/chap10/fig10.6.png" class="w-180 h-80 ">
+                    <img src="assets/images/chap10/fig10.6.png" class="w-180 h-110 ">
                     <h1 class="text-wrap">
 
                     </h1>
@@ -488,7 +476,7 @@ hsincmp*1.73: [-0.17982183+0.j -0.58277503+0.j -0.91783009+0.j -0.9251839 +0.j
                     We see: The coefficients are similar, but have indeed opposite signs.
                 </p>
                 <div class="flex flex-col justify-around items-center gap-2">
-                    <img src="assets/images/chap10/fig10.7.png" class="w-180 h-80 ">
+                    <img src="assets/images/chap10/fig10.7.png" class="w-180 h-110 ">
                     <h1 class="text-wrap">
 
                     </h1>
@@ -505,7 +493,7 @@ hsincmp*1.73: [-0.17982183+0.j -0.58277503+0.j -0.91783009+0.j -0.9251839 +0.j
 
 
 
-                <h3 class="text-2xl font-semibold text-blue-700">Key Concepts</h3>
+                <h3 class="text-2xl font-semibold text-blue-700">10.2 Key Concepts</h3>
 
 
                 <p class="mt-4"><strong>Definition:</strong> Minimum-phase filters are causal and stable systems where
@@ -557,7 +545,7 @@ hsincmp*1.73: [-0.17982183+0.j -0.58277503+0.j -0.91783009+0.j -0.9251839 +0.j
 
                 <div class="space-y-8">
 
-                    <h3 class="text-2xl font-bold text-gray-800">10.2 Homework Problems</h3>
+                    <h3 class="text-2xl font-bold text-gray-800">10.3 Homework Problems</h3>
 
                     <!-- Problem 1 -->
                     <div class="space-y-2">
@@ -566,9 +554,10 @@ hsincmp*1.73: [-0.17982183+0.j -0.58277503+0.j -0.91783009+0.j -0.9251839 +0.j
                         <p class="text-gray-700">
                             Given the following z-transform, identify if it corresponds to a minimum-phase system:
                         </p>
-                        <div class="bg-gray-100 font-mono px-3 py-2 rounded text-sm inline-block">
-                            H(z) = ((z - 0.5)(z - 0.8)) / ((z - 0.4)(z - 0.7))
-                        </div>
+                        <p class="text-lg font-mono mt-3 text-center"
+                    appMathJax="$$ 
+H(z) = \frac{(z - 0.5)(z - 0.8)}{(z - 0.4)(z - 0.7)} $$"></p>
+                       
                         <ul class="list-disc ml-6 text-gray-700">
                             <li>Check the location of zeros and poles and justify your answer.</li>
                         </ul>
@@ -581,6 +570,10 @@ hsincmp*1.73: [-0.17982183+0.j -0.58277503+0.j -0.91783009+0.j -0.9251839 +0.j
                         <div class="bg-gray-100 font-mono px-3 py-2 rounded text-sm inline-block">
                             H(z) = ((z + 1.2)(z - 0.6)) / (z + 0.5)
                         </div>
+                        <p class="text-lg font-mono mt-3 text-center"
+                    appMathJax="$$ H(z) = \frac{(z + 1.2)(z - 0.6)}{(z + 0.5)}
+
+ $$"></p>
 
                         <ol class="list-decimal ml-6 text-gray-700 space-y-1">
                             <li>Plot the poles and zeros in the z-plane.</li>
@@ -596,6 +589,10 @@ hsincmp*1.73: [-0.17982183+0.j -0.58277503+0.j -0.91783009+0.j -0.9251839 +0.j
                         <div class="bg-gray-100 font-mono px-3 py-2 rounded text-sm inline-block">
                             H(z) = (1 - 0.5 z⁻¹) / (1 + 0.8 z⁻¹)
                         </div>
+                        <p class="text-lg font-mono mt-3 text-center"
+                    appMathJax="$$ 
+H(z) = \frac{1 - 0.5z^{-1}}{1 + 0.8z^{-1}}
+ $$"></p>
                         <ul class="list-disc ml-6 text-gray-700 space-y-1">
                             <li>Calculate the group delay using its phase response.</li>
                             <li>Plot the group delay for the frequency range ω in [0, π].</li>
@@ -634,9 +631,11 @@ hsincmp*1.73: [-0.17982183+0.j -0.58277503+0.j -0.91783009+0.j -0.9251839 +0.j
                         <h4 class="text-xl font-semibold text-gray-700">Problem 6: All-Pass Decomposition</h4>
                         <p class="text-gray-700">Decompose the following transfer function into a minimum-phase
                             component and an all-pass filter:</p>
-                        <div class="bg-gray-100 font-mono px-3 py-2 rounded text-sm inline-block">
-                            H(z) = (1 - 1.5 z⁻¹ + 0.75 z⁻²) / (1 + 0.5 z⁻¹)
-                        </div>
+                            <p class="text-lg font-mono mt-3 text-center"
+                    appMathJax="$$ 
+H(z) = \frac{1 - 1.5z^{-1} + 0.75z^{-2}}{1 + 0.5z^{-1}}
+ $$"></p>
+                       
                         <ul class="list-disc ml-6 text-gray-700 space-y-1">
                             <li>Verify that the product of the minimum-phase and all-pass components yields the original
                                 H(z).</li>
@@ -651,8 +650,8 @@ hsincmp*1.73: [-0.17982183+0.j -0.58277503+0.j -0.91783009+0.j -0.9251839 +0.j
         </mat-card>
     </div>
 
-      <!-- Test section  -->
-  
+    <!-- Test section  -->
+
 
     <div class="flex flex-col items-center p-3 gap-6">
         <h2 class="text-2xl font-sans font-semibold mb-4">🧠 Test Your Knowledge</h2>

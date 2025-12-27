@@ -10,18 +10,18 @@
 
         <div class="mt-3 flex gap-3">
             <button mat-raised-button color="primary" (click)="runCode()" [disabled]="loading">
-                ▶ Run
+               ▶️
+                Run
             </button>
             <button mat-raised-button color="accent" (click)="output = ''">
-                Clear
+               🧹 Clear
             </button>
         </div>
-        <div class="mt-4 p-3 rounded font-sans bg-gray-100 max-h-[400px] overflow-auto">
-            <pre class="whitespace-pre-wrap m-0" [innerHTML]="output"></pre>
-        </div>
+     
 
-        <!-- <div class="mt-4 font-mono p-3 rounded">
-  <div [innerHTML]="output"></div>
-</div> -->
+       
+        <div class="mt-4 font-mono p-3 rounded">
+  <div class="whitespace-pre-wrap m-0" [innerHTML]="output"></div>
+</div>
     </mat-card-content>
 </mat-card>

@@ -11,7 +11,7 @@ import { MatCardModule } from '@angular/material/card';
   styleUrl: './pycodechap1.css',
 })
 export class Pycodechap1 implements OnInit {
-  @Input() title = '🧪 Python Editor';
+ title = '🧪 Python Editor';
   @Input() code = ''; // default snippet passed from parent
 
   output = '';

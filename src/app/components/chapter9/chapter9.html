@@ -2,28 +2,32 @@
     <div class=" text-3xl font-sans font-semibold">
         <h1>Chapter 9 : Allpass Filters, Warping</h1>
     </div>
-   
+
     <div>
         <mat-card class="example-card text-2xl" appearance="outlined">
 
             <mat-card-content class="text-lg">
+                <h3 class="text-2xl font-semibold font-sans " style="color: blue;">
+                    Learning Objectives
+                </h3>
 
 
+                <p>By the end of this chapter, you should be able to:</p>
 
-                <p class="mt-4">
-                    This book presents the algorithms with Python examples, and the mathematics behind them, of advanced
-                    This chapter helps students understand how allpass filters maintain a constant magnitude response
-                    while shaping the phase. Learners will explore how these filters create fractional delays and how
-                    their phase response can warp the frequency axis. The chapter also introduces frequency-warping
-                    techniques and shows how replacing FIR delays with allpass sections affects filter behavior.
-                    Students will finally understand how warping relates to perceptual scales such as the Bark scale.
-                </p>
+                <ul class="space-y-2">
+                    <li>Understand the properties of allpass filters</li>
+                    <li>Design fractional delay filters using FIR and IIR approaches</li>
+                    <li>Analyze group delay behavior in IIR allpass filters</li>
+                    <li>Implement frequency warping to approximate the Bark scale</li>
+                    <li>Apply allpass-based warping to FIR filter design</li>
+                </ul>
+
             </mat-card-content>
 
         </mat-card>
     </div>
 
-   
+
 
 
     <div>
@@ -33,11 +37,7 @@
 
 
                 <h3 class="text-2xl font-semibold font-sans " style="color: blue;">
-                    1. Theory
-                </h3>
-
-                <h3 class="text-xl font-semibold font-sans mt-3">
-                    1.1 Allpass Filters
+                    9.1 Allpass Filters
                 </h3>
 
 
@@ -46,55 +46,53 @@
                     the phase. For allpass filters, it is basically the other way around.
                     In the beginning of filter design, we saw that we can write a transfer function as
                 </p>
-                <p class="text-center mt-3 text-lg font-mono">
-                    H(e
-                    jΩ
-                    ) = e
-                    jϕ(Ω)
-                    · A(e
-                    jΩ
-                    )
-                </p>
+                <p class="text-lg font-mono mt-3 text-center" appMathJax="$$ H(e^{j\Omega}) = e^{j\phi(\Omega)} \cdot A(e^{j\Omega})
+
+ $$"></p>
+
 
                 <p class="mt-3">
                     Here we specify, or rather, alter the phase, and keep the the magnitude of our frequency
                     response at constant 1, meaning
                 </p>
-                <p class="text-center mt-3 text-lg font-mono">
+                <p class="text-lg font-mono mt-3 text-center" appMathJax="$$ A(e^{j\Omega}) = 1
 
+ $$"></p>
 
-                    A(e
-                    jΩ
-                    ) = 1
-                </p>
                 <p class="mt-3">
                     Hence we would like to have a filter with transfer function H of magnitude constant 1,
                 </p>
-                <p class="text-center mt-3 text-lg font-mono">
+                <p class="text-lg font-mono mt-3 text-center" appMathJax="$$ |H(e^{j\Omega})| = 1
 
+ $$"></p>
 
-                    H(e
-                    jΩ
-                    )
-
-                    = 1
-                </p>
                 <p class="mt-3">
                     This also means: The magnitude of our z-transform is 1 on the unit circle in complex
                     z-plane
                 </p>
+                <br>
+
+                <div class="flex flex-col justify-around items-center gap-2">
+                    <img src="assets/images/chap9/fig9.11.gif" class="w-180 h-100 ">
+
+                    <h1 class="text-wrap">
+                        Example of a sweeping 1st-order all-pass applied to two different sinusoidals: For very high
+                        filter frequencies, both signals are only delayed by the same small time, whereas for very low
+                        frequencies the delay approaches ½ or the signal period[8a].
+                    </h1>
+                </div>
             </mat-card-content>
 
         </mat-card>
     </div>
-   
+
     <div>
         <mat-card class="example-card text-2xl" appearance="outlined">
 
 
             <mat-card-content class="text-lg">
                 <h3 class="text-xl font-semibold font-sans ">
-                    1.2 Allpass Filter as Fractional Delay </h3>
+                    9.2 Allpass Filter as Fractional Delay </h3>
 
                 <p class="mt-3">
                     We can use such a filter to implement a “fractional” delay d, where d is a real number,
@@ -104,52 +102,50 @@
                     domain is
                 </p>
 
+                <p class="text-lg font-mono mt-3 text-center" appMathJax="$$ 
+H(e^{j\Omega}) = e^{-j\Omega \cdot d}
+ $$"></p>
 
 
-
-                <p class="text-center mt-3 text-lg font-mono">
-                    H(e
-                    jΩ
-                    ) = e
-                    −jΩ·d
-                </p>
+                
 
                 <p class="mt-3">
                     To obtain its ideal impulse response for a filter design, we apply the inverse DTFT, also as seen in
                     lecture 8,
                 </p>
+                <p class="text-lg font-mono mt-3 text-center" appMathJax="$$ 
+h(n) = \frac{1}{2\pi} \cdot \int_{\Omega=-\pi}^{\pi} H(e^{j\Omega})e^{j\Omega n} d\Omega =
+ $$"></p>
 
-                <p class="text-center mt-3 text-lg font-mono">
-                    h(n) = (1 / (2*pi)) * integral from -pi to pi of H(e^(j*Omega)) * e^(j*Omega*n) dOmega
-                </p>
+                <p class="text-lg font-mono mt-3 text-center" appMathJax="$$ 
+h(n) = \frac{1}{2\pi} \cdot \int_{\Omega=-\pi}^{\pi} e^{-j\Omega d} e^{j\Omega n} d\Omega =
+ $$"></p>
+                <p class="text-lg font-mono mt-3 text-center" appMathJax="$$ = \frac{1}{2\pi} \cdot \int_{\Omega=-\pi}^{\pi} e^{j\Omega(-d+n)} d\Omega =
 
-                <p class="text-center mt-3 text-lg font-mono">
-                    h(n) = (1 / (2*pi)) * integral from -pi to pi of e^(-j*Omega*d) * e^(j*Omega*n) dOmega
-                </p>
+ $$"></p>
 
-                <p class="text-center mt-3 text-lg font-mono">
-                    h(n) = (1 / (2*pi)) * integral from -pi to pi of e^(j*Omega*(n - d)) dOmega
-                </p>
+                <p class="text-lg font-mono mt-3 text-center" appMathJax="$$ 
+= \frac{1}{2\pi} \cdot \left( \frac{1}{j \cdot (-d+n)} e^{j\pi(-d+n)} - \frac{1}{j \cdot (-d+n)} e^{-j\pi(-d+n)} \right) =
+ $$"></p>
 
-                <p class="text-center mt-3 text-lg font-mono">
-                    (1 / (2*pi)) * [ (1 / (j*(n - d))) * e^(j*pi*(n - d)) - (1 / (j*(n - d))) * e^(-j*pi*(n - d)) ] =
+                <p>
+                    Using below formula we obtain:
                 </p>
+                <p class="text-lg font-mono mt-3 text-center" appMathJax="$$ e^{j \cdot x} - e^{-j \cdot x} = 2 \cdot j \cdot \sin(x)
 
-                <p class="text-center mt-3 text-lg font-mono">
-                    Using e^(j*x) - e^(-j*x) = 2*j*sin(x) we obtain:
-                </p>
+ $$"></p>
 
-                <p class="text-center mt-3 text-lg font-mono">
-                    (1 / (2*pi*j*(n - d))) * 2*j * sin(pi*(n - d)) =
-                </p>
+                <p class="text-lg font-mono mt-3 text-center" appMathJax="$$ = \frac{1}{2 \cdot \pi \cdot j \cdot (-d+n)} \cdot 2 \cdot j \cdot \sin(\pi \cdot (-d+n)) =
 
-                <p class="text-center mt-3 text-lg font-mono">
-                    (1 / (pi*(n - d))) * sin(pi*(n - d))
-                </p>
+ $$"></p>
 
-                <p class="text-center mt-3 text-lg font-mono">
-                    sinc(n - d)
-                </p>
+                <p class="text-lg font-mono mt-3 text-center" appMathJax="$$ 
+= \frac{1}{\pi \cdot (-d+n)} \cdot \sin(\pi \cdot (-d+n)) =
+ $$"></p>
+
+                <p class="text-lg font-mono mt-3 text-center" appMathJax="$$ sinc(-d+n)
+
+ $$"></p>
 
                 <p class="mt-3">
                     This means our ideal impulse response is simply a sinc function, shifted by d! For the case of an
@@ -172,24 +168,25 @@
 
 
     </div>
-  
 
 
-   
+
+
     <div>
         <mat-card class="example-card text-2xl" appearance="outlined">
 
             <mat-card-content class="text-lg">
                 <h3 class="text-xl font-semibold font-sans mb-3">
-                    1.2.1 Example </h3>
+                    9.2.1 Example </h3>
 
                 <p class="mt-3">
                     The window function is a sine window:
                 </p>
+<p class="text-lg font-mono mt-3 text-center"
+                    appMathJax="$$ w(n) = \sin(\frac{\pi}{L} \cdot (n+0.5))
 
-                <p class="text-center mt-3 text-lg font-mono">
-                    w(n) = sin(pi * L * (n + 0.5)), with n = 0 .. L - 1, and L:
-                </p>
+ $$"></p>
+               
 
                 <p class="mt-3">
                     length of the window. This avoids having sudden ends of the impulse response. We also want to keep
@@ -198,11 +195,11 @@
                     we need to shift it to positive indices (by n0) to make it causal. In this way, we obtain our
                     impulse response,
                 </p>
+<p class="text-lg font-mono mt-3 text-center"
+                    appMathJax="$$ h(n) = sinc(-d + n - n_0) \cdot w(n)
 
-                <p class="text-center mt-3 text-lg font-mono">
-                    h(n) = sinc(-d + n - n0) * w(n)
-                </p>
-
+ $$"></p>
+              
                 <p class="mt-3">
                     This n0 is then an additional delay. We could give it the integer part of our desired delay, and the
                     fractional part would be the "d" for the sinc filter.
@@ -216,7 +213,7 @@
 
 
     </div>
-   
+
 
     <div>
         <mat-card class="example-card text-2xl" appearance="outlined">
@@ -224,7 +221,7 @@
             <mat-card-content class="text-lg">
 
 
-                <h3 class="text-xl font-semibold ">1.2.2 Python example</h3>
+                <h3 class="text-xl font-semibold ">9.2.2 Python example</h3>
 
                 <p class="text-lg mt-3">
                     (when copy and paste from the pdf file: replace the quotation marks by typed ones)
@@ -299,6 +296,7 @@ freqz.freqz(h,1)...
                     normalized frequency 2.8 it deviates from it. So in that sense it is only approximately
                     an allpass filter.
                 </p>
+                
 
 
 
@@ -310,8 +308,11 @@ freqz.freqz(h,1)...
                     This gives us a tool for fractional delays! But we have this attenuation at high high
                     frequencies. IIR filters can improve our filters performance.
                 </p>
+<p class="text-lg font-mono mt-3 text-center"
+                    appMathJax="$$ d = -\frac{y}{x} = \frac{3.14}{0.32} = 9.8
 
 
+ $$"></p>
 
 
 
@@ -321,7 +322,7 @@ freqz.freqz(h,1)...
 
 
     </div>
-   
+
 
     <div class="flex flex-col justify-around items-center gap-2">
         <img src="assets/images/chap9/fig9.1.png" class="w-180 h-110 ">
@@ -331,7 +332,7 @@ freqz.freqz(h,1)...
         </h1>
     </div>
 
-   
+
 
 
     <div>
@@ -339,7 +340,7 @@ freqz.freqz(h,1)...
 
             <mat-card-content class="text-lg">
                 <h3 class="text-2xl font-semibold font-sans" style="color: blue;">
-                    1.2.3 IIR Fractional Delay Allpass Filter Design
+                    9.2.3 IIR Fractional Delay Allpass Filter Design
                 </h3>
 
                 <p class="mt-4">
@@ -496,7 +497,7 @@ plt.title(’Group delay of our IIR fractional delay filter for 5.5 samples dela
 
 
     </div>
-   
+
 
 
     <div>
@@ -504,7 +505,7 @@ plt.title(’Group delay of our IIR fractional delay filter for 5.5 samples dela
 
             <mat-card-content class="text-lg">
                 <h3 class="text-xl font-semibold font-sans ">
-                    1.2.4 Generic Simple IIR Allpass Filters
+                    9.2.4 Generic Simple IIR Allpass Filters
                 </h3>
 
                 <p class="mt-4">
@@ -513,9 +514,11 @@ plt.title(’Group delay of our IIR fractional delay filter for 5.5 samples dela
                     The simplest allpass filter has one pole and one zero in the z-domain for the transfer
                     function,
                 </p>
-                <p class="text-center mt-3 text-lg font-mono">
-                    H_ap(z) = (z^-1 - conj(a)) / (1 - a z^-1) = (-conj(a) * (1 - z^-1 / a)) / (1 - a z^-1)
-                </p>
+                <p class="text-lg font-mono mt-3 text-center"
+                    appMathJax="$$ 
+H_{ap}(z) = \frac{z^{-1} - \bar{a}}{1 - az^{-1}} = \frac{-\bar{a}(1 - \frac{z^{-1}}{\bar{a}})}{1 - az^{-1}}
+ $$"></p>
+                
 
                 <p class="mt-4">
                     where a is a complex number, and a¯ specifies the conjugate complex number.
@@ -550,28 +553,29 @@ zplane(B,A,[-1.1, 2.1, -1.1, 1.1]); #plot the pole/zero diagram
                     How can we see that the magnitude of the frequency response H(ejΩ) is 1?
                     We can re-write it as:
                 </p>
-                <p class="text-center mt-3 text-lg font-mono">
-                    H_ap(e^(j*Omega)) = (e^(-j*Ω) - conj(a)) / (1 - a e^(-j*Ω)) = e^(-j*Ω) * (1 - conj(a)
-                    e^(j*Ω)) / (1 - a e^(-j*Ω))
-                </p>
+                <p class="text-lg font-mono mt-3 text-center"
+                    appMathJax="$$ 
+H_{ap}(e^{j\Omega}) = \frac{e^{-j\Omega} - \bar{a}}{1 - ae^{-j\Omega}} = e^{-j\Omega} \frac{1 - \bar{a}e^{j\Omega}}{1 - ae^{-j\Omega}}
+ $$"></p>
+               
 
                 <p class="mt-4">
                     Here you can see that the expression in the numerator is the conjugate complex of the
                     denominator, hence their magnitude cancels to one. The exponential before the fraction
                     also has magnitude 1, hence the entire expression has magnitude 1,
                 </p>
-                <p class="mt-4">
-                    |H_ap(e^(j*Omega))| = 1
-                </p>
+                <p class="text-lg font-mono mt-3 text-center"
+                    appMathJax="$$ 
+|H_{ap}(e^{j\Omega})| = 1
+ $$"></p>
+              
                 <p class="mt-4">
                     Here we can see, using just 1 pole and one zero, we can obtain a magnitude of constant
                 </p>
                 <div class="flex flex-col justify-around items-center gap-2">
                     <img src="assets/images/chap9/fig9.7.png" class="w-180 h-110 ">
 
-                    <h1 class="text-wrap">
-
-                    </h1>
+                   
                 </div>
 
                 <p class="mt-4">
@@ -579,10 +583,11 @@ zplane(B,A,[-1.1, 2.1, -1.1, 1.1]); #plot the pole/zero diagram
                     function, perhaps with different coefficients.
                     More interesting now is the resulting phase. The phase function can be found in [22]:
                 </p>
-                <p class="text-center mt-3 text-lg font-mono">
-                    phi(Omega) = -Omega - 2 * arctan( (r * sin(Omega - theta)) / (1 - r * cos(Omega - theta)) )
-                </p>
-
+                <p class="text-lg font-mono mt-3 text-center"
+                    appMathJax="$$ 
+\phi(\Omega) = -\Omega - 2 \arctan\left( \frac{r \sin(\Omega - \theta)}{1 - r \cos(\Omega - \theta)} \right) \tag{9.1}
+ $$"></p>
+              
                 <p class="mt-4">
                     Where r is the magnitude of a and θ is the phase angle of a (so a = r · e^(jθ)). Observe that the
                     phase expression is highly non-linear because of the trigonometric functions. For example, one could
@@ -633,7 +638,7 @@ zplane(B,A,[-1.1, 2.1, -1.1, 1.1]); #plot the pole/zero diagram
 
 
     </div>
-   
+
 
     <div>
         <mat-card class="example-card text-2xl" appearance="outlined">
@@ -642,7 +647,7 @@ zplane(B,A,[-1.1, 2.1, -1.1, 1.1]); #plot the pole/zero diagram
 
 
 
-                <h3 class="text-2xl font-semibold mt-4">1.2.5 Frequency Warping</h3>
+                <h3 class="text-2xl font-semibold mt-4">9.2.5 Frequency Warping</h3>
                 <p class="mt-4 mb-3">
 
                     In Fig. (9.10) for a=0.5 (the blue curve) we observe a “stretching” of the low frequency
@@ -740,11 +745,11 @@ plt.ylabel('Phase Angle')
                 <p class="mt-4">
                     Using the z-transform of the transfer function:
                 </p>
-
-                <p class="text-center mt-3 text-lg font-mono">
-                    H_ap(z) = (z^-1 - conjugate(a)) / (1 - a * z^-1)
-                </p>
-
+<p class="text-lg font-mono mt-3 text-center"
+                    appMathJax="$$ 
+H_{ap}(z) = \frac{z^{-1} - \bar{a}}{1 - az^{-1}}
+ $$"></p>
+            
 
                 <div class="flex flex-col justify-around items-center gap-2">
                     <img src="assets/images/chap9/fig9.11.png" class="w-180 h-110 ">
@@ -858,13 +863,13 @@ ans = [-0.5, 0.75, 0.375, 0.1875]
         </mat-card>
     </div>
 
-   
+
     <div>
         <mat-card class="example-card text-2xl" appearance="outlined">
 
             <mat-card-content class="text-lg">
                 <h3 class="text-xl font-semibold font-sans ">
-                    1.2.6 Frequency Warping Approximating the Bark Scale
+                    9.2.6 Frequency Warping Approximating the Bark Scale
                 </h3>
 
 
@@ -873,7 +878,10 @@ ans = [-0.5, 0.75, 0.375, 0.1875]
                     (by effectively replacing ejΩ with e^(φ(Ω)) in the frequency response), for example to map
                     it according to the Bark scale used in psycho-acoustics.
                 </p>
+<p class="text-lg font-mono mt-3 text-center"
+                    appMathJax="$$ 
 
+ $$"></p>
                 <p class="mt-4">
                     A common approximation of the Bark scale (from Wikipedia, based on Zwicker and Terhard)
                     uses the frequency f in Hz. The Bark scale approximates the changing frequency resolution
@@ -935,48 +943,52 @@ title('Zwicker & Terhard Approximation')
                     How do we do this? For some frequency response H(e^(j*Omega)), we want to warp the frequency Omega
                     with some function phi(Omega) according to our desired frequency scale, so the new response becomes:
                 </p>
-
-                <p class="text-center mt-3 text-lg font-mono">
-                    H( e^(j * phi(Omega)) )
-                </p>
+<p class="text-lg font-mono mt-3 text-center"
+                    appMathJax="$$ 
+H(e^{j \cdot \phi(\Omega)})
+ $$"></p>
+                
 
                 <p class="mt-4">
                     This is exactly the principle of an allpass filter, which has the frequency response:
                 </p>
-
-                <p class="text-center mt-3 text-lg font-mono">
-                    H_ap(e^(j*Omega)) = e^(j * phi_ap(Omega))
-                </p>
+<p class="text-lg font-mono mt-3 text-center"
+                    appMathJax="$$ 
+H_{ap}(e^{j\Omega}) = e^{j \cdot \phi_{ap}(\Omega)}
+ $$"></p>
+              
 
                 <p class="mt-4">
                     Usually we want to map positive frequencies to positive frequencies again. Since phi_ap(Omega)
                     for the allpass filter becomes negative, we use the approach of replacing z in the argument of
                     our transfer function with the reverse allpass transfer function.
                 </p>
+<p class="text-lg font-mono mt-3 text-center"
+                    appMathJax="$$ 
+z^{-1} \leftarrow H_{ap}(a, z)
+ $$"></p>
 
-
-                <p class="text-center mt-3 text-lg font-mono">
-                    Replace: z^-1 ← H_ap(a, z)
-                </p>
+              
 
                 <p class="mt-4">
                     This means every delay element in the filter is now warped by the allpass filter. In this way,
                     the linear function on the unit circle in the z-plane is replaced by the nonlinear, warped
                     function of the allpass filter. The warped transfer function therefore becomes:
                 </p>
-
-                <p class="text-center mt-3 text-lg font-mono">
-                    H_warped(z) = H( 1 / H_ap(a, z) )
-                </p>
+<p class="text-lg font-mono mt-3 text-center"
+                    appMathJax="$$ 
+H_{warped}(z) = H(H_{ap}(a, z)^{-1})
+ $$"></p>
+              
 
                 <p class="text-center mt-3 text-lg font-mono">
                     The resulting frequency response becomes:
                 </p>
-
-                <p class="text-center mt-3 text-lg font-mono">
-                    H_warped(e^(j*Omega)) = H( e^(-j * phi_ap(Omega)) )
-                </p>
-
+<p class="text-lg font-mono mt-3 text-center"
+                    appMathJax="$$ 
+H_{warped}(e^{j\Omega}) = H(e^{-j \cdot \phi_{ap}(\Omega)})
+ $$"></p>
+             
                 <p class="mt-4">
                     Here we can see that the desired frequency warping has been achieved.
                 </p>
@@ -985,18 +997,20 @@ title('Zwicker & Terhard Approximation')
                     What does this mean for the filter implementation? We know that FIR filters always consist
                     of many delay elements z^-1. For example, consider an FIR filter:
                 </p>
-
-                <p class="text-center mt-3 text-lg font-mono">
-                    H(z) = sum from m = 0 to L of b(m) * z^(-m)
-                </p>
+<p class="text-lg font-mono mt-3 text-center"
+                    appMathJax="$$ 
+H(z) = \sum_{m=0}^{L} b(m) \cdot z^{-m}
+ $$"></p>
+               
 
                 <p class="mt-4">
                     The warped version of this filter becomes:
                 </p>
-
-                <p class="text-center mt-3 text-lg font-mono">
-                    H( 1 / H_ap(a, z) ) = sum from m = 0 to L of b(m) * ( H_ap(a, z) )^m
-                </p>
+<p class="text-lg font-mono mt-3 text-center"
+                    appMathJax="$$ 
+H(H_{ap}(a, z)^{-1}) = \sum_{m=0}^{L} b(m) \cdot H_{ap}^m(a, z)
+ $$"></p>
+               
 
                 <p class="mt-4">
                     To obtain a desired filter, we now first have to warp our desired filter, and then design
@@ -1022,13 +1036,13 @@ title('Zwicker & Terhard Approximation')
         </mat-card>
     </div>
 
-   
+
     <div>
         <mat-card class="example-card text-2xl" appearance="outlined">
 
             <mat-card-content class="text-lg">
                 <h3 class="text-2xl font-semibold font-sans " style="color: blue;">
-                    1.2.7 Frequency Warping, Filter Design Example
+                    9.2.7 Frequency Warping, Filter Design Example
                 </h3>
 
 
@@ -1076,11 +1090,14 @@ freqz(cunw, 1)
                     First we compute the allpass coefficient “a” that gives an approximation to Bark-scale
                     warping. According to equation (26) in reference [27], we compute:
                 </p>
-
+<p class="text-lg font-mono mt-3 text-center"
+                    appMathJax="$$ 
+a = 1.0674 \cdot \left( \frac{2}{\pi} \cdot \arctan(0.6583 \cdot f_s) \right)^{0.5} - 0.1916
+ $$"></p>
                 <div class="flex flex-col justify-around items-center gap-2">
                     <img src="assets/images/chap9/fig9.16.png" class="w-180 h-110 ">
 
-                   
+
                 </div>
 
                 <pre class="bg-gray-100 text-sm p-3 rounded-lg overflow-x-auto font-mono mt-2">
@@ -1111,7 +1128,7 @@ title('Filter Coefficients in Warped Domain')
 freqz(c, 1)
 </pre>
 
-<div class="flex flex-col justify-around items-center gap-2">
+                <div class="flex flex-col justify-around items-center gap-2">
                     <img src="assets/images/chap9/fig9.17.png" class="w-180 h-110 ">
 
                     <h1 class="text-wrap">
@@ -1131,9 +1148,11 @@ freqz(c, 1)
                     Now we take the same coefficient vector c, but replace the delay elements in the FIR
                     filter with allpass filters. This means we transform the filter from:
                 </p>
-                <p class="text-center mt-3 text-lg font-mono">
-                    H(z) → H_warped(z) = H( 1 / H_ap(a, z) )
-                </p>
+                <p class="text-lg font-mono mt-3 text-center"
+                    appMathJax="$$ 
+H_{warped}(z) = H(H_{ap}(a, z)^{-1})
+ $$"></p>
+               
                 <pre class="bg-gray-100 text-sm p-3 rounded-lg overflow-x-auto font-mono mt-2">
 
 # Warping Allpass filters:
@@ -1158,7 +1177,7 @@ freqz(yout, 1);
 
 </pre>
 
-<div class="flex flex-col justify-around items-center gap-2">
+                <div class="flex flex-col justify-around items-center gap-2">
                     <img src="assets/images/chap9/fig9.18.png" class="w-180 h-110 ">
 
                     <h1 class="text-wrap">
@@ -1172,7 +1191,7 @@ freqz(yout, 1);
                     can see that again we have a drop of about 10 dB in the passband, now from 0 to 0.05pi,
                     and a stopband attenuation of about 30dB, which is somewhat reasonable.
                 </p>
-               <pre class="bg-gray-100 text-sm p-3 rounded-lg overflow-x-auto font-mono mt-2">
+                <pre class="bg-gray-100 text-sm p-3 rounded-lg overflow-x-auto font-mono mt-2">
 
 #Impulse response:
 plot(yout);
@@ -1182,7 +1201,7 @@ title(’Impulse Response of Warped Lowpass Filter’)
 
 </pre>
 
-<div class="flex flex-col justify-around items-center gap-2">
+                <div class="flex flex-col justify-around items-center gap-2">
                     <img src="assets/images/chap9/fig9.19.png" class="w-180 h-110 ">
 
                     <h1 class="text-wrap">
@@ -1196,36 +1215,36 @@ title(’Impulse Response of Warped Lowpass Filter’)
                     a much better filter than the unwarped original design!
                 </p>
 
-             
 
-                
+
+
             </mat-card-content>
 
         </mat-card>
     </div>
-<div class="flex flex-col justify-around items-center gap-2">
-                    <img src="assets/images/chap9/fig9.20.png" class="w-180 h-110 ">
+    <div class="flex flex-col justify-around items-center gap-2">
+        <img src="assets/images/chap9/fig9.20.png" class="w-180 h-110 ">
 
-                    <h1 class="text-wrap">
+        <h1 class="text-wrap">
 
-                    </h1>
-                </div>
+        </h1>
+    </div>
 
-                <div class="flex flex-col justify-around items-center gap-2">
-                    <img src="assets/images/chap9/fig9.21.png" class="w-180 h-110 ">
+    <div class="flex flex-col justify-around items-center gap-2">
+        <img src="assets/images/chap9/fig9.21.png" class="w-180 h-110 ">
 
-                    <h1 class="text-wrap">
+        <h1 class="text-wrap">
 
-                    </h1>
-                </div>
+        </h1>
+    </div>
 
-                <div class="flex flex-col justify-around items-center gap-2">
-                    <img src="assets/images/chap9/fig9.22.png" class="w-180 h-110 ">
+    <div class="flex flex-col justify-around items-center gap-2">
+        <img src="assets/images/chap9/fig9.22.png" class="w-180 h-110 ">
 
-                    <h1 class="text-wrap">
+        <h1 class="text-wrap">
 
-                    </h1>
-                </div>
+        </h1>
+    </div>
 
     <!-- Test section  -->
 
