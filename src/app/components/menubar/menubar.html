@@ -1,4 +1,4 @@
-<mat-toolbar class="mat-elevation-z8" style="background-color: #090909; color: white;">
+<mat-toolbar class="mat-elevation-z8" style="background:linear-gradient(to right, #090909, #777575); color: white;">
   <button (click)="drawer.toggle()" mat-icon-button>
     <mat-icon style="color: white;">menu</mat-icon>
   </button>
@@ -13,7 +13,7 @@
 <mat-drawer-container>
   <mat-drawer #drawer opened="true"   [mode]="isMobile ? 'over' : 'side'"
     [attr.role]="isMobile ? 'dialog' : 'navigation'"
-    [style.width.px]="isMobile ? 180 : 250" position="start">
+    [style.width.px]="isMobile ? 220 : 250" position="start">
 
     <mat-tree #tree [dataSource]="dataSource" [childrenAccessor]="childrenAccessor">
 

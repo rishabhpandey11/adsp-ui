@@ -35,6 +35,8 @@ import { Subtopic101 } from './subtopics/chap10/subtopic101/subtopic101';
 import { Subtopic102 } from './subtopics/chap10/subtopic102/subtopic102';
 import { Subtopic103 } from './subtopics/chap10/subtopic103/subtopic103';
 import { Lab10 } from './subtopics/chap10/lab10/lab10';
+import { Lab12 } from './subtopics/chap12/lab12/lab12';
+import { Lab11 } from './subtopics/chap11/lab11/lab11';
 
 const routerOptions: ExtraOptions = {
     scrollPositionRestoration: 'enabled', // restores scroll to top on navigation
@@ -92,7 +94,11 @@ export const routes: Routes = [
             
 
             { path: 'chapter11', component: Chapter11 },
+            { path: 'chapter11/lab11', component: Lab11 },
+            
             { path: 'chapter12', component: Chapter12 },
+            { path: 'chapter12/lab12', component: Lab12 },
+            
             { path: 'bibliography', component: Bibliography },
 
         ],
