@@ -6,7 +6,7 @@
     <div>
         <mat-card class="example-card text-2xl" appearance="outlined">
             <mat-card-header>
-                <mat-card-title style="color: blue;">1. Learning Objectives</mat-card-title>
+                <mat-card-title style="color: blue;">Learning Objectives</mat-card-title>
             </mat-card-header>
             <br>
             <mat-card-content class="text-lg">
@@ -43,7 +43,7 @@
     <div>
         <mat-card class="example-card text-2xl" appearance="outlined">
             <mat-card-header>
-                <mat-card-title style="color: blue;">2. Theory Summary</mat-card-title>
+                <mat-card-title style="color: blue;">Introduction</mat-card-title>
             </mat-card-header>
             <br>
             <mat-card-content class="text-lg">
@@ -58,9 +58,11 @@
                     But if we have a complex exponential with samples:
                 </p>
 
-                <pre class="bg-gray-100 p-3 rounded font-mono text-sm">
-x(n) = A · e^(jΩn) = A · cos(Ωn) + jA · sin(Ωn)
-  </pre>
+                
+    <p class="text-lg font-mono mt-3 text-center"
+                    appMathJax="$$ x(n)=A⋅ejΩn=A⋅cos(Ωn)+jA⋅sin(Ωn)
+
+ $$"></p>
 
 
                 <p class="text-lg mt-2">
@@ -68,9 +70,14 @@ x(n) = A · e^(jΩn) = A · cos(Ωn) + jA · sin(Ωn)
                     complex valued sample x(n) by taking the magnitude of this complex exponential:
                 </p>
 
-                <pre class="bg-gray-100 p-3 rounded font-mono text-sm overflow-x-auto">
-A = ℜ(x(n))² + ℑ(x(n))² = (A·cos(Ωn))² + (A·sin(Ωn))²
-  </pre>
+    <p class="text-lg font-mono mt-3 text-center"
+                    appMathJax="$$ 
+\begin{align*}
+A &=\sqrt{\Re(x(n))^2+\Im(x(n))^2}\\
+&=\sqrt{(A\cdot\cos(\Omega n))^2+(A\cdot\sin(\Omega n))^2}
+\end{align*}
+ $$"></p>
+                
 
                 <p class="text-lg mt-3">
                     Observe that this computation of A is independent of the time index n, so it can be
@@ -89,9 +96,11 @@ A = ℜ(x(n))² + ℑ(x(n))² = (A·cos(Ωn))² + (A·sin(Ωn))²
                     For example, look at the sine function. It already consists of two complex exponentials:
                 </p>
 
-                <pre class="bg-gray-100 p-3 rounded font-mono text-sm overflow-x-auto">
-sin(Ωn) = (1 / 2j) · (e^(jΩn) − e^(−jΩn))
-  </pre>
+    <p class="text-lg font-mono mt-3 text-center"
+                    appMathJax="$$ 
+\mathrm{sin}(\Omega n) = \frac{1}{2j}(e^{j\Omega n} − e^{−j\Omega n})
+ $$"></p>
+               
 
                 <p class="text-lg mt-2">
                     We just have one exponential too many. If we look at it in the Fourier Domain, we see that
@@ -106,11 +115,14 @@ sin(Ωn) = (1 / 2j) · (e^(jΩn) − e^(−jΩn))
                     our requirement in the frequency domain (the DTFT domain):
                 </p>
 
-                <pre class="bg-gray-100 p-3 rounded font-mono text-sm overflow-x-auto">
-H(Ω) = 
-  1   for Ω > 0
-  0   for Ω < 0
-  </pre>
+    <p class="text-lg font-mono mt-3 text-center"
+                    appMathJax="$$ 
+H(\Omega) = \begin{cases}
+1 & \text{for } \Omega > 0 \\
+0 & \text{for } \Omega < 0
+\end{cases}
+ $$"></p>
+               
 
                 <p class="text-lg mt-3">
                     We could multiply our signal spectrum with this frequency domain formulation
@@ -118,41 +130,64 @@ H(Ω) =
                     response of the resulting filter obtained with inverse DTFT:
                 </p>
 
-                <pre class="bg-gray-100 p-3 rounded font-mono text-sm overflow-x-auto">
-h(n) = (1 / 2π) ∫₀^π 1 · e^(jΩn) dΩ =
-  </pre>
+    <p class="text-lg font-mono mt-3 text-center"
+                    appMathJax="$$ 
+h(n) = \frac{1}{2\pi} \int_0^\pi 1 \cdot e^{j\Omega n} \, d\Omega
+ $$"></p>
+              
 
                 <p class="text-lg mt-3">
                     For n ≠ 0 this becomes:
                 </p>
 
-                <p class="text-center mt-3 text-lg font-mono">
-                    h(n) = (1 / 2π) · [ (1 / jn)·e<sup>jπn</sup> − (1 / jn) ]
-                    <br>s
-                    = (1 / 2π) · [ −(j / n)(−1)<sup>n</sup> + (j / n) ]
-                    <br><br>
-                    &#123; j / (πn), for n odd <br>
-                    0, for n even &#125;
-                </p>
+    <p class="text-lg font-mono mt-3 text-center"
+                    appMathJax="$$ 
+\begin{align*}
+&=\frac{1}{2\pi}
+\left(
+\frac{1}{jn} \cdot e^{j\pi n}
+-
+\frac{1}{jn}
+\right) \\
+&=
+\frac{1}{2\pi}
+\left(
+\frac{-j}{n} \cdot (-1)^n + \frac{j}{n}
+\right) \\
+&=
+\begin{cases}
+\dfrac{j}{\pi n}, & n \text{ odd} \\
+0, & n \text{ even}
+\end{cases}
+\end{align*}
+ $$"></p>
+              
 
                 <p class="text-lg mt-3">
                     For n = 0 this inverse DTFT integral becomes:
                 </p>
-                <p class="text-center mt-3 text-lg font-mono">
-                    h(0) = (1 / 2π) · π = 1
-                </p>
 
+                
+    <p class="text-lg font-mono mt-3 text-center"
+                    appMathJax="$$ h(0) = \frac{1}{2\pi} \cdot \pi = \frac{1}{2}
+
+ $$"></p>
+               
 
                 <p class="text-lg mt-3">
                     Hence the resulting impulse response of this one-sided filter becomes:
                 </p>
-                <p class="text-center mt-3 text-lg font-mono">
-                    h(n) = (1/2)·δ(n) +
-                    <br>
-                    (j / πn), for n odd
-                    <br>
-                    0, for n even
-                </p>
+                
+    <p class="text-lg font-mono mt-3 text-center"
+                    appMathJax="$$ 
+h(n) = \frac{1}{2} \cdot \delta(n) +
+\begin{cases}
+\dfrac{j}{\pi n}, & n \text{ odd} \\
+0, & n \text{ even}
+\end{cases}
+
+ $$"></p>
+            
 
                 <p class="text-lg mt-3">
                     This is now the resulting impulse response (in the time domain) of our filter,
@@ -168,15 +203,12 @@ h(n) = (1 / 2π) ∫₀^π 1 · e^(jΩn) dΩ =
                 <p class="text-lg mt-3">
                     Multiplying both parts with this factor of 2 for simplicity, we obtain the structure of:
                 </p>
-                <p class="text-center font-mono mt-3 text-lg">
-                    h<sub>H</sub>(n) =
-                    <span>
-                        <br />
-                        (2 / πn), &nbsp; n <sub>odd</sub>
-                        <br />
-                        0, &nbsp; n <sub>even</sub>
-                    </span>
-                </p>
+                
+    <p class="text-lg font-mono mt-3 text-center"
+                    appMathJax="$$ 
+h_H(n) =\begin{cases}\dfrac{2}{\pi n}, & n \text{ odd} \\0, & n \text{ even}\end{cases}
+ $$"></p>
+               
 
 
                 <p class="text-lg mt-3">
@@ -215,7 +247,7 @@ h(n) = (1 / 2π) ∫₀^π 1 · e^(jΩn) dΩ =
         <mat-card class="example-card text-2xl" appearance="outlined">
 
             <mat-card-content class="text-lg">
-                <h3 class="text-2xl font-semibold mt-6 text-blue-700">12.1 Python Example</h3>
+                <h3 class="text-2xl  mt-1 text-blue-700">11.1 Python Example</h3>
 
                 <p class="text-lg mt-3">
                     Plot the Hilbert transformer for n = −10 … 10:
@@ -431,7 +463,7 @@ freqz(honeremez,1, whole=True, axisFreqz=[0, 6.28,-40,10]);
         <mat-card class="example-card text-2xl" appearance="outlined">
 
             <mat-card-content class="text-lg">
-                <h3 class="text-xl font-semibold font-sans mb-3" style="color: blue;">12.2 Example for the Measurement
+                <h3 class="text-2xl  font-sans mb-3" style="color: blue;">11.2 Example for the Measurement
                     of the (Instantaneous) Amplitude</h3>
 
                 <p>
@@ -502,7 +534,7 @@ plot(imag(xhone),’r’)
         <mat-card class="example-card text-2xl" appearance="outlined">
 
             <mat-card-content class="text-lg">
-                <h3 class="text-xl font-semibold font-sans mb-3" style="color: blue;">12.3 Summary
+                <h3 class="text-2xl font-sans mb-3" style="color: blue;">11.3 Summary
                 </h3>
 
 

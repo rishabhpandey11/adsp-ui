@@ -100,12 +100,12 @@ const menuItems: MenuNode[] = [
       {
         icon: '',
         label: 'Examples of Uniform PDFs ',
-        route: 'chapter2/definition'
+        route: 'chapter12/subtopic121'
       },
-      {
-        icon: '',
-        label: ' Calculating the SNR ',
-        route: 'chapter2/error'
+       {
+        icon: 'science',
+        label: 'Lab ',
+        route: 'chapter4/lab4'
       },
     ]
   },
@@ -119,12 +119,12 @@ const menuItems: MenuNode[] = [
       {
         icon: '',
         label: 'Examples of Uniform PDFs ',
-        route: 'chapter2/definition'
+        route: 'chapter12/subtopic1211'
       },
       {
-        icon: '',
-        label: ' Calculating the SNR ',
-        route: 'chapter2/error'
+        icon: 'science',
+        label: 'Lab ',
+        route: 'chapter5/lab5'
       },
     ]
   },
@@ -135,14 +135,24 @@ const menuItems: MenuNode[] = [
     ,
     children: [
       {
-        icon: '',
-        label: 'Examples of Uniform PDFs ',
-        route: 'chapter2/definition'
+        icon: 'topic',
+        label: '6.1. Sampling the Analog Signal, Normalized Frequency',
+        route: 'chapter6/st61'
+      },
+       {
+        icon: 'topic',
+        label: '6.2 Upsampling',
+        route: 'chapter6/st62'
+      },
+       {
+        icon: 'topic',
+        label: '6.3 Reconstruction ',
+        route: 'chapter6/st63'
       },
       {
-        icon: '',
-        label: ' Calculating the SNR ',
-        route: 'chapter2/error'
+        icon: 'science',
+        label: ' Lab ',
+        route: 'chapter6/lab6'
       },
     ]
   },
@@ -246,9 +256,19 @@ const menuItems: MenuNode[] = [
     ,
     children: [
       {
-        icon: '',
-        label: 'Examples of Uniform PDFs ',
-        route: 'chapter2/definition'
+        icon: 'topic',
+        label: ' Introduction ',
+        route: 'chapter11/subtopic111'
+      },
+        {
+        icon: 'topic',
+        label: '11.1 Python Example ',
+        route: 'chapter11/subtopic112'
+      },
+      {
+        icon: 'topic',
+        label: '11.3 Summary ',
+        route: 'chapter11/subtopic113'
       },
        {
         icon: 'science',
@@ -264,10 +284,57 @@ const menuItems: MenuNode[] = [
     ,
     children: [
       {
-        icon: '',
-        label: 'Examples of Uniform PDFs ',
-        route: 'chapter2/definition'
+        icon: 'topic',
+        label: '12.1 Introduction & Wiener Filter',
+        route: 'chapter12/subtopic121'
       },
+         {
+        icon: 'topic',
+        label: '12.2 Matched Filter',
+        route: 'chapter12/subtopic122'
+      },
+         {
+        icon: 'topic',
+        label: '12.3 Prediction',
+        route: 'chapter12/subtopic123'
+      },
+         {
+        icon: 'topic',
+        label: '12.4 Python Example ',
+        route: 'chapter12/subtopic124'
+      },
+         {
+        icon: 'topic',
+        label: '12.5 Neural Network Implementation ',
+        route: 'chapter12/subtopic125'
+      },
+         {
+        icon: 'topic',
+        label: '12.6 Online Adaptation, LPC ',
+        route: 'chapter12/subtopic126'
+      },
+         {
+        icon: 'topic',
+        label: '12.7 Least Mean Squares (LMS) Algorithm',
+        route: 'chapter12/subtopic127'
+      },
+         {
+        icon: 'topic',
+        label: '12.8 Prediction with Quantizer',
+        route: 'chapter12/subtopic128'
+      },
+         {
+        icon: 'topic',
+        label: '12.9 Summary',
+        route: 'chapter12/subtopic129'
+      },
+
+     {
+        icon: 'topic',
+        label: '12.10 Homework Problems ',
+        route: 'chapter12/subtopic1210'
+      },
+
        {
         icon: 'science',
         label: ' Lab',

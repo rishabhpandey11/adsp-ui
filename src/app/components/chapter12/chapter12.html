@@ -3,22 +3,21 @@
         <h1>Chapter 12 : Wiener and Matched Filter, Prediction</h1>
     </div>
     <div>
-        <mat-card class="example-card text-2xl" appearance="outlined">
+        <mat-card class="example-card text-2xl" appearance="outlined" style="background-color: #6AECE1;">
             <mat-card-header>
-                <mat-card-title style="color: blue;">1. Learning Objectives</mat-card-title>
+                <mat-card-title style="color: black;"> Learning Objectives</mat-card-title>
             </mat-card-header>
             <br>
             <mat-card-content class="text-lg">
 
 
-                <p>
-                    These filters goal is to reduce the influence of noise or distortions. Assume: x(n) is the
-                    original signal, y(n) is the distorted signal. with
-                    y(n) = x(n) + v(n)
-
-                    where v(n) is is assumed to be independent white noise
-
-                </p>
+                <ul class="space-y-4 m-4 list-disc ">
+                    <li>Understand the purpose and design of Wiener filters for signal reconstruction and noise
+                        reduction.</li>
+                    <li>Learn matched filters for maximizing SNR in signal detection applications.</li>
+                    <li>Implement prediction filters for estimating future signal samples from past data.</li>
+                    <li>Apply prediction with quantization for practical coding systems.</li>
+                </ul>
             </mat-card-content>
 
         </mat-card>
@@ -31,32 +30,41 @@
     <div>
         <mat-card class="example-card text-2xl" appearance="outlined">
             <mat-card-header>
-                <mat-card-title style="color: blue;">2. Theory Summary</mat-card-title>
+                <mat-card-title style="color: blue;">Introduction</mat-card-title>
             </mat-card-header>
-            <br>
+   
             <mat-card-content class="text-lg">
                 <p class="text-lg mt-2">
-                    Wiener filter hW (n): y(n) ∗ hW (n) → x(n) (signal fidelity, the reconstruction is
+                    Wiener filter  (signal fidelity, the reconstruction is
                     close to the original, for instance for de-noising an image or audio signal, where
                     the audio signal does not need to be deterministic)
                 </p>
 
+                <p class="text-lg font-mono mt-3 text-center" appMathJax="$$ 
+     h_W(n) :y(n) * h_W(n) \to x(n)
+ $$"></p>
+
                 <p class="text-lg mt-3">
-                    Matched filter hM(n): y(n) ∗ hM(n) → x(n) ∗ hM(n) (no signal fidelity, just high
+                    Matched filter (no signal fidelity, just high
                     SNR for detection, in communication applications, where you would like to detect a
                     0 or 1, or any given known signal, usually a deterministic signal; object recognition
                     in images, face recognition).
                 </p>
 
+                <p class="text-lg font-mono mt-3 text-center" appMathJax="$$ 
+h_M(n):y(n) * h_M(n) \to x(n) * h_M(n)
+ $$"></p>
                 <p class="text-lg mt-2">
                     The goal here is an approximation of the original signal x(n) in the least mean squared
                     sense, meaning we would like to minimize the mean quadratic error between the filtered
                     and the original signal, because it is mathematically convenient.
                     We have a filter system with Wiener Filter hW (n)
                 </p>
-                <p class="text-center mt-3 text-lg font-mono">
-                    y(n) ∗ hw(n) → x(n)
-                </p>
+
+                <p class="text-lg font-mono mt-3 text-center" appMathJax="$$ 
+y(n) * h_w(n) \to x(n)
+ $$"></p>
+
 
 
 
@@ -64,12 +72,10 @@
                     meaning we filter our distorted signal y(n) with our still unknown filter hW (n).
                     The convolution of hW (n)(with filter length L) with y(n) is
                 </p>
-                <p class="text-center mt-3 text-lg font-mono">
 
-                    L−1
-                    m=0
-                    y(n − m) · hW (m) → x(n)
-                </p>
+                <p class="text-lg font-mono mt-3 text-center" appMathJax="$$ 
+\sum_{m=0}^{L-1} y(n-m) \cdot h_W(m) \to x(n)
+ $$"></p>
 
 
                 <p class="text-lg mt-3">
@@ -80,50 +86,49 @@
                     signal y, with the past on the right (flipped), up to the present sample at time n, (bold
                     face font to indicate that it it a vector)
                 </p>
-                <p class="text-center mt-3 text-lg font-mono">
-                    y(n) = [y(n), y(n − 1), ..., y(n − L + 1)]
 
-                </p>
+                <p class="text-lg font-mono mt-3 text-center" appMathJax="$$ 
+{y}(n) = [y(n), y(n-1), ..., y(n-L+1)]
+ $$"></p>
+
 
 
                 <p class="text-lg mt-3">
                     The next vector contains the impulse response,
                 </p>
-                <p class="text-center mt-3 text-lg font-mono">
-                    hW = [hW (0), hW (1), ..., hW (L − 1)]
-                </p>
+
+                <p class="text-lg font-mono mt-3 text-center" appMathJax="$$ 
+{h}_W = [h_W(0), h_W(1), ..., h_W(L-1)]
+ $$"></p>
 
                 <p class="text-lg mt-3">
                     Using those 2 vectors, we can rewrite our convolution equation above as a vector multiplication,
                 </p>
-                <p class="text-center mt-3 text-lg font-mono">
-                    x(n) = y(n) · h
-                    T
-                    W
-                </p>
 
+                <p class="text-lg font-mono mt-3 text-center" appMathJax="$$ 
+x(n) = {y}(n) \cdot {h}_W^T
+ $$"></p>
 
                 <p class="text-lg mt-2">
                     Observe that hW has no time index because it already contains all the samples of the
                     time-reversed impulse response, and is constant.
                     We can now also put the output signal x(n) into the row vector,
                 </p>
-                <p class="text-center mt-3 text-lg font-mono">
-                    x = [x(0), x(1), ...]
-                </p>
+
+                <p class="text-lg font-mono mt-3 text-center" appMathJax="$$ 
+{x} = [x(0), x(1), ...]
+ $$"></p>
+
 
                 <p class="text-lg mt-3">
                     To obtain this vector, we simply assemble all the row vectors of our noisy signal y(n)
                     into a matrix A,
                 </p>
 
-                <p class="text-center mt-3 text-lg font-mono">
-                    A = [
-                    y^(0)
-                    y^(1)
-                    ...
-                    ]
-                </p>
+                <p class="text-lg font-mono mt-3 text-center" appMathJax="$$ 
+{A} = \begin{bmatrix} {y}(0) \\ {y}(1) \\ \vdots \end{bmatrix}
+ $$"></p>
+
 
 
 
@@ -131,12 +136,10 @@
                     With this matrix, we obtain the result of our convolution at all time steps n to
                 </p>
 
-                <p class="text-center mt-3 text-lg font-mono">
-                    A · h
-                    T
-                    W → x
-                    T
-                </p>
+                <p class="text-lg font-mono mt-3 text-center" appMathJax="$$ 
+{A} \cdot {h}_W^T \to {x}^T
+ $$"></p>
+
 
 
                 <p class="text-lg mt-3">
@@ -144,26 +147,9 @@
                     For the example of a filter length of hW of L=2 hence we get,
                 </p>
 
-                <p class="text-center mt-3 text-lg font-mono">
-                    [
-                    y(1) y(0)
-                    y(2) y(1)
-                    y(3) y(2)
-                    ...
-                    ]
-                    *
-                    [
-                    h_W(0)
-                    h_W(1)
-                    ]
-                    →
-                    [
-                    x(0)
-                    x(1)
-                    x(2)
-                    ...
-                    ]
-                </p>
+                <p class="text-lg font-mono mt-3 text-center" appMathJax="$$ 
+\begin{bmatrix} y(1) & y(0) \\ y(2) & y(1) \\ y(3) & y(2) \\ \vdots & \vdots \end{bmatrix} \cdot \begin{bmatrix} h_W(0) \\ h_W(1) \end{bmatrix} \to \begin{bmatrix} x(0) \\ x(1) \\ x(2) \\ \vdots \end{bmatrix}
+ $$"></p>
 
 
 
@@ -175,13 +161,10 @@
                     T which minimizes the distance to a
                     given x with the matrix A (which contains our signal y to be filtered):
                 </p>
-                <p class="text-center mt-3 text-lg font-mono">
-                    A · h
-                    T
-                    W → x
-                    T
-                </p>
 
+                <p class="text-lg font-mono mt-3 text-center" appMathJax="$$ 
+{A} \cdot {h}_W^T \to {x}^T
+ $$"></p>
 
                 <p class="text-center mt-3 text-lg ">
                     Matrix A and vector x are known (this is done in a “trainings”-phase to obtain the
@@ -194,14 +177,11 @@
                     from the left would give us the solution
                 </p>
 
+                <p class="text-lg font-mono mt-3 text-center" appMathJax="$$ 
+{h}_W^T = {A}^{-1} \cdot {x}^T
+ $$"></p>
 
-                <p class="text-center mt-3 text-lg font-mono">
-                    h
-                    T
-                    W = A−1
-                    · x
-                    T
-                </p>
+
                 <p class="text-lg mt-3">
                     This cannot be done, if A is non-square, for instance if it has many more rows than
                     columns. In this case we don’t have an exact solution, but many solutions that come
@@ -210,14 +190,10 @@
                     This solution is derived using the pseudo-inverse. First we multiply both sides by AT,
                 </p>
 
-                <p class="text-center mt-3 text-lg font-mono">
-                    AT
-                    · A · h
-                    T
-                    W = AT
-                    · x
-                    T
-                </p>
+                <p class="text-lg font-mono mt-3 text-center" appMathJax="$$ 
+{A}^T \cdot {A} \cdot {h}_W^T = {A}^T \cdot {x}^T
+ $$"></p>
+
 
 
 
@@ -227,14 +203,11 @@
                     hence we can replace the right arrow by an equal sign. The square matrix usually
                     invertible, such that we obtain our solution
                 </p>
-                <p class="text-center mt-3 text-lg font-mono">
-                    T
-                    W = (AT
-                    · A)
-                    −1AT
-                    · x
-                    T
-                </p>
+
+                <p class="text-lg font-mono mt-3 text-center" appMathJax="$$ 
+{h}_W^T = ({A}^T \cdot {A})^{-1} {A}^T \cdot {x}^T
+ $$"></p>
+
                 <p class="text-lg mt-3">
                     This hW is now the solution we where looking for. This solution has the minimum mean
                     squared distance to the un-noisy version of all solutions.
@@ -428,23 +401,19 @@ matrix([[ 1.08192901e+12, 9.19784413e+11, 8.64233389e+11,
                 </p>
 
                 <div class="text-center mt-3 text-lg font-mono">
-                    <p class="text-lg mt-3">A<sup>T</sup> · A → R<sub>yy</sub> =</p>
 
-                    <p class="text-lg mt-3">
-                        [ ryy(0) &nbsp;&nbsp; ryy(1) &nbsp;&nbsp; ryy(2) &nbsp;&nbsp; ... ]<br>
-                        [ ryy(1) &nbsp;&nbsp; ryy(0) &nbsp;&nbsp; ryy(1) &nbsp;&nbsp; ... ]<br>
-                        [ ... &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ... &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ...
-                        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ... ]
+
+                    <p class="text-lg font-mono mt-3 text-center"
+                        appMathJax="$$ 
+{A}^T \cdot {A} \to {R}_{yy} = \begin{bmatrix} r_{yy}(0) & r_{yy}(1) & r_{yy}(2) & \ldots \\ r_{yy}(1) & r_{yy}(0) & r_{yy}(1) & \ldots \\ \vdots & \vdots & \vdots & \vdots \end{bmatrix} $$">
                     </p>
 
+
                 </div>
+                <p class="text-lg font-mono mt-3 text-center" appMathJax="$$ 
+r_{yy}(m) = \sum_{n=-\infty}^{\infty} y(n) \cdot y(n+m)
+ $$"></p>
 
-                <p class="text-lg mt-3">
-                    The autocorrelation of signal ( y ) is defined as
-                    r_yy(m) = Σ y(n) · y(n + m)
-
-
-                </p>
                 <p class="text-lg mt-3">
                     Since one row of this matrix is the shifted-by-one-sample version of the one above, it is called a
                     Toeplitz Matrix — Wikipedia link.
@@ -454,21 +423,16 @@ matrix([[ 1.08192901e+12, 9.19784413e+11, 8.64233389e+11,
                     The expression (A^T · x^T) in our formulation of the Wiener filter becomes the cross-correlation
                     vector:
                 </p>
+                <p class="text-lg font-mono mt-3 text-center" appMathJax="$$ 
+{A}^T \cdot {x}^T \to {r}_{xy} = \begin{bmatrix} r_{xy}(0) \\ r_{xy}(1) \\ \vdots \end{bmatrix} $$"></p>
 
-                <p class="text-lg mt-3">
-                    A^T · x^T → r_xy =<br>
-                    [ r_xy(0) ]<br>
-                    [ r_xy(1) ]<br>
-                    [ ... ]
-                </p>
 
                 <p class="text-lg mt-3">
                     where the cross-correlation function is defined as:
                 </p>
+                <p class="text-lg font-mono mt-3 text-center" appMathJax="$$ 
+r_{xy}(m) = \sum_{n=-\infty}^{\infty} y(n) \cdot x(n+m) $$"></p>
 
-                <p class="text-lg mt-3">
-                    r_xy(m) = Σ y(n) · x(n + m)
-                </p>
 
                 <p class="text-lg mt-3">
                     Observe:<br>
@@ -480,14 +444,14 @@ matrix([[ 1.08192901e+12, 9.19784413e+11, 8.64233389e+11,
                     Hence, our expression for the Wiener filter becomes:<br>
 
                 </p>
-                <p class="text-center mt-3 text-lg font-mono">
-                    h^T = (A^T · A)^(-1) · A^T · x^T
-                </p>
+                <p class="text-lg font-mono mt-3 text-center" appMathJax="$$ 
+{h}^T = ({A}^T \cdot {A})^{-1} {A}^T \cdot {x}^T $$"></p>
+
                 <p>
                     becomes
                 </p>
-                <p class="text-center mt-3 text-lg font-mono">
-                    h^T = (R_yy)^(-1) · r_xy</p>
+                <p class="text-lg font-mono mt-3 text-center" appMathJax="$$ 
+{h}^T = ({R}_{yy})^{-1} {r}_{xy} $$"></p>
 
                 <p class="text-lg mt-3">
                     This matrix form is also called the Yule–Walker equation, and the general statistical formulation is
@@ -543,19 +507,18 @@ matrix([[ 1.08192901e+12, 9.19784413e+11, 8.64233389e+11,
                 <p class="text-lg mt-3">
                     Remember the goal of a matched filter (h_M(n)):
                 </p>
-
-                <pre>
-y(n) * h_M(n)  ->  x(n + n_d) * h_M(n)
-</pre>
+                <p class="text-lg font-mono mt-3 text-center" appMathJax="$$ 
+y(n) * h_M(n) \to x(n+n_d) * h_M(n)
+ $$"></p>
 
                 <p class="text-lg mt-3">
                     with some signal delay (n_d). The objective is not signal fidelity but a high SNR at detection time.
                     Here
                 </p>
+                <p class="text-lg font-mono mt-3 text-center" appMathJax="$$ 
+y(n) = x(n+n_d) + v(n)
+ $$"></p>
 
-                <pre>
-y(n) = x(n + n_d) + v(n)
-</pre>
 
                 <p class="text-lg mt-3">
                     is our delayed signal with additive noise v(n).
@@ -576,10 +539,10 @@ y(n) = x(n + n_d) + v(n)
                     The goal is to maximize the signal-to-noise ratio (SNR) at the instant of detection for the original
                     signal x(n) and noise v(n). The SNR can be written as:
                 </p>
+                <p class="text-lg font-mono mt-3 text-center" appMathJax="$$ 
+SNR = \frac{|x(n) * h_M(n)|^2}{E(|v(n) * h_M(n)|^2)}
+ $$"></p>
 
-                <pre>
-SNR = | x(n) * h_M(n) |^2  /  E( | v(n) * h_M(n) |^2 )
-</pre>
                 <p class="text-lg mt-3">
                     We want to maximize the SNR at the time of detection using the matched filter h_M(n).
                 </p>
@@ -594,19 +557,15 @@ SNR = | x(n) * h_M(n) |^2  /  E( | v(n) * h_M(n) |^2 )
                     coefficients, we obtain:
                 </p>
 
-                <pre>
-E( | v(n) * h_M(n) |^2 ) = E( | V multiplied by h_M^T |^2 )
-                        = E( h_M multiplied by V^T multiplied by V multiplied by h_M^T )
-</pre>
-
-                <pre>
-= h_M multiplied by E(V^T multiplied by V) multiplied by h_M^T
-= h_M multiplied by (sigma_v squared times I) multiplied by h_M^T
-</pre>
-
-                <pre>
-= sigma_v squared multiplied by ( h_M multiplied by h_M^T )
-</pre>
+                <p class="text-lg font-mono mt-3 text-center" appMathJax="$$ 
+\begin{align*}
+E(|v(n) * h_M(n)|^2) &= E(|{V} \cdot {h}_M^T|^2) \\
+&= E({h}_M \cdot {V}^T \cdot {V} \cdot {h}_M^T)\\
+&= {h}_M \cdot E({V}^T \cdot {V}) \cdot {h}_M^T\\
+&= {h}_M \cdot \sigma_v^2 \cdot {I} \cdot {h}_M^T \\
+&= \sigma_v^2 \cdot {h}_M \cdot {h}_M^T
+\end{align*}
+ $$"></p>
 
                 <p class="text-lg mt-3">
                     White noise has an autocorrelation function shaped like a weighted delta function, because each
@@ -629,14 +588,16 @@ E( | v(n) * h_M(n) |^2 ) = E( | V multiplied by h_M^T |^2 )
                     Keeping the above norm of our filter vector (h_M * h_M^T) constant, the entire denominator is fixed,
                     and we only need to maximize the numerator of our SNR fraction to maximize the SNR:
                 </p>
-
-                <p class="text-lg mt-3"><b>| x(n) * h_M(n) |^2</b></p>
+                <p class="text-lg font-mono mt-3 text-center" appMathJax="$$ 
+|x(n) * h_M(n)|^2
+ $$"></p>
 
                 <p class="text-lg mt-3">
                     We rewrite our numerator as:
                 </p>
-
-                <p class="text-lg mt-3"><b>| x(n) * h_M(n) |^2 = | x(n) * h_M^T |^2</b></p>
+                <p class="text-lg font-mono mt-3 text-center" appMathJax="$$ 
+|x(n) * h_M(n)|^2 = |x(n) \cdot {h}_M^T|^2
+ $$"></p>
 
                 <p class="text-lg mt-3">
                     This is written analog to our matrix formulation, as a scalar vector multiplication, with h_M as our
@@ -652,10 +613,9 @@ E( | v(n) * h_M(n) |^2 ) = E( | V multiplied by h_M^T |^2 )
                 <p class="text-lg mt-3">
                     The signal row vector is:
                 </p>
-
-                <p class="text-lg mt-3">
-                    x(n) = [ x(L - 1 - n), x(L - 2 - n), ..., x(n) ]
-                </p>
+                <p class="text-lg font-mono mt-3 text-center" appMathJax="$$ 
+{x}(n) = [x(L - 1 - n), x(L - 2 - n), \ldots, x(n)]
+ $$"></p>
 
                 <p class="text-lg mt-3">
                     where L is the size of our filter vector. Observe that it is time-reversed to obtain a value of the
@@ -666,16 +626,16 @@ E( | v(n) * h_M(n) |^2 ) = E( | V multiplied by h_M^T |^2 )
                     We apply the Cauchy–Schwarz inequality (see Wikipedia), which states that for two column vectors a
                     and b, their scalar product satisfies:
                 </p>
-
-                <p class="text-lg mt-3">
-                    a^T * b ≤ sqrt( (a^T * a) * (b^T * b) )
-                </p>
+                <p class="text-lg font-mono mt-3 text-center" appMathJax="$$ 
+a^T b \le \sqrt{a^T a}\,\sqrt{b^T b}
+ $$"></p>
 
                 <p class="text-lg mt-3">
                     This is also written using the norm |a| and the inner product &lt;a, b&gt; as:
                 </p>
-
-                <p class="text-lg mt-3"><b>|&lt;a, b&gt;| ≤ ||a|| · ||b||</b></p>
+                <p class="text-lg font-mono mt-3 text-center" appMathJax="$$ 
+|\langle {a}, {b} \rangle| \leq \|{a}\| \cdot \|{b}\|
+ $$"></p>
 
                 <p class="text-lg mt-3">
                     We obtain equality if both vectors are co-linear, meaning b = k · a for some scalar k.
@@ -688,14 +648,16 @@ E( | v(n) * h_M(n) |^2 ) = E( | V multiplied by h_M^T |^2 )
                 <p class="text-lg mt-3">
                     We can now apply the Cauchy–Schwarz inequality if we set a = x(n) and b = h_M:
                 </p>
-
-                <p class="text-lg mt-3"><b>| x(n) · h_M^T |^2 ≤ ||x(n)||^2 · ||h_M||^2</b></p>
+                <p class="text-lg font-mono mt-3 text-center" appMathJax="$$ 
+|{x}(n) \cdot {h}_M^T|^2 \leq \|{x}(n)\|^2 \cdot \|{h}_M\|^2
+ $$"></p>
 
                 <p class="text-lg mt-3">
                     We get equality (the maximum) if we set:
                 </p>
-
-                <p class="text-lg mt-3"><b>h_M = k · x(n)</b></p>
+                <p class="text-lg font-mono mt-3 text-center" appMathJax="$$ 
+{h}_M = k \cdot {x}(n)
+ $$"></p>
 
                 <p class="text-lg mt-3">
                     where we can choose the factor k = 1.
@@ -714,8 +676,9 @@ E( | v(n) * h_M(n) |^2 ) = E( | V multiplied by h_M^T |^2 )
                     Since our filter vector h_M contains the time-reversed impulse response, we obtain the entire
                     time-reversed signal as our matched filter:
                 </p>
-
-                <p class="text-lg mt-3"><b>h_M(n) = x(L - 1 - n)</b></p>
+                <p class="text-lg font-mono mt-3 text-center" appMathJax="$$ 
+h_M(n) = x(L - 1 - n)
+ $$"></p>
 
                 <p class="text-lg mt-3">
                     Assuming our signal to detect is located between 0 ≤ n &lt; L.
@@ -781,7 +744,7 @@ E( | v(n) * h_M(n) |^2 ) = E( | V multiplied by h_M^T |^2 )
         <mat-card class="example-card text-2xl" appearance="outlined">
 
             <mat-card-content class="text-lg">
-                <h3 class="text-xl font-semibold font-sans mb-3" style="color: blue;">2.1 Python Example
+                <h3 class="text-xl font-semibold font-sans mb-3" style="color: blue;">12.2.1 Python Example
                 </h3>
 
                 <p class="text-lg mt-3">
@@ -893,7 +856,7 @@ title(’The Example Signal in Noise after Macthed Filtering’)
         <mat-card class="example-card text-2xl" appearance="outlined">
 
             <mat-card-content class="text-lg">
-                <h3 class="text-xl font-semibold font-sans mb-3" style="color: blue;">2.2 Convolutional Neural Network
+                <h3 class="text-xl font-semibold font-sans mb-3" style="color: blue;">12.2.2 Convolutional Neural Network
                     Implementation
                 </h3>
 
@@ -1005,7 +968,7 @@ y[16]=1 #Detecting the signal at its end
 
             <mat-card-content class="text-lg">
                 <h3 class="text-2xl font-semibold font-sans mb-3" style="color: rgb(13, 13, 13);">
-                    2.3 Prediction
+                    12.3 Prediction
                 </h3>
                 <p class="text-lg mt-3">
                     Prediction can be seen as a special case of a Wiener filter, where the noise of our signal
@@ -1027,22 +990,17 @@ y[16]=1 #Detecting the signal at its end
 
 
                 <p class="text-lg mt-3">Looking at our matrix formulation, we get:</p>
-
-                <pre class="bg-gray-100 text-sm p-3 rounded-lg overflow-x-auto font-mono mt-2">
-[ x(1)   x(0) ]
-[ x(2)   x(1) ]
-[ x(3)   x(2) ]
-[  ...    ... ]   *   [ h(0) ]   =   [ x(2) ]
-                      [ h(1) ]       [ x(3) ]
-                                     [ x(4) ]
-                                     [  ... ]
-</pre>
+                <p class="text-lg font-mono mt-3 text-center" appMathJax="$$ 
+\begin{bmatrix} x(1) & x(0) \\ x(2) & x(1) \\ x(3) & x(2) \\ \vdots & \vdots \end{bmatrix} \cdot \begin{bmatrix} h(0) \\ h(1) \end{bmatrix} = \begin{bmatrix} x(2) \\ x(3) \\ x(4) \\ \vdots \end{bmatrix}
+ $$"></p>
 
                 <p class="text-lg mt-3">or</p>
 
-                <pre class="bg-gray-100 text-sm p-3 rounded-lg overflow-x-auto font-mono mt-2">
-A * hᵀ  →  x
-</pre>
+                <p class="text-lg font-mono mt-3 text-center" appMathJax="$$ 
+{A} \cdot {h}^T \to {x}
+
+ $$"></p>
+
 
                 <p class="text-lg mt-3">
                     This means the input to our filter is always starting at one sample in the past, going further down
@@ -1058,10 +1016,10 @@ A * hᵀ  →  x
                 <p class="text-lg mt-3">
                     Now we can again use our approach with pseudo-inverses to obtain the mean-squared-error solution:
                 </p>
+                <p class="text-lg font-mono mt-3 text-center" appMathJax="$$ 
+{h} = ({A}^T \cdot {A})^{-1}{A}^T \cdot {x}
+ $$"></p>
 
-                <pre class="bg-gray-100 text-sm p-3 rounded-lg overflow-x-auto font-mono mt-2">
-h = (Aᵀ * A)<sup>-1</sup> * Aᵀ * x
-</pre>
 
                 <p class="text-lg mt-3">
                     with the matrix A defined as above.
@@ -1070,13 +1028,9 @@ h = (Aᵀ * A)<sup>-1</sup> * Aᵀ * x
                 <p class="text-lg mt-3">
                     This now also leads to a statistical description, with Aᵀ * A converging to:
                 </p>
-
-                <pre class="bg-gray-100 text-sm p-3 rounded-lg overflow-x-auto font-mono mt-2">
-R_xx =
-[ r_xx(0)   r_xx(1)   r_xx(2)   ... ]
-[ r_xx(1)   r_xx(0)   r_xx(1)   ... ]
-[   ...       ...       ...     .... ]
-</pre>
+                <p class="text-lg font-mono mt-3 text-center" appMathJax="$$ 
+{A}^T \cdot {A} \to {R}_{xx} = \begin{bmatrix} r_{xx}(0) & r_{xx}(1) & r_{xx}(2) & \ldots \\ r_{xx}(1) & r_{xx}(0) & r_{xx}(1) & \ldots \\ \vdots & \vdots & \vdots & \ddots \end{bmatrix}
+ $$"></p>
 
                 <p class="text-lg mt-3">
                     This is plausible because now y(n) is just the delayed signal, and the auto-correlation function of
@@ -1089,22 +1043,16 @@ R_xx =
                 <p class="text-lg mt-3">Since we now just have this one sample in the future as our target vector, this
                     converges to the
                     auto-correlation vector starting at lag 1:</p>
+                <p class="text-lg font-mono mt-3 text-center" appMathJax="$$ 
+{A}^T \cdot {x} \to {r}_{xx} = \begin{bmatrix} r_{xx}(1) \\ r_{xx}(2) \\ \vdots \end{bmatrix}
+ $$"></p>
 
-                <pre class="bg-gray-100 text-sm p-3 rounded-lg overflow-x-auto font-mono mt-2">
-
-A<sup>T</sup> * x  →  r_xx  =
-
-[ r_xx(1) ]
-[ r_xx(2) ]
-[   ...   ]
-</pre>
 
                 <p class="text-lg mt-3">So together, we get the solution for our prediction filter as:</p>
+                <p class="text-lg font-mono mt-3 text-center" appMathJax="$$ 
+{h} = ({R}_{xx})^{-1} {r}_{xx}
+ $$"></p>
 
-                <pre class="bg-gray-100 text-sm p-3 rounded-lg overflow-x-auto font-mono mt-2">
-
-h = R_xx<sup>-1</sup> * r_xx
-</pre>
 
                 <br>
 
@@ -1116,20 +1064,17 @@ h = R_xx<sup>-1</sup> * r_xx
 
 
                 </div>
-               
 
-              
+
+
 
                 <p class="text-lg mt-3">
                     Here, x(n) is the signal to be predicted. H(z) is our prediction filter, whose coefficients
                     are obtained using the Wiener approach from the previous lecture slides:
                 </p>
-
-                <pre class="bg-gray-100 text-sm p-3 rounded-lg overflow-x-auto font-mono mt-2">
-
-h = (R_xx)<sup>-1</sup> * r_xx
-</pre>
-
+                <p class="text-lg font-mono mt-3 text-center" appMathJax="$$ 
+{h} = ({R}_{xx})^{-1} {r}_{xx}
+ $$"></p>
                 <p class="text-lg mt-3">
                     H(z) is simply the z-transform of that filter. It operates only on past samples
                     (which is why the delay element z<sup>-1</sup> appears before it).
@@ -1138,20 +1083,18 @@ h = (R_xx)<sup>-1</sup> * r_xx
                 <p class="text-lg mt-3">
                     x̂(n) is the predicted signal, and the prediction error is:
                 </p>
+                <p class="text-lg font-mono mt-3 text-center" appMathJax="$$ 
+e(n) = x(n) - \hat{x}(n)
+ $$"></p>
 
-                <pre class="bg-gray-100 text-sm p-3 rounded-lg overflow-x-auto font-mono mt-2">
-
-e(n) = x(n) − x̂(n)
-</pre>
 
                 <p class="text-lg mt-3">
                     Thus, the system that produces the prediction error has the z-domain transfer function:
                 </p>
+                <p class="text-lg font-mono mt-3 text-center" appMathJax="$$ 
+H_{err}(z) = 1 - z^{-1} \cdot H(z)
+ $$"></p>
 
-                <pre class="bg-gray-100 text-sm p-3 rounded-lg overflow-x-auto font-mono mt-2">
-
-H_perr(z) = 1 − z<sup>-1</sup> · H(z)
-</pre>
                 <p class="text-lg mt-3">This can function as an encoder. Observe that we can reconstruct the original
                     signal x(n) in a
                     decoder from the prediction error e(n), using the system shown in Figure 12.12.</p>
@@ -1162,21 +1105,20 @@ H_perr(z) = 1 − z<sup>-1</sup> · H(z)
 
 
                 </div>
-                <pre class="bg-gray-100 text-sm p-3 rounded-lg overflow-x-auto font-mono mt-2">
+                <p class="text-lg font-mono mt-3 text-center" appMathJax="$$ 
+e(n) = x(n) - \hat{x}(n)
+ $$"></p>
 
-e(n) = x(n) − x̂(n)
-</pre>
 
                 <p class="text-lg mt-3">
                     The feedback loop in the decoder is causal because it only uses past, already reconstructed samples.
                 </p>
 
                 <p class="text-lg mt-3">Observe that the decoder's transfer function is:</p>
+                <p class="text-lg font-mono mt-3 text-center" appMathJax="$$ 
+H_{rec}(z) = \frac{1}{1 - z^{-1} \cdot H(z)} = \frac{1}{H_{perr}(z)}
+ $$"></p>
 
-                <pre class="bg-gray-100 text-sm p-3 rounded-lg overflow-x-auto font-mono mt-2">
-
-H_rec(z) = 1 / ( 1 − z⁻¹ · H(z) ) = 1 / H_perr(z)
-</pre>
 
                 <p class="text-lg mt-3">
                     This is exactly the inverse of the encoder, as expected.
@@ -1194,7 +1136,7 @@ H_rec(z) = 1 / ( 1 − z⁻¹ · H(z) ) = 1 / H_perr(z)
 
             <mat-card-content class="text-lg">
                 <h3 class="text-2xl font-semibold font-sans " style="color: blue;">
-                    2.4 Python Example
+                    12.4 Python Example
                 </h3>
 
 
@@ -1277,36 +1219,23 @@ title(’Our Speech Wave Form’)
                 <div class="flex flex-col justify-around items-center gap-2">
                     <img src="assets/images/chap12/fig12.13.png" class="w-180 h-110 ">
 
-                   
+
                 </div>
 
                 <p class="mt-4">
                     The resulting plot can be seen in Fig. (12.14). Our corresponding prediction error
                     filter (which is in the encoder) is
                 </p>
+                <p class="text-lg font-mono mt-3 text-center" appMathJax="$$ 
+H_{err}(z) = 1 - z^{-1} \cdot H(z)
+ $$"></p>
 
-                <p class="text-center mt-3 text-lg font-mono">
-
-                    Hperr (z) = 1 − z
-                    −1
-                    · H(z),
-                </p>
-
+                <p class="text-lg font-mono mt-3 text-center" appMathJax="$$ 
+h_{err} = \begin{bmatrix} 1 \\ -0.90078449 \\ 0.7764783 \\ -1.17924513 \\ 0.45849443 \\ -0.62230755 \\ 0.32026094 \\ -0.05412175 \\ 0.20557095 \\ 0.01108994 \\ 0.03070101 \end{bmatrix}
+ $$"></p>
                 <pre class="bg-gray-100 text-sm p-3 rounded-lg overflow-x-auto font-mono mt-2">
 
-hperr = vstack([1, -h])
-hperr
-matrix([[ 1. ],
-[-0.90078449],
-[ 0.7764783 ],
-[-1.17924513],
-[ 0.45849443],
-[-0.62230755],
-[ 0.32026094],
-[-0.05412175],
-[ 0.20557095],
-[ 0.01108994],
-[ 0.03070101]])
+
 #The prediction error e(n) is obtained using our prediction error filter:
 e = sp.lfilter(array(hperr.T)[0],1,array(x.T)[0]);
 #make a matrix type out of it (row matrix):
@@ -1329,23 +1258,16 @@ ylabel(’Value’)
 title(’Our Speech and Prediction Error Wave Forms’)
 legend((’Original’, ’Prediction Error’))
                 </pre>
-                
+
                 <div class="flex flex-col justify-around items-center gap-2">
                     <img src="assets/images/chap12/fig12.14.png" class="w-180 h-110 ">
 
-                   
-                </div>
-                <p class="text-center mt-3 text-lg font-mono">
 
-                    Hrec =
-                    1
-                    1 − z
-                    −1
-                    · H(z)
-                    =
-                    1
-                    Hperr (z)
-                </p>
+                </div>
+                <p class="text-lg font-mono mt-3 text-center" appMathJax="$$ 
+H_{rec} = \frac{1}{1 - z^{-1} \cdot H(z)} = \frac{1}{H_{perr}(z)}
+ $$"></p>
+
                 <p class="mt-4">
                     The resulting plot can be seen in Fig. (12.15). The decoder uses the reverse filter hence we use the
                     following filter command to generate the reconstructed signal,
@@ -1365,7 +1287,7 @@ sound(2**15*array(xrec),fs)
                 <div class="flex flex-col justify-around items-center gap-2">
                     <img src="assets/images/chap12/fig12.15.png" class="w-180 h-110 ">
 
-                   
+
                 </div>
                 <p class="mt-4">
                     Observe: The decoded, reconstructed signal looks and sound identical to the original,
@@ -1387,7 +1309,7 @@ sound(2**15*array(xrec),fs)
 
             <mat-card-content class="text-lg">
                 <h3 class="text-2xl font-semibold font-sans " style="color: blue;">
-                    2.5 Neural Network Implementation
+                    12.5 Neural Network Implementation
                 </h3>
 
 
@@ -1441,7 +1363,7 @@ python3 pytorch_linpred_inputs.py
 
             <mat-card-content class="text-lg">
                 <h3 class="text-2xl font-semibold font-sans " style="color: blue;">
-                    2.6 Online Adaptation, LPC
+                    12.6 Online Adaptation, LPC
                 </h3>
 
 
@@ -1497,7 +1419,7 @@ python3 pytorch_linpred_inputs.py
 
             <mat-card-content class="text-lg">
                 <h3 class="text-2xl font-semibold font-sans " style="color: blue;">
-                    2.6.1 Python Example
+                    12.6.1 Python Example
                 </h3>
 
 
@@ -1620,7 +1542,7 @@ sound(2**15 * xrek, fs)
 
             <mat-card-content class="text-lg">
                 <h3 class="text-2xl font-semibold font-sans " style="color: blue;">
-                    2.7 Least Mean Squares (LMS) Algorithm
+                    12.7 Least Mean Squares (LMS) Algorithm
                 </h3>
 
 
@@ -1647,49 +1569,47 @@ sound(2**15 * xrek, fs)
                 <p class="mt-4">
                     To show the dependency on the time n, we now call the vector of prediction coefficients h(n), with:
                 </p>
+                <p class="text-lg font-mono mt-3 text-center" appMathJax="$$ 
+{h}(n) = [h_0(n), h_1(n), \ldots, h_{L-1}(n)]
+ $$"></p>
 
-
-                <p class="text-center mt-3 text-lg font-mono">
-                    h(n) = [ h0(n), h1(n), ..., h(L-1)(n) ]
-                </p>
 
                 <p class="mt-4">
                     Again, we want to minimize the mean squared prediction error, with the prediction error defined as:
                 </p>
 
+                <p class="text-lg font-mono mt-3 text-center" appMathJax="$$ 
+e(n) = x(n) - \hat{x}(n)
+ $$"></p>
 
-                <p class="text-center mt-3 text-lg font-mono">
-                    e(n) = x(n) − x_hat(n)
-                </p>
 
                 <p class="mt-4">
                     The mean squared prediction error is:
                 </p>
 
+                <p class="text-lg font-mono mt-3 text-center" appMathJax="$$ 
+E\left[(x(n) - \hat{x}(n))^2\right] = E\left[\left(x(n) - \sum_{k=0}^{L-1} h_k(n) x(n - 1 - k)\right)^2\right]
+ $$"></p>
 
-                <p class="text-center mt-3 text-lg font-mono">
-                    E[ ( x(n) − sum from k = 0 to L−1 of ( h_k(n) * x(n − 1 − k) ) )^2 ]
-                </p>
 
                 <p class="mt-4">
                     Instead of using the closed-form solution that leads to the Wiener-Hopf solution, we now take an
                     iterative approach using Steepest Descent (also called Gradient Descent). We iterate toward the
                     minimum using:
                 </p>
+                <p class="text-lg font-mono mt-3 text-center" appMathJax="$$ 
+{h}(n + 1) = {h}(n) - \alpha \cdot \nabla f({h}(n))
+ $$"></p>
 
-
-                <p class="text-center mt-3 text-lg font-mono">
-                    h(n + 1) = h(n) − α * gradient( f(h(n)) )
-                </p>
 
                 <p class="mt-4">
                     The objective (error) function is simply the squared prediction error:
                 </p>
 
+                <p class="text-lg font-mono mt-3 text-center" appMathJax="$$ 
+f({h}(n)) = \left(x(n) - \sum_{k=0}^{L-1} h_k(n) x(n - 1 - k)\right)^2
+ $$"></p>
 
-                <p class="text-center mt-3 text-lg font-mono">
-                    f( h(n) ) = ( x(n) − sum from k = 0 to L−1 of ( h_k(n) * x(n − 1 − k) ) )^2
-                </p>
 
                 <p class="mt-4">
                     Observe that we omit the expectation operator E for simplicity. After several update steps,
@@ -1701,10 +1621,10 @@ sound(2**15 * xrek, fs)
                     The gradient is the row vector:
                 </p>
 
+                <p class="text-lg font-mono mt-3 text-center" appMathJax="$$ 
+\nabla f(n) = \left[\frac{\partial f({h}(n))}{\partial h_0(n)}, \ldots, \frac{\partial f({h}(n))}{\partial h_{L-1}(n)}\right]
+ $$"></p>
 
-                <p class="text-center mt-3 text-lg font-mono">
-                    gradient( f(n) ) = [ ∂f(h(n))/∂h0(n), ∂f(h(n))/∂h1(n), ..., ∂f(h(n))/∂h(L−1)(n) ]
-                </p>
 
                 <p class="mt-4">
                     and the individual derivatives are obtained as:
@@ -1714,10 +1634,9 @@ sound(2**15 * xrek, fs)
                     For each coefficient h_k(n), the derivative is:
                 </p>
 
-
-                <p class="text-center mt-3 text-lg font-mono">
-                    df(h(n)) / dh_k(n) = 2 * e(n) * ( - x(n − 1 − k) )
-                </p>
+                <p class="text-lg font-mono mt-3 text-center" appMathJax="$$ 
+\frac{\partial f({h}(n))}{\partial h_k(n)} = 2 \cdot e(n) \cdot (-x(n - 1 - k))
+ $$"></p>
 
 
                 <p class="text-center mt-3 text-lg font-mono">
@@ -1728,10 +1647,9 @@ sound(2**15 * xrek, fs)
                     Putting this into the steepest descent update gives the LMS update rule:
                 </p>
 
-
-                <p class="text-center mt-3 text-lg font-mono">
-                    h_k(n + 1) = h_k(n) + α * e(n) * x(n − 1 − k)
-                </p>
+                <p class="text-lg font-mono mt-3 text-center" appMathJax="$$ 
+h_k(n + 1) = h_k(n) + \alpha \cdot e(n) \cdot x(n - 1 - k)
+ $$"></p>
 
                 <p class="mt-4">
                     for k = 0, ..., L − 1.
@@ -1745,16 +1663,15 @@ sound(2**15 * xrek, fs)
                     In vector form, the LMS update rule becomes:
                 </p>
 
+                <p class="text-lg font-mono mt-3 text-center" appMathJax="$$ 
+{h}(n + 1) = {h}(n) + \alpha \cdot e(n) \cdot {x}(n)
+ $$"></p>
 
-                <p class="text-center mt-3 text-lg font-mono">
-                    h(n + 1) = h(n) + α * e(n) * x(n)
-                </p>
+                <p class="text-lg font-mono mt-3 text-center" appMathJax="$$ 
+{x}(n) = [x(n - 1), x(n - 2), \ldots, x(n - L)]
+ $$"></p>
 
 
-                <p class="text-center mt-3 text-lg font-mono">
-                    where the input vector is:
-                    x(n) = [ x(n − 1), x(n − 2), ..., x(n − L) ].
-                </p>
 
                 <p class="mt-4">
                     Note that this method requires no matrices or matrix inverses.
@@ -1787,7 +1704,7 @@ sound(2**15 * xrek, fs)
 
             <mat-card-content class="text-lg">
                 <h3 class="text-2xl font-semibold font-sans " style="color: blue;">
-                    2.7.1 LMS Python Example
+                    12.7.1 LMS Python Example
                 </h3>
 
 
@@ -1889,7 +1806,7 @@ sound(2**15*xrek,fs)
 
             <mat-card-content class="text-lg">
                 <h3 class="text-2xl font-semibold font-sans " style="color: blue;">
-                    2.8 Prediction with Quantizer
+                    12.8 Prediction with Quantizer
                 </h3>
 
 
@@ -1908,11 +1825,10 @@ sound(2**15*xrek,fs)
                     Observe: The reconstructed signal x(n) is the same as for the encoder, plus the quantization error
                     from the quantizer:
                 </p>
+                <p class="text-lg font-mono mt-3 text-center" appMathJax="$$ 
+Q(x(n)) = e(n) + \hat{x}(n)
+ $$"></p>
 
-                <p class="text-center mt-3 text-lg font-mono">
-
-                    Q(x(n)) = e(n) + ˆx(n)
-                </p>
             </mat-card-content>
 
         </mat-card>
@@ -1923,7 +1839,7 @@ sound(2**15*xrek,fs)
 
             <mat-card-content class="text-lg">
                 <h3 class="text-2xl font-semibold font-sans " style="color: blue;">
-                    2.8.1 LMS with Quantizer Python Example
+                    12.8.1 LMS with Quantizer Python Example
                 </h3>
 
 
@@ -2038,7 +1954,7 @@ sound(2**15 * xrek, fs)
 
             <mat-card-content class="text-lg">
                 <h3 class="text-2xl font-semibold font-sans " style="color: blue;">
-                    2.9 Summary
+                    12.9 Summary
                 </h3>
 
 
@@ -2137,18 +2053,18 @@ sound(2**15 * xrek, fs)
 
             <mat-card-content class="text-lg">
                 <h3 class="text-2xl font-semibold font-sans " style="color: blue;">
-                2.10 Homework Problems
+                    2.10 Homework Problems
                 </h3>
-              
-              <br>
+
+                <br>
 
                 <h3>Problem 1: Wiener Filter Design</h3>
 
                 <p>Given a noisy signal</p>
+                <p class="text-lg font-mono mt-3 text-center" appMathJax="$$ 
+x(n) = 0.9x(n-1) + v(n)
+ $$"></p>
 
-                <pre>
-y(n) = x(n) + w(n)
-</pre>
 
                 <p>x(n) is the original clean signal. w(n) is additive white Gaussian noise with zero mean and variance
                     sigma_w_squared.</p>
@@ -2166,7 +2082,7 @@ y(n) = x(n) + w(n)
                     <li>Implement the Wiener filter in Python and compare the original and estimated signals.</li>
                 </ol>
 
-              <br>
+                <br>
 
                 <h3>Problem 2: Matched Filter</h3>
 
@@ -2174,18 +2090,14 @@ y(n) = x(n) + w(n)
                 </p>
 
                 <p>The received signal is:</p>
+                <p class="text-lg font-mono mt-3 text-center" appMathJax="$$ 
+r(t) = s(t) + w(t) $$"></p>
 
-                <pre>
-r(t) = s(t) + w(t)
-</pre>
 
                 <p>The signal s(t) is a rectangular pulse of duration T:</p>
+                <p class="text-lg font-mono mt-3 text-center" appMathJax="$$ 
+s(t) = \begin{cases} 1, & 0 \leq t \leq T \\ 0, & \text{otherwise} \end{cases}) $$"></p>
 
-                <pre>
-s(t) =
-  1 for 0 <= t <= T
-  0 otherwise
-</pre>
 
                 <ul>
                     <li>Derive the matched filter response for s(t).</li>
@@ -2193,15 +2105,15 @@ s(t) =
                     <li>Plot the matched filter output for r(t) using Python.</li>
                 </ul>
 
-              <br>
+                <br>
 
                 <h3>Problem 3: Prediction Using Wiener Filter</h3>
 
                 <p>Consider the signal model:</p>
+                <p class="text-lg font-mono mt-3 text-center" appMathJax="$$ 
+x(n) = 0.8x(n-1) + v(n)
+ $$"></p>
 
-                <pre>
-x(n) = 0.8 * x(n - 1) + v(n)
-</pre>
 
                 <p>where v(n) is white Gaussian noise with variance sigma_v_squared = 0.05.</p>
 
@@ -2211,15 +2123,15 @@ x(n) = 0.8 * x(n - 1) + v(n)
                     <li>Simulate the prediction process in Python and compare predicted and actual signals.</li>
                 </ol>
 
-              <br>
+                <br>
 
                 <h3>Problem 4: Applications of Matched Filter</h3>
 
                 <p>In a binary communication system, the transmitted symbols are +1 and -1. The received signal is:</p>
+                <p class="text-lg font-mono mt-3 text-center" appMathJax="$$ 
+r(t) = \pm s(t) + w(t)
+ $$"></p>
 
-                <pre>
-r(t) = (+1 or -1) * s(t) + w(t)
-</pre>
 
                 <p>s(t) is the pulse shape and w(t) is additive noise.</p>
 
@@ -2228,7 +2140,7 @@ r(t) = (+1 or -1) * s(t) + w(t)
                     <li>Derive the probability of detection error when w(t) is Gaussian.</li>
                 </ol>
 
-              <br>
+                <br>
 
                 <h3>Problem 5: Neural Network Extensions</h3>
 
@@ -2240,12 +2152,12 @@ r(t) = (+1 or -1) * s(t) + w(t)
                         filters.</li>
                 </ol>
 
-             
+
             </mat-card-content>
 
         </mat-card>
     </div>
-   
+
 
 
     <!-- Test section  -->
