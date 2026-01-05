@@ -41,11 +41,11 @@ export class Lp implements AfterViewInit {
     tl.from(this.nav1.nativeElement, {
       y: -30,
       opacity: 0,
-      duration: 0.7,
-      delay: 1
+      duration: 0.5,
+    
     })
       .from(this.nav2.nativeElement, {
-        y: -30,
+        y: -40,
         opacity: 0,
         duration: 0.5,
         delay: 0.5
@@ -68,7 +68,7 @@ export class Lp implements AfterViewInit {
     const tl2 = gsap.timeline({
       scrollTrigger: {
         trigger: this.platform.nativeElement,
-        start: 'top 50%',
+        start: 'top 80%',
         toggleActions: 'play none none reverse',
          scrub:2,
       }

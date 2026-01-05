@@ -1,59 +1,130 @@
-# AdspUi
+📘 Interactive Learning Platform
 
-This project was generated using [Angular CLI](https://github.com/angular/angular-cli) version 20.3.7.
+An interactive, chapter-based learning platform built using Angular, Angular Material, D3.js, GSAP animations, and Pyodide, designed to visually explain complex concepts through simulations, charts, and interactive controls.
 
-## Development server
+🚀 Tech Stack
 
-To start a local development server, run:
+Angular – Frontend framework for building modular, scalable UI
 
-```bash
+Angular Material (Material UI) – Prebuilt UI components and theming
+
+D3.js – Interactive data visualizations and charts
+
+GSAP (GreenSock Animation Platform) – Smooth, high-performance animations
+
+Pyodide – Running Python directly in the browser for computations and algorithms
+
+Tailwind CSS  – Utility-first styling (if used)
+
+Project Structure
+
+src/
+│
+├── app/
+│   ├── components/
+│   │   ├── chapter1/
+│   │   ├── chapter2/
+│   │   ├── chapter3/
+│   │   └── ...
+│   │
+│   ├── subtopics/
+│   │   ├── chapter1/
+│   │   │   ├── subtopictopic1/
+│   │   │   ├── lab2/
+│   │   │   └── ...
+│   │   ├── chapter2/
+│   │   └── ...
+│   │
+│   └── shared/
+│
+├── assets/
+│   ├── images/
+│        ├── chap1/
+│        └── chap2/
+│
+└── styles/
+
+🧩 Folder Explanation
+🔹 components/
+
+Contains all main chapters of the platform.
+
+Each chapter is a standalone Angular component.
+
+Chapters act as top-level learning modules.
+
+ subtopics/
+
+Represents subcategories of each chapter.
+Each subtopic focuses on a specific concept, simulation, or interactive demo.
+Often includes:
+Sliders
+D3 charts
+Python Editor
+Audio or signal visualizations
+
+🛠️ Setup & Installation
+🛠️ Angular Project Setup Commands
+1️⃣ Install Node.js
+
+Angular requires Node.js (LTS).
+
+👉 Download from:
+https://nodejs.org/
+
+Verify installation:
+node -v
+npm -v
+
+2️⃣ Install Angular CLI (Global)
+npm install -g @angular/cli
+
+verify:
+ng version
+
+3️⃣ Create a New Angular Project
+ng new project-name
+
+
+How to insall dependencies?
+npm install
+
+run the project
 ng serve
-```
 
-Once the server is running, open your browser and navigate to `http://localhost:4200/`. The application will automatically reload whenever you modify any of the source files.
+App runs at default port:4200
+http://localhost:4200
 
-## Code scaffolding
 
-Angular CLI includes powerful code scaffolding tools. To generate a new component, run:
+📦 Common Dependency Installs 
+Angular Material
+ng add @angular/material
 
-```bash
+D3.js
+npm install d3
+
+GSAP
+npm install gsap
+
+Pyodide
+npm install pyodide
+(or load via CDN if required)
+
+Tailwind CSS (Optional)
+npm install -D tailwindcss postcss autoprefixer
+npx tailwindcss init
+
+🧪 Useful Angular Commands
+Generate Component
 ng generate component component-name
-```
 
-For a complete list of available schematics (such as `components`, `directives`, or `pipes`), run:
 
-```bash
-ng generate --help
-```
+Short form:
+ng g c component-name
 
-## Building
-
-To build the project run:
-
-```bash
+Build Project
 ng build
-```
 
-This will compile your project and store the build artifacts in the `dist/` directory. By default, the production build optimizes your application for performance and speed.
 
-## Running unit tests
-
-To execute unit tests with the [Karma](https://karma-runner.github.io) test runner, use the following command:
-
-```bash
-ng test
-```
-
-## Running end-to-end tests
-
-For end-to-end (e2e) testing, run:
-
-```bash
-ng e2e
-```
-
-Angular CLI does not come with an end-to-end testing framework by default. You can choose one that suits your needs.
-
-## Additional Resources
-
-For more information on using the Angular CLI, including detailed command references, visit the [Angular CLI Overview and Command Reference](https://angular.dev/tools/cli) page.
+Production build:
+ng build --configuration production
