@@ -2,7 +2,7 @@ import { Component } from '@angular/core';
 import { NgModule } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { Router, RouterModule, NavigationEnd } from '@angular/router';
-import { CommonModule } from '@angular/common';
+
 // Angular Material modules
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { MatIconModule } from '@angular/material/icon';
@@ -360,17 +360,15 @@ const menuItems: MenuNode[] = [
     MatTooltipModule,
     ReactiveFormsModule,
     RouterModule,
-    CommonModule, MatTreeModule,
-    // Angular Material modules
+    MatTreeModule,
     MatToolbarModule,
     MatIconModule,
     MatMenuModule,
     MatButtonModule,
     MatSidenavModule,
     MatListModule,
-    MatBadgeModule,
-
-  ],
+    MatBadgeModule
+],
   templateUrl: './menubar.html',
   styleUrl: './menubar.css'
 })

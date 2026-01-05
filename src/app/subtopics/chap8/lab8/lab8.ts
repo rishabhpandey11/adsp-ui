@@ -1,6 +1,6 @@
 import {  Component } from '@angular/core';
 import { MatCardModule } from '@angular/material/card';
-import { CommonModule } from '@angular/common';
+
 import { MatButtonModule } from '@angular/material/button';
 import { MathJaxDirective } from '../../../components/mathjax.directive';
 import { Pycodechap1 } from '../../../components/python-code/pycodechap1/pycodechap1';
@@ -8,7 +8,7 @@ import { Pycodechap1 } from '../../../components/python-code/pycodechap1/pycodec
 
 @Component({
   selector: 'app-lab8',
- imports: [MatCardModule ,CommonModule ,MathJaxDirective , MatButtonModule , Pycodechap1],
+ imports: [MatCardModule, MathJaxDirective, MatButtonModule, Pycodechap1],
   templateUrl: './lab8.html',
   styleUrl: './lab8.css',
 })

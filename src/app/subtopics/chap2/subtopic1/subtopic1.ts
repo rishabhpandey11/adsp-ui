@@ -1,7 +1,7 @@
 
 import {  Component } from '@angular/core';
 import { MatCardModule } from '@angular/material/card';
-import { CommonModule } from '@angular/common';
+
 import { MatButtonModule } from '@angular/material/button';
 import { FormsModule } from '@angular/forms';
 import { MathJaxDirective } from '../../../components/mathjax.directive';
@@ -9,7 +9,7 @@ import { MathJaxDirective } from '../../../components/mathjax.directive';
 
 @Component({
   selector: 'app-subtopic1',
-  imports: [MatCardModule ,CommonModule ,MathJaxDirective , MatButtonModule ],
+  imports: [MatCardModule, MathJaxDirective, MatButtonModule],
   templateUrl: './subtopic1.html',
   styleUrl: './subtopic1.css',
 })

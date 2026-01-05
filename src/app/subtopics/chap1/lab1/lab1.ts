@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
 import { Pycodechap1 } from '../../../components/python-code/pycodechap1/pycodechap1';
 import { MatCardModule } from '@angular/material/card';
-import { CommonModule } from '@angular/common';
+
 
 import { MatButtonModule } from '@angular/material/button';
 
@@ -9,7 +9,7 @@ import { MatButtonModule } from '@angular/material/button';
 
 @Component({
   selector: 'app-lab1',
-  imports: [Pycodechap1 , MatCardModule , MatButtonModule,CommonModule ],
+  imports: [Pycodechap1, MatCardModule, MatButtonModule],
   templateUrl: './lab1.html',
   styleUrl: './lab1.css',
 })

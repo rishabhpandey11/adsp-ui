@@ -1,6 +1,6 @@
 import {  Component } from '@angular/core';
 import { MatCardModule } from '@angular/material/card';
-import { CommonModule } from '@angular/common';
+
 import { MatButtonModule } from '@angular/material/button';
 import { MathJaxDirective } from '../../../components/mathjax.directive';
 
@@ -9,7 +9,7 @@ import { MathJaxDirective } from '../../../components/mathjax.directive';
 
 @Component({
   selector: 'app-subtopic82',
- imports: [MatCardModule ,CommonModule ,MathJaxDirective , MatButtonModule ],
+ imports: [MatCardModule, MathJaxDirective, MatButtonModule],
   templateUrl: './subtopic82.html',
   styleUrl: './subtopic82.css',
 })

@@ -1,6 +1,6 @@
 import { ChangeDetectionStrategy, Component, signal } from '@angular/core';
 import { MatCardModule } from '@angular/material/card';
-import { CommonModule } from '@angular/common';
+
 import { MatRadioModule } from '@angular/material/radio';
 import { MatButtonModule } from '@angular/material/button';
 import { FormsModule } from '@angular/forms';
@@ -10,7 +10,7 @@ import { MathJaxDirective } from '../mathjax.directive';
 
 @Component({
   selector: 'app-chapter2',
-  imports: [MatCardModule, FormsModule, CommonModule, MatCardModule,MatSidenavModule, MatRadioModule, MatButtonModule, MathJaxDirective],
+  imports: [MatCardModule, FormsModule, MatCardModule, MatSidenavModule, MatRadioModule, MatButtonModule, MathJaxDirective],
   templateUrl: './chapter2.html',
   styleUrl: './chapter2.css',
 })

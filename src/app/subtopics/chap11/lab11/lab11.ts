@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
 import { Pycodechap1 } from '../../../components/python-code/pycodechap1/pycodechap1';
 import { MatCardModule } from '@angular/material/card';
-import { CommonModule } from '@angular/common';
+
 
 import { MatButtonModule } from '@angular/material/button';
 import { MathJaxDirective } from '../../../components/mathjax.directive';
@@ -11,7 +11,7 @@ import { MathJaxDirective } from '../../../components/mathjax.directive';
 
 @Component({
   selector: 'app-lab11',
-  imports: [Pycodechap1, MatCardModule,CommonModule, MatButtonModule , MathJaxDirective ],
+  imports: [Pycodechap1, MatCardModule, MatButtonModule, MathJaxDirective],
   templateUrl: './lab11.html',
   styleUrl: './lab11.css',
 })

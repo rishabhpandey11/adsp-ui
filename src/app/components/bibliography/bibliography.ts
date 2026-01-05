@@ -1,6 +1,6 @@
 import { ChangeDetectionStrategy, Component , signal} from '@angular/core';
 import { MatCardModule } from '@angular/material/card';
-import { CommonModule } from '@angular/common';
+
 import { MatRadioModule } from '@angular/material/radio';
 import { MatButtonModule } from '@angular/material/button';
 import { FormsModule } from '@angular/forms';  
@@ -10,7 +10,7 @@ import { FormsModule } from '@angular/forms';
 
 @Component({
   selector: 'app-bibliography',
-  imports: [MatCardModule,FormsModule , CommonModule, MatCardModule, MatRadioModule, MatButtonModule],
+  imports: [MatCardModule, FormsModule, MatCardModule, MatRadioModule, MatButtonModule],
   templateUrl: './bibliography.html',
   styleUrl: './bibliography.css',
 })

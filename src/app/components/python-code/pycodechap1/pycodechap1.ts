@@ -1,12 +1,12 @@
 import { Component, Input, OnInit } from '@angular/core';
-import { CommonModule } from '@angular/common';
+
 import { FormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
 
 @Component({
   selector: 'app-pycodechap1',
-  imports: [CommonModule, FormsModule, MatButtonModule, MatCardModule],
+  imports: [FormsModule, MatButtonModule, MatCardModule],
   templateUrl: './pycodechap1.html',
   styleUrl: './pycodechap1.css',
 })
