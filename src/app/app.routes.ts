@@ -57,6 +57,9 @@ import { Lp } from './components/lp/lp';
 import { St61 } from './subtopics/chap6/st61/st61';
 import { St62 } from './subtopics/chap6/st62/st62';
 import { St63 } from './subtopics/chap6/st63/st63';
+import { Id1 } from './subtopics/chap1/id1/id1';
+import { Id3 } from './subtopics/chap3/id3/id3';
+import { Id5 } from './subtopics/chap5/id5/id5';
 
 const routerOptions: ExtraOptions = {
     scrollPositionRestoration: 'enabled', // restores scroll to top on navigation
@@ -64,8 +67,8 @@ const routerOptions: ExtraOptions = {
 };
 
 export const routes: Routes = [
-    { path: '', component: Lp }, 
-         { path: 'lp', component: Lp },  // Default route
+    { path: '', component: Lp },
+    { path: 'lp', component: Lp },  // Default route
     {
         path: 'main',
         component: Main,
@@ -73,17 +76,20 @@ export const routes: Routes = [
             { path: '', redirectTo: 'chapter1', pathMatch: 'full' },
             { path: 'chapter1', component: Chapter1 },
             { path: 'chapter1/lab1', component: Lab1 },
+             { path: 'chapter1/id1', component: Id1 },
 
             { path: 'chapter2', component: Chapter2 },
             { path: 'chapter2/lab2', component: Lab2 },
             { path: 'chapter2/subtopic1', component: Subtopic1 },
             { path: 'chapter2/subtopic2', component: Subtopic2 },
             { path: 'chapter2/subtopic1.3', component: Subtopic13 },
+            
 
             { path: 'chapter3', component: Chapter3 },
             { path: 'chapter3/lab3', component: Lab3 },
             { path: 'chapter3/subtopic31', component: Subtopic31 },
             { path: 'chapter3/subtopic32', component: Subtopic32 },
+             { path: 'chapter3/id3', component: Id3 },
 
 
             { path: 'chapter4', component: Chapter4 },
@@ -91,12 +97,13 @@ export const routes: Routes = [
 
             { path: 'chapter5', component: Chapter5 },
             { path: 'chapter5/lab5', component: Lab5 },
+             { path: 'chapter5/id5', component: Id5 },
 
             { path: 'chapter6', component: Chapter6 },
             { path: 'chapter6/lab6', component: Lab6 },
-             { path: 'chapter6/st61', component: St61 },
-              { path: 'chapter6/st62', component: St62 },
-               { path: 'chapter6/st63', component: St63 },
+            { path: 'chapter6/st61', component: St61 },
+            { path: 'chapter6/st62', component: St62 },
+            { path: 'chapter6/st63', component: St63 },
 
 
             { path: 'chapter7', component: Chapter7 },
@@ -146,7 +153,7 @@ export const routes: Routes = [
 
             { path: 'bibliography', component: Bibliography },
 
-        
+
 
         ],
     }

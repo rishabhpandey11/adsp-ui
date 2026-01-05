@@ -5,10 +5,12 @@ import { MatRadioModule } from '@angular/material/radio';
 import { MatButtonModule } from '@angular/material/button';
 import { FormsModule } from '@angular/forms';
 import { MathJaxDirective } from '../mathjax.directive';
+import { Id3 } from '../../subtopics/chap3/id3/id3';
+import { CommonModule } from '@angular/common';
 
 @Component({
   selector: 'app-chapter3',
-  imports: [MatCardModule, FormsModule, MatCardModule, MatRadioModule, MatButtonModule, MathJaxDirective],
+  imports: [MatCardModule, FormsModule, MatCardModule, MatRadioModule, MatButtonModule, MathJaxDirective , Id3 , CommonModule],
   templateUrl: './chapter3.html',
   styleUrl: './chapter3.css',
 })

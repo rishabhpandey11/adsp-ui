@@ -2,11 +2,11 @@
   <button (click)="drawer.toggle()" mat-icon-button>
     <mat-icon style="color: white;">menu</mat-icon>
   </button>
-  <span>Acoustic Signal Processing</span>
+  <span class="text-2xl font-medium font-sans">Acoustic Signal Processing</span>
   <span class="example-spacer"></span>
 
-  <button mat-icon-button class="hover:scale-105" style="color: white;" matTooltip="Start Page">
-    <mat-icon [routerLink]="'/'">home</mat-icon>
+  <button mat-icon-button class="hover:scale-105" matTooltip="Home">
+    <mat-icon [routerLink]="'/'"  style="color: white;" >home</mat-icon>
   </button>
 </mat-toolbar>
 
@@ -23,7 +23,7 @@
           <mat-icon>{{ node.icon }}</mat-icon>
         </button>
 
-        <a mat-list-item [routerLink]="node.route"  class="text-sm">
+        <a mat-list-item [routerLink]="node.route"  class="text-md">
           <span   >{{ node.label }}</span>
         </a>
       </mat-tree-node>

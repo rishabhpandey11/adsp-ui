@@ -37,12 +37,17 @@ const menuItems: MenuNode[] = [
         icon: 'science',
         label: 'Lab ',
         route: 'chapter1/lab1'
-      }
+      },
+       {
+        icon: 'play_circle',
+        label: 'Interactive Demo',
+        route: 'chapter1/id1'
+      },
 
     ]
   },
   {
-    icon: 'keyboard_double_arrow_right',      // Icon for the 'Analytics' menu item
+    icon: 'keyboard_double_arrow_right',      
     label: '2. Quantization Signal to Noise Ratio (SNR)',
     route: 'chapter2', // Route to navigate to when 'Analytics' is clicked
     children: [
@@ -69,7 +74,7 @@ const menuItems: MenuNode[] = [
     ]
   },
   {
-    icon: 'keyboard_double_arrow_right',      // Icon for the 'Analytics' menu item
+    icon: 'keyboard_double_arrow_right',      
     label: '3. SNR and Non-uniform Quantization',
     route: 'chapter3',
     children: [
@@ -88,20 +93,21 @@ const menuItems: MenuNode[] = [
         label: 'Lab',
         route: 'chapter3/lab3'
       },
+       {
+        icon: 'play_circle',
+        label: 'Interactive Demo',
+        route: 'chapter3/id3'
+      },
     ]
   },
 
   {
-    icon: 'keyboard_double_arrow_right',      // Icon for the 'Analytics' menu item
+    icon: 'keyboard_double_arrow_right',      
     label: '4. Lloyd-Max Quantizer ',
     route: 'chapter4'
     ,
     children: [
-      {
-        icon: '',
-        label: 'Examples of Uniform PDFs ',
-        route: 'chapter12/subtopic121'
-      },
+     
        {
         icon: 'science',
         label: 'Lab ',
@@ -111,25 +117,26 @@ const menuItems: MenuNode[] = [
   },
 
   {
-    icon: 'keyboard_double_arrow_right',      // Icon for the 'Analytics' menu item
+    icon: 'keyboard_double_arrow_right',      
     label: ' 5. Vector Quantization, LBG',
     route: 'chapter5'
     ,
     children: [
-      {
-        icon: '',
-        label: 'Examples of Uniform PDFs ',
-        route: 'chapter12/subtopic1211'
-      },
+      
       {
         icon: 'science',
         label: 'Lab ',
         route: 'chapter5/lab5'
       },
+       {
+        icon: 'play_circle',
+        label: 'Interactive Demo',
+        route: 'chapter5/id5'
+      },
     ]
   },
   {
-    icon: 'keyboard_double_arrow_right',      // Icon for the 'Analytics' menu item
+    icon: 'keyboard_double_arrow_right',      
     label: '6. Sampling: Downsampling, Upsampling',
     route: 'chapter6'
     ,
@@ -157,7 +164,7 @@ const menuItems: MenuNode[] = [
     ]
   },
   {
-    icon: 'keyboard_double_arrow_right',      // Icon for the 'Analytics' menu item
+    icon: 'keyboard_double_arrow_right',      
     label: '7. z-Transform, Filters',
     route: 'chapter7'
     ,
@@ -180,7 +187,7 @@ const menuItems: MenuNode[] = [
     ]
   },
   {
-    icon: 'keyboard_double_arrow_right',      // Icon for the 'Analytics' menu item
+    icon: 'keyboard_double_arrow_right',      
     label: '8. Filters, Noble Identities',
     route: 'chapter8'
     ,
@@ -208,7 +215,7 @@ const menuItems: MenuNode[] = [
     ]
   },
   {
-    icon: 'keyboard_double_arrow_right',      // Icon for the 'Analytics' menu item
+    icon: 'keyboard_double_arrow_right',      
     label: '9. Allpass Filters, Warping',
     route: 'chapter9'
     ,
@@ -222,7 +229,7 @@ const menuItems: MenuNode[] = [
     ]
   },
   {
-    icon: 'keyboard_double_arrow_right',      // Icon for the 'Analytics' menu item
+    icon: 'keyboard_double_arrow_right',      
     label: '10. Minimum Phase Filters',
     route: 'chapter10'
     ,
@@ -250,7 +257,7 @@ const menuItems: MenuNode[] = [
     ]
   },
   {
-    icon: 'keyboard_double_arrow_right',      // Icon for the 'Analytics' menu item
+    icon: 'keyboard_double_arrow_right',      
     label: '11. Hilbert Transform',
     route: 'chapter11'
     ,
@@ -278,7 +285,7 @@ const menuItems: MenuNode[] = [
     ]
   },
   {
-    icon: 'keyboard_double_arrow_right',      // Icon for the 'Analytics' menu item
+    icon: 'keyboard_double_arrow_right',      
     label: '12. Wiener & Matched Filters',
     route: 'chapter12'
     ,
@@ -343,7 +350,7 @@ const menuItems: MenuNode[] = [
     ]
   },
   {
-    icon: 'book_2',      // Icon for the 'Analytics' menu item
+    icon: 'book_2',      
     label: '13. Bibliography',
     route: 'bibliography',
    
