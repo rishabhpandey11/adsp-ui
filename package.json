@@ -6,7 +6,8 @@
     "start": "ng serve",
     "build": "ng build",
     "watch": "ng build --watch --configuration development",
-    "test": "ng test"
+    "test": "ng test",
+     "vercel-build": "npm install --legacy-peer-deps && ng build"
   },
   "prettier": {
     "printWidth": 100,
@@ -31,7 +32,7 @@
     "@angular/material": "^20.2.10",
     "@angular/platform-browser": "^21.0.6",
     "@angular/router": "^21.0.6",
-    "@swimlane/ngx-charts": "^23.1.0",
+    "@swimlane/ngx-charts": "^22.0.0",
     "@tailwindcss/postcss": "^4.1.16",
     "@tailwindcss/vite": "^4.1.16",
     "chart.js": "^4.5.1",
