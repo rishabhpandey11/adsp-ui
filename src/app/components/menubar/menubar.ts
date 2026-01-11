@@ -161,6 +161,11 @@ const menuItems: MenuNode[] = [
         label: ' Lab ',
         route: 'chapter6/lab6'
       },
+       {
+        icon: 'play_circle',
+        label: ' Interactive Demo ',
+        route: 'chapter6/id6'
+      },
     ]
   },
   {
@@ -183,6 +188,11 @@ const menuItems: MenuNode[] = [
         icon: 'science',
         label: ' Lab ',
         route: 'chapter7/lab7'
+      },
+       {
+        icon: 'play_circle',
+        label: ' Interactive Demo ',
+        route: 'chapter7/id7'
       },
     ]
   },
