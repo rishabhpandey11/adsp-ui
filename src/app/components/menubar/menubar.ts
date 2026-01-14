@@ -222,6 +222,11 @@ const menuItems: MenuNode[] = [
         label: ' Lab ',
         route: 'chapter8/lab8'
       },
+       {
+        icon: 'play_circle',
+        label: ' Interactive Demo ',
+        route: 'chapter8/id8'
+      },
     ]
   },
   {

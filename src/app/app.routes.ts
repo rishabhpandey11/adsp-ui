@@ -62,6 +62,7 @@ import { Id3 } from './subtopics/chap3/id3/id3';
 import { Id5 } from './subtopics/chap5/id5/id5';
 import { Id6 } from './subtopics/chap6/id6/id6';
 import { Id7 } from './subtopics/chap7/id7/id7';
+import { Id8 } from './subtopics/chap8/id8/id8';
 
 const routerOptions: ExtraOptions = {
     scrollPositionRestoration: 'enabled', // restores scroll to top on navigation
@@ -121,6 +122,7 @@ export const routes: Routes = [
             { path: 'chapter8/subtopic82', component: Subtopic82 },
             { path: 'chapter8/subtopic83', component: Subtopic83 },
             { path: 'chapter8/lab8', component: Lab8 },
+            { path: 'chapter8/id8', component: Id8 },
 
 
             { path: 'chapter9', component: Chapter9 },
