@@ -3,7 +3,8 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { MatSliderModule } from '@angular/material/slider';
 import { MatCardModule } from '@angular/material/card';
-import { NgxChartsModule } from '@swimlane/ngx-charts';
+import { NgChartsModule } from 'ng2-charts';
+import { ChartConfiguration } from 'chart.js';
 
 @Component({
   selector: 'app-id6',
@@ -13,7 +14,7 @@ import { NgxChartsModule } from '@swimlane/ngx-charts';
     FormsModule,
     MatSliderModule,
     MatCardModule,
-    NgxChartsModule
+    NgChartsModule
   ],
   templateUrl: './id6.html',
   styleUrls: ['./id6.css']
@@ -26,21 +27,20 @@ export class Id6 implements OnInit {
   /* ===== Signal params ===== */
   fs = 8000;
   f0 = 150;
-  duration = 0.02; // extra zoomed (20 ms)
+  duration = 0.02;
 
-  /* ===== Charts ===== */
-  timeData: any[] = [];
-  freqData: any[] = [];
+  /* ===== Chart configs ===== */
+  timeChartData!: ChartConfiguration<'line'>['data'];
+  freqChartData!: ChartConfiguration<'line'>['data'];
 
-  viewTime: [number, number] = [900, 300];
-  viewFreq: [number, number] = [900, 300];
-
-  showLegend = true;
-  showXAxis = true;
-  showYAxis = true;
-  animations = false;
-  
-
+  chartOptions: ChartConfiguration<'line'>['options'] = {
+    responsive: true,
+    animation: false,
+    scales: {
+      x: { title: { display: true, text: 'Time / Frequency' } },
+      y: { title: { display: true, text: 'Amplitude / Magnitude (dB)' } }
+    }
+  };
 
   ngOnInit() {
     this.updateSignals();
@@ -49,7 +49,6 @@ export class Id6 implements OnInit {
   onChange() {
     this.updateSignals();
   }
-
 
   /* ================= SIGNAL PROCESSING ================= */
 
@@ -67,34 +66,50 @@ export class Id6 implements OnInit {
     const down = original.filter((_, i) => i % this.downsampleFactor === 0);
     const tDown = down.map((_, i) => i / (this.fs / this.downsampleFactor));
 
-    this.timeData = [
-      {
-        name: 'Original',
-        series: t.map((x, i) => ({ name: x, value: original[i] }))
-      },
-      {
-        name: `Downsampled ×${this.downsampleFactor}`,
-        series: tDown.map((x, i) => ({ name: x, value: down[i] }))
-      }
-    ];
+    /* ===== Time domain chart ===== */
+    this.timeChartData = {
+      labels: t,
+      datasets: [
+        {
+          label: 'Original',
+          data: original,
+          borderColor: 'blue',
+          pointRadius: 0
+        },
+        {
+          label: `Downsampled ×${this.downsampleFactor}`,
+          data: down,
+          borderColor: 'red',
+          pointRadius: 0
+        }
+      ]
+    };
 
-    this.freqData = [
-      {
-        name: 'Original',
-        series: this.computeFFT(original, this.fs)
-      },
-      {
-        name: `Downsampled ×${this.downsampleFactor}`,
-        series: this.computeFFT(down, this.fs / this.downsampleFactor)
-      }
-    ];
+    /* ===== Frequency domain chart ===== */
+    this.freqChartData = {
+      labels: this.computeFFT(original, this.fs).map(p => p.x),
+      datasets: [
+        {
+          label: 'Original',
+          data: this.computeFFT(original, this.fs).map(p => p.y),
+          borderColor: 'green',
+          pointRadius: 0
+        },
+        {
+          label: `Downsampled ×${this.downsampleFactor}`,
+          data: this.computeFFT(down, this.fs / this.downsampleFactor).map(p => p.y),
+          borderColor: 'orange',
+          pointRadius: 0
+        }
+      ]
+    };
   }
 
   /* ================= FFT ================= */
 
   computeFFT(signal: number[], fs: number) {
     const N = signal.length;
-    const result: { name: number; value: number }[] = [];
+    const result: { x: number; y: number }[] = [];
 
     for (let k = 0; k < N / 2; k++) {
       let re = 0;
@@ -107,7 +122,10 @@ export class Id6 implements OnInit {
       }
 
       const mag = Math.sqrt(re * re + im * im) / N;
-      result.push({ name: (k * fs) / N, value: 20 * Math.log10(mag + 1e-6) });
+      result.push({
+        x: (k * fs) / N,
+        y: 20 * Math.log10(mag + 1e-6)
+      });
     }
 
     return result;
