@@ -6,11 +6,12 @@ import { MatButtonModule } from '@angular/material/button';
 import { FormsModule } from '@angular/forms';
 import { Pycodechap1 } from "../python-code/pycodechap1/pycodechap1";
 import { MathJaxDirective } from '../mathjax.directive';
+import { CommonModule } from '@angular/common';
 
 
 @Component({
   selector: 'app-chapter12',
-  imports: [MatCardModule, MathJaxDirective, FormsModule, MatCardModule, MatRadioModule, MatButtonModule],
+  imports: [MatCardModule, MathJaxDirective,CommonModule, FormsModule, MatCardModule, MatRadioModule, MatButtonModule],
   templateUrl: './chapter12.html',
   styleUrl: './chapter12.css',
 })

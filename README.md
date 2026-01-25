@@ -45,6 +45,7 @@ src/
 └── styles/
 
 🧩 Folder Explanation
+
 🔹 components/
 
 Contains all main chapters of the platform.
@@ -53,7 +54,8 @@ Each chapter is a standalone Angular component.
 
 Chapters act as top-level learning modules.
 
- subtopics/
+ 
+subtopics/
 
 Represents subcategories of each chapter.
 Each subtopic focuses on a specific concept, simulation, or interactive demo.
@@ -62,6 +64,9 @@ Sliders
 D3 charts
 Python Editor
 Audio or signal visualizations
+
+utils/
+it has directives and other helper components
 
 🛠️ Setup & Installation
 🛠️ Angular Project Setup Commands
