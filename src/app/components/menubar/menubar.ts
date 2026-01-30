@@ -119,6 +119,11 @@ const menuItems: MenuNode[] = [
         label: 'Lab ',
         route: 'chapter4/lab4'
       },
+       {
+        icon: 'play_circle',
+        label: 'Interactive Demo',
+        route: 'chapter4/id4'
+      },
     ]
   },
 
@@ -247,6 +252,11 @@ const menuItems: MenuNode[] = [
         label: ' Lab',
         route: 'chapter9/lab9'
       },
+       {
+        icon: 'play_circle',
+        label: 'Interactive Demo',
+        route: 'chapter9/id9'
+      },
     ]
   },
   {
@@ -275,6 +285,11 @@ const menuItems: MenuNode[] = [
         label: ' Lab',
         route: 'chapter10/lab10'
       },
+       {
+        icon: 'play_circle',
+        label: 'Interactive Demo',
+        route: 'chapter10/id10'
+      },
     ]
   },
   {
@@ -302,6 +317,11 @@ const menuItems: MenuNode[] = [
         icon: 'science',
         label: ' Lab',
         route: 'chapter11/lab11'
+      },
+       {
+        icon: 'play_circle',
+        label: 'Interactive Demo',
+        route: 'chapter11/id11'
       },
     ]
   },
@@ -367,6 +387,11 @@ const menuItems: MenuNode[] = [
         icon: 'science',
         label: ' Lab',
         route: 'chapter12/lab12'
+      },
+       {
+        icon: 'play_circle',
+        label: 'Interactive Demo',
+        route: 'chapter12/id12'
       },
     ]
   },

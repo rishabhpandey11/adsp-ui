@@ -64,6 +64,11 @@ import { Id6 } from './subtopics/chap6/id6/id6';
 import { Id7 } from './subtopics/chap7/id7/id7';
 import { Id8 } from './subtopics/chap8/id8/id8';
 import { Id2 } from './subtopics/chap2/id2/id2';
+import { Id4 } from './subtopics/chap4/id4/id4';
+import { Id9 } from './subtopics/chap9/id9/id9';
+import { Id10 } from './subtopics/chap10/id10/id10';
+import { Id11 } from './subtopics/chap11/id11/id11';
+import { Id12 } from './subtopics/chap12/id12/id12';
 
 const routerOptions: ExtraOptions = {
     scrollPositionRestoration: 'enabled', // restores scroll to top on navigation
@@ -80,43 +85,44 @@ export const routes: Routes = [
             { path: '', redirectTo: 'chapter1', pathMatch: 'full' },
             { path: 'chapter1', component: Chapter1 },
             { path: 'chapter1/lab1', component: Lab1 },
-             { path: 'chapter1/id1', component: Id1 },
+            { path: 'chapter1/id1', component: Id1 },
 
             { path: 'chapter2', component: Chapter2 },
             { path: 'chapter2/lab2', component: Lab2 },
             { path: 'chapter2/subtopic1', component: Subtopic1 },
             { path: 'chapter2/subtopic2', component: Subtopic2 },
             { path: 'chapter2/subtopic1.3', component: Subtopic13 },
-              { path: 'chapter2/id2', component: Id2 },
-            
+            { path: 'chapter2/id2', component: Id2 },
+
 
             { path: 'chapter3', component: Chapter3 },
             { path: 'chapter3/lab3', component: Lab3 },
             { path: 'chapter3/subtopic31', component: Subtopic31 },
             { path: 'chapter3/subtopic32', component: Subtopic32 },
-             { path: 'chapter3/id3', component: Id3 },
+            { path: 'chapter3/id3', component: Id3 },
 
 
             { path: 'chapter4', component: Chapter4 },
             { path: 'chapter4/lab4', component: Lab4 },
+            { path: 'chapter4/id4', component: Id4 },
 
             { path: 'chapter5', component: Chapter5 },
             { path: 'chapter5/lab5', component: Lab5 },
-             { path: 'chapter5/id5', component: Id5 },
+            { path: 'chapter5/id5', component: Id5 },
 
             { path: 'chapter6', component: Chapter6 },
             { path: 'chapter6/lab6', component: Lab6 },
             { path: 'chapter6/st61', component: St61 },
             { path: 'chapter6/st62', component: St62 },
             { path: 'chapter6/st63', component: St63 },
-             { path: 'chapter6/id6', component: Id6 },
+            { path: 'chapter6/id6', component: Id6 },
 
 
             { path: 'chapter7', component: Chapter7 },
             { path: 'chapter7/subtopic71', component: Subtopic71 },
             { path: 'chapter7/subtopic72', component: Subtopic72 },
             { path: 'chapter7/lab7', component: Lab7 },
-             { path: 'chapter7/id7', component: Id7 },
+            { path: 'chapter7/id7', component: Id7 },
 
             { path: 'chapter8', component: Chapter8 },
             { path: 'chapter8/subtopic81', component: Subtopic72 },
@@ -129,6 +135,7 @@ export const routes: Routes = [
 
             { path: 'chapter9', component: Chapter9 },
             { path: 'chapter9/lab9', component: Lab9 },
+            { path: 'chapter9/id9', component: Id9 },
 
 
             { path: 'chapter10', component: Chapter10 },
@@ -136,6 +143,8 @@ export const routes: Routes = [
             { path: 'chapter10/subtopic102', component: Subtopic102 },
             { path: 'chapter10/subtopic103', component: Subtopic103 },
             { path: 'chapter10/lab10', component: Lab10 },
+            { path: 'chapter10/id10', component: Id10 },
+
 
 
             { path: 'chapter11', component: Chapter11 },
@@ -143,6 +152,8 @@ export const routes: Routes = [
             { path: 'chapter11/subtopic112', component: Subtopic112 },
             { path: 'chapter11/subtopic113', component: Subtopic113 },
             { path: 'chapter11/lab11', component: Lab11 },
+            { path: 'chapter11/id11', component: Id11 },
+
 
             { path: 'chapter12', component: Chapter12 },
             { path: 'chapter12/lab12', component: Lab12 },
@@ -156,6 +167,8 @@ export const routes: Routes = [
             { path: 'chapter12/subtopic128', component: Subtopic128 },
             { path: 'chapter12/subtopic129', component: Subtopic129 },
             { path: 'chapter12/subtopic1210', component: Subtopic1210 },
+            { path: 'chapter12/id12', component: Id12 },
+
 
 
 
