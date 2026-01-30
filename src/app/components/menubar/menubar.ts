@@ -71,6 +71,12 @@ const menuItems: MenuNode[] = [
         label: 'Lab ',
         route: 'chapter2/lab2'
       },
+       {
+        icon: 'play_circle',
+        label: 'Interactive Demo',
+        route: 'chapter2/id2'
+      },
+
     ]
   },
   {

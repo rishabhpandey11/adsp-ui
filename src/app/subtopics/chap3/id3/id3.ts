@@ -1,162 +1,214 @@
-import { Component, OnInit, ElementRef, ViewChild } from '@angular/core';
-import * as d3 from 'd3';
+import {
+  Component,
+  ElementRef,
+  ViewChild,
+  AfterViewInit,
+  OnDestroy,
+} from '@angular/core';
+import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { MatSliderModule } from '@angular/material/slider';
 import { MatCardModule } from '@angular/material/card';
-import { MatButtonModule } from '@angular/material/button';
 
 @Component({
   selector: 'app-id3',
   standalone: true,
-  imports: [FormsModule, MatSliderModule, MatCardModule, MatButtonModule],
+  imports: [CommonModule, FormsModule, MatCardModule],
   templateUrl: './id3.html',
-  styleUrls: ['./id3.css']
+  styleUrls: ['./id3.css'],
 })
-export class Id3 implements OnInit {
+export class Id3 implements AfterViewInit, OnDestroy {
+  @ViewChild('plotCanvas') canvasRef!: ElementRef<HTMLCanvasElement>;
 
-  snrDb = 20;
+  // --- PARAMS ---
+  snrParam = 40; // dB
   isPlaying = false;
 
-  @ViewChild('chart', { static: true }) chartContainer!: ElementRef;
+  // --- STATE ---
+  private audioCtx: AudioContext | null = null;
+  private originalSignal: Float32Array | null = null;
+  private sampleRate = 44100;
+  private noisySignal: Float32Array | null = null;
+  private resizeObserver!: ResizeObserver;
+  private ctx!: CanvasRenderingContext2D;
 
-  private audioCtx!: AudioContext;
-  private signalOsc!: OscillatorNode;
-  private noiseSource!: AudioBufferSourceNode;
-  private signalGain!: GainNode;
-  private noiseGain!: GainNode;
-
-  // D3
-  private svg: any;
-  private xScale: any;
-  private yScale: any;
-  private line: any;
-
-  ngOnInit() {
-    this.createChart();
-    this.updateChart(); // initial chart
-  }
-
-  /* 🔹 D3 Chart Setup */
-  createChart() {
-    const width = 700;
-    const height = 300;
-
-    this.svg = d3.select(this.chartContainer.nativeElement)
-      .append('svg')
-      .attr('width', width)
-      .attr('height', height);
-
-    this.xScale = d3.scaleLinear()
-      .domain([0, 2 * Math.PI])
-      .range([40, width - 20]);
-
-    this.yScale = d3.scaleLinear()
-      .domain([-1, 1])
-      .range([height - 20, 20]);
-
-    this.line = d3.line<any>()
-      .x((d: any) => this.xScale(d.x))
-      .y((d: any) => this.yScale(d.y));
-
-    // Axes
-    this.svg.append('g')
-      .attr('transform', `translate(0, ${height / 2})`)
-      .call(d3.axisBottom(this.xScale));
-
-    this.svg.append('g')
-      .attr('transform', 'translate(40,0)')
-      .call(d3.axisLeft(this.yScale));
-
-    // Wave path
-    this.svg.append('path')
-      .attr('class', 'wave')
-      .attr('fill', 'none')
-      .attr('stroke', '#3f51b5')
-      .attr('stroke-width', 2);
-  }
-
-  /* 🔹 Update chart based on slider */
-  updateChart() {
-    const snrLinear = Math.pow(10, this.snrDb / 20);
-    const signalAmp = 0.5;
-    const noiseAmp = signalAmp / snrLinear;
-
-    const data = d3.range(0, 2 * Math.PI, 0.01).map(x => ({
-      x,
-      y: signalAmp * Math.sin(440 * x) + noiseAmp * (Math.random() * 2 - 1)
-    }));
-
-    this.svg.select('.wave')
-      .datum(data)
-      .attr('d', this.line);
-  }
-
-  /* 🔊 AUDIO PLAYBACK */
-  startAudio() {
-    if (this.isPlaying) return;
-
-    this.audioCtx = new AudioContext();
-
-    /* Signal */
-    this.signalOsc = this.audioCtx.createOscillator();
-    this.signalOsc.type = 'sine';
-    this.signalOsc.frequency.value = 440;
-
-    this.signalGain = this.audioCtx.createGain();
-    this.signalGain.gain.value = 0.5;
-
-    /* Noise */
-    const bufferSize = this.audioCtx.sampleRate;
-    const noiseBuffer = this.audioCtx.createBuffer(1, bufferSize, this.audioCtx.sampleRate);
-    const data = noiseBuffer.getChannelData(0);
-    for (let i = 0; i < bufferSize; i++) {
-      data[i] = Math.random() * 2 - 1;
+  ngAfterViewInit() {
+    this.resizeObserver = new ResizeObserver(() => {
+      this.initCanvas();
+      this.render();
+    });
+    if (this.canvasRef) {
+      this.resizeObserver.observe(this.canvasRef.nativeElement.parentElement!);
     }
 
-    this.noiseSource = this.audioCtx.createBufferSource();
-    this.noiseSource.buffer = noiseBuffer;
-    this.noiseSource.loop = true;
+    // Generate default signal on load
+    setTimeout(() => this.generateSyntheticSignal(), 100);
+  }
 
-    this.noiseGain = this.audioCtx.createGain();
-    this.updateNoiseLevel();
+  ngOnDestroy() {
+    if (this.resizeObserver) this.resizeObserver.disconnect();
+    if (this.audioCtx) this.audioCtx.close();
+  }
 
-    /* Connections */
-    this.signalOsc.connect(this.signalGain).connect(this.audioCtx.destination);
-    this.noiseSource.connect(this.noiseGain).connect(this.audioCtx.destination);
+  // --- ACTIONS ---
 
-    this.signalOsc.start();
-    this.noiseSource.start();
+  async handleFileUpload(event: any) {
+    const file = event.target.files[0];
+    if (!file) return;
+
+    if (!this.audioCtx) this.audioCtx = new AudioContext();
+
+    const arrayBuffer = await file.arrayBuffer();
+    const audioBuffer = await this.audioCtx.decodeAudioData(arrayBuffer);
+
+    this.originalSignal = audioBuffer.getChannelData(0); // Use mono
+    this.sampleRate = audioBuffer.sampleRate;
+
+    this.updateProcessing();
+  }
+
+  generateSyntheticSignal() {
+    // Generate a "Speech-like" AM modulated burst
+    this.sampleRate = 44100;
+    const duration = 2.0;
+    const N = Math.floor(duration * this.sampleRate);
+    this.originalSignal = new Float32Array(N);
+
+    for (let i = 0; i < N; i++) {
+      const t = i / this.sampleRate;
+      // Carrier 200Hz, Modulator 5Hz (syllabic rate)
+      const envelope = 0.5 * (1 + Math.cos(2 * Math.PI * 5 * t));
+      // Add some harmonics for "voice" texture
+      const carrier =
+        Math.sin(2 * Math.PI * 200 * t) +
+        0.5 * Math.sin(2 * Math.PI * 400 * t) +
+        0.2 * Math.sin(2 * Math.PI * 600 * t);
+      
+      // FIXED: Slower decay (-0.5 instead of -2) so it is audible longer
+      this.originalSignal[i] = envelope * carrier * Math.exp(-0.5 * t); 
+    }
+    this.updateProcessing();
+  }
+
+  updateProcessing() {
+    if (!this.originalSignal) return;
+
+    // 1. Calculate Signal Power
+    let sumSq = 0;
+    for (let x of this.originalSignal) sumSq += x * x;
+    const sigPower = sumSq / this.originalSignal.length;
+
+    // 2. Determine Noise Amplitude
+    const targetNoisePower = sigPower / Math.pow(10, this.snrParam / 10);
+    const noiseStd = Math.sqrt(targetNoisePower);
+
+    // 3. Generate Noise & Mix
+    const N = this.originalSignal.length;
+    this.noisySignal = new Float32Array(N);
+
+    for (let i = 0; i < N; i++) {
+      // Gaussian Noise: Box-Muller
+      let u = 0, v = 0;
+      while (u === 0) u = Math.random();
+      while (v === 0) v = Math.random();
+      const noise = Math.sqrt(-2.0 * Math.log(u)) * Math.cos(2.0 * Math.PI * v);
+
+      this.noisySignal[i] = this.originalSignal[i] + noise * noiseStd;
+    }
+
+    this.render();
+  }
+
+  // FIXED: Direct Audio Playback
+  playSignal() {
+    if (!this.noisySignal) return;
+
+    if (!this.audioCtx) {
+      this.audioCtx = new AudioContext();
+    }
+    if (this.audioCtx.state === 'suspended') {
+      this.audioCtx.resume();
+    }
+
+    const buffer = this.audioCtx.createBuffer(1, this.noisySignal.length, this.sampleRate);
+    const data = buffer.getChannelData(0);
+    
+    // Copy signal to audio buffer
+    for (let i = 0; i < this.noisySignal.length; i++) {
+      data[i] = this.noisySignal[i];
+    }
+
+    const source = this.audioCtx.createBufferSource();
+    source.buffer = buffer;
+    source.connect(this.audioCtx.destination);
+    source.start();
+
     this.isPlaying = true;
-
-    /* Stop automatically after 1 second */
-    this.signalOsc.stop(this.audioCtx.currentTime + 1);
-    this.noiseSource.stop(this.audioCtx.currentTime + 1);
-
-    this.signalOsc.onended = () => {
-      this.audioCtx.close();
+    source.onended = () => {
       this.isPlaying = false;
     };
   }
 
-  stopAudio() {
-    if (!this.isPlaying) return;
+ 
+  private initCanvas() {
+    if (!this.canvasRef) return;
+    const cvs = this.canvasRef.nativeElement;
+    const parent = cvs.parentElement;
+    if (!parent || parent.clientWidth === 0) return;
 
-    this.signalOsc.stop();
-    this.noiseSource.stop();
-    this.audioCtx.close();
-    this.isPlaying = false;
+    const dpr = window.devicePixelRatio || 1;
+    cvs.width = parent.clientWidth * dpr;
+    cvs.height = parent.clientHeight * dpr;
+
+    this.ctx = cvs.getContext('2d')!;
+    this.ctx.scale(dpr, dpr);
   }
 
-  /* 🔹 Update noise based on slider */
-  updateNoiseLevel() {
-    if (!this.signalGain || !this.noiseGain) return;
+  private render() {
+    if (!this.ctx || !this.noisySignal) return;
+    const w =
+      this.canvasRef.nativeElement.width / (window.devicePixelRatio || 1);
+    const h =
+      this.canvasRef.nativeElement.height / (window.devicePixelRatio || 1);
 
-    const signalAmp = this.signalGain.gain.value;
-    const noiseAmp = signalAmp / Math.pow(10, this.snrDb / 20);
-    this.noiseGain.gain.setValueAtTime(noiseAmp, this.audioCtx.currentTime);
+    // Clear
+    this.ctx.fillStyle = '#0e1117';
+    this.ctx.fillRect(0, 0, w, h);
 
-    // Update chart visually
-    this.updateChart();
+    // Grid
+    this.drawBg(w, h, `Signal + Noise (SNR = ${this.snrParam} dB)`);
+
+    // Plot
+    const data = this.noisySignal;
+    const step = Math.ceil(data.length / w);
+
+    this.ctx.beginPath();
+    this.ctx.strokeStyle = '#00ff00';
+    this.ctx.lineWidth = 1;
+
+    const mid = h / 2;
+    const maxVal = 2.0; 
+    const scaleY = (h / 2 - 20) / maxVal;
+
+    for (let i = 0; i < w; i++) {
+      const idx = i * step;
+      if (idx >= data.length) break;
+      const val = data[idx];
+      const y = mid - val * scaleY;
+      if (i === 0) this.ctx.moveTo(i, y);
+      else this.ctx.lineTo(i, y);
+    }
+    this.ctx.stroke();
   }
 
+  private drawBg(w: number, h: number, title: string) {
+    this.ctx.strokeStyle = '#333';
+    this.ctx.beginPath();
+    this.ctx.moveTo(0, h / 2);
+    this.ctx.lineTo(w, h / 2);
+    this.ctx.stroke();
+
+    this.ctx.fillStyle = '#eee';
+    this.ctx.font = '14px Helvetica';
+    this.ctx.fillText(title, 10, 20);
+  }
 }
